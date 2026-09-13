@@ -1,0 +1,2 @@
+/api/dict/*  https://dict.youdao.com/:splat  200
+/*  /index.html  200
