@@ -4,13 +4,11 @@ import {
   User, 
   Lock, 
   Target, 
-  Sparkles, 
   Check, 
   Users, 
   PlusCircle, 
   LogIn, 
-  ArrowRight,
-  ShieldCheck,
+  ArrowRight, 
   AlertCircle
 } from 'lucide-react';
 import { 
@@ -125,76 +123,78 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/30 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn select-none">
       <div 
-        className="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-slate-200 overflow-hidden flex flex-col animate-scaleUp max-h-[92vh]"
+        className="bg-white/95 backdrop-blur-2xl rounded-3xl w-full max-w-lg shadow-[0_24px_70px_rgba(0,0,0,0.14)] border border-black/[0.06] overflow-hidden flex flex-col animate-scaleUp max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 flex items-center justify-between border-b border-slate-800">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-lg">
+        {/* Header (Apple Sheet Style) */}
+        <div className="p-5 sm:p-6 pb-4 flex items-center justify-between border-b border-black/[0.04]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#f5f5f7] border border-black/[0.04] flex items-center justify-center text-xl">
               {activeUser.avatar}
             </div>
             <div>
-              <h2 className="font-extrabold text-base text-white">用户中心 · 独立数据空间</h2>
-              <p className="text-xs text-slate-400">每个人拥有独立的做题成绩、错题本与艾宾浩斯复习档案</p>
+              <h2 className="font-semibold text-base text-[#1d1d1f]">学员中心 · 独立数据空间</h2>
+              <p className="text-xs text-[#86868b] mt-0.5">每位学员拥有独立的做题成绩、错题本与记忆档案</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="w-8 h-8 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#86868b] hover:text-[#1d1d1f] flex items-center justify-center transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex border-b border-slate-200 bg-slate-50 px-5 pt-3 gap-3 shrink-0">
-          <button
-            onClick={() => setMode('switch')}
-            className={`pb-2.5 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
-              mode === 'switch' 
-                ? 'border-indigo-600 text-indigo-700' 
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>切换账号 ({accounts.length})</span>
-          </button>
+        {/* Apple Segmented Control */}
+        <div className="px-5 sm:px-6 pt-3 pb-1 shrink-0">
+          <div className="flex p-1 rounded-full bg-[#f5f5f7] border border-black/[0.04] text-xs">
+            <button
+              onClick={() => setMode('switch')}
+              className={`flex-1 py-1.5 rounded-full font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                mode === 'switch' 
+                  ? 'bg-white text-[#1d1d1f] shadow-sm' 
+                  : 'text-[#86868b] hover:text-[#1d1d1f]'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>切换学员 ({accounts.length})</span>
+            </button>
 
-          <button
-            onClick={() => setMode('register')}
-            className={`pb-2.5 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
-              mode === 'register' 
-                ? 'border-indigo-600 text-indigo-700' 
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>注册新用户</span>
-          </button>
+            <button
+              onClick={() => setMode('register')}
+              className={`flex-1 py-1.5 rounded-full font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                mode === 'register' 
+                  ? 'bg-white text-[#1d1d1f] shadow-sm' 
+                  : 'text-[#86868b] hover:text-[#1d1d1f]'
+              }`}
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>注册新账号</span>
+            </button>
 
-          <button
-            onClick={() => setMode('login')}
-            className={`pb-2.5 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
-              mode === 'login' 
-                ? 'border-indigo-600 text-indigo-700' 
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <LogIn className="w-4 h-4" />
-            <span>账号登录</span>
-          </button>
+            <button
+              onClick={() => setMode('login')}
+              className={`flex-1 py-1.5 rounded-full font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                mode === 'login' 
+                  ? 'bg-white text-[#1d1d1f] shadow-sm' 
+                  : 'text-[#86868b] hover:text-[#1d1d1f]'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>密码登录</span>
+            </button>
+          </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto space-y-4">
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
           {/* MODE: SWITCH ACCOUNTS */}
           {mode === 'switch' && (
-            <div className="space-y-3">
-              <div className="text-xs text-slate-500 mb-2">
-                选择要进入的学员档案（独立存储、数据互不影响）：
+            <div className="space-y-2.5">
+              <div className="text-xs text-[#86868b] mb-2 font-normal">
+                轻点切换进入学员专属档案（数据完全物理隔离）：
               </div>
 
               {accounts.map(acc => {
@@ -204,40 +204,40 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <div 
                     key={acc.id}
                     onClick={() => handleSwitch(acc.id)}
-                    className={`p-3.5 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
+                    className={`p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
                       isActive 
-                        ? 'bg-indigo-50/70 border-indigo-300 ring-2 ring-indigo-500/20 shadow-sm' 
-                        : 'bg-white hover:bg-slate-50 border-slate-200'
+                        ? 'bg-white border-[#0071e3] ring-2 ring-[#0071e3]/15 shadow-sm' 
+                        : 'bg-[#f5f5f7] hover:bg-[#e8e8ed]/80 border-transparent'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-xl shrink-0">
+                      <div className="w-10 h-10 rounded-2xl bg-white border border-black/[0.04] shadow-2xs flex items-center justify-center text-xl shrink-0">
                         {acc.avatar}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-slate-900">{acc.displayName}</span>
-                          <span className="text-[11px] text-slate-400">(@{acc.username})</span>
+                          <span className="font-semibold text-sm text-[#1d1d1f]">{acc.displayName}</span>
+                          <span className="text-[11px] text-[#86868b]">(@{acc.username})</span>
                           {isActive && (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-600 text-white">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#0071e3] text-white">
                               当前使用
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
+                        <div className="text-xs text-[#86868b] mt-0.5 flex items-center gap-2 font-normal">
                           <span>基础 Band {acc.currentBand.toFixed(1)}</span>
                           <span>➔</span>
-                          <span className="text-indigo-600 font-semibold">目标 Band {acc.targetBand.toFixed(1)}</span>
-                          <span className="text-slate-400">· 考期 {acc.examDate}</span>
+                          <span className="text-[#34c759] font-medium">目标 Band {acc.targetBand.toFixed(1)}</span>
+                          <span className="text-[#86868b]">· 考期 {acc.examDate}</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="shrink-0">
                       {isActive ? (
-                        <Check className="w-5 h-5 text-indigo-600" />
+                        <Check className="w-5 h-5 text-[#0071e3]" />
                       ) : (
-                        <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1" />
+                        <ArrowRight className="w-4 h-4 text-[#86868b]" />
                       )}
                     </div>
                   </div>
@@ -247,10 +247,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div className="pt-2">
                 <button
                   onClick={() => setMode('register')}
-                  className="w-full py-2.5 rounded-xl border-2 border-dashed border-slate-300 text-slate-600 hover:border-indigo-400 hover:text-indigo-600 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-full border border-dashed border-black/[0.15] hover:border-[#0071e3] text-[#86868b] hover:text-[#0071e3] text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <PlusCircle className="w-4 h-4" />
-                  <span>新建另外一个学员档案</span>
+                  <span>添加新的学员档案</span>
                 </button>
               </div>
             </div>
@@ -260,7 +260,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {mode === 'register' && (
             <form onSubmit={handleRegister} className="space-y-4 text-sm">
               {regError && (
-                <div className="p-3 bg-red-50 text-red-700 text-xs rounded-xl border border-red-200 flex items-center gap-2">
+                <div className="p-3 bg-[#ff3b30]/10 text-[#ff3b30] text-xs rounded-2xl border border-[#ff3b30]/20 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{regError}</span>
                 </div>
@@ -268,8 +268,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
               {/* Avatar Picker */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  选择学员个性头像
+                <label className="block text-xs font-medium text-[#1d1d1f] mb-2">
+                  选择个性化专属头像
                 </label>
                 <div className="flex items-center gap-2 flex-wrap">
                   {AVATAR_OPTIONS.map(opt => (
@@ -277,10 +277,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       key={opt.id}
                       type="button"
                       onClick={() => setRegAvatar(opt.emoji)}
-                      className={`w-10 h-10 rounded-xl border flex items-center justify-center text-lg transition-all ${
+                      className={`w-10 h-10 rounded-2xl border flex items-center justify-center text-lg transition-all cursor-pointer ${
                         regAvatar === opt.emoji 
-                          ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-500/20 shadow-sm scale-105' 
-                          : 'border-slate-200 hover:bg-slate-50'
+                          ? 'border-[#0071e3] bg-[#0071e3]/10 ring-2 ring-[#0071e3]/20 scale-105' 
+                          : 'border-black/[0.06] hover:bg-[#f5f5f7]'
                       }`}
                       title={opt.label}
                     >
@@ -293,8 +293,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               {/* Username & Nickname */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    登录用户名 <span className="text-red-500">*</span>
+                  <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
+                    登录用户名 <span className="text-[#ff3b30]">*</span>
                   </label>
                   <input
                     type="text"
@@ -302,12 +302,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     placeholder="如: Alex_IELTS"
                     value={regUsername}
                     onChange={(e) => setRegUsername(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-indigo-500 focus:outline-none font-medium"
+                    className="w-full bg-[#f5f5f7] border border-black/[0.06] rounded-xl p-2.5 text-xs focus:bg-white focus:border-[#0071e3] focus:outline-none font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
                     显示昵称 (可选)
                   </label>
                   <input
@@ -315,21 +315,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     placeholder="如: Alex · 冲刺牛津"
                     value={regDisplayName}
                     onChange={(e) => setRegDisplayName(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-indigo-500 focus:outline-none"
+                    className="w-full bg-[#f5f5f7] border border-black/[0.06] rounded-xl p-2.5 text-xs focus:bg-white focus:border-[#0071e3] focus:outline-none font-normal"
                   />
                 </div>
               </div>
 
               {/* Score Settings */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#f5f5f7] p-4 rounded-2xl border border-black/[0.02]">
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                  <label className="block text-[11px] font-medium text-[#86868b] mb-1">
                     当前基础分
                   </label>
                   <select
                     value={regCurrentBand}
                     onChange={(e) => setRegCurrentBand(parseFloat(e.target.value))}
-                    className="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-bold"
+                    className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold focus:outline-none"
                   >
                     <option value={3.5}>Band 3.5</option>
                     <option value={4.0}>Band 4.0 (推荐)</option>
@@ -341,14 +341,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                    目标期望分
+                  <label className="block text-[11px] font-medium text-[#86868b] mb-1">
+                    目标目标分
                   </label>
                   <select
                     value={regTargetBand}
                     onChange={(e) => setRegTargetBand(parseFloat(e.target.value))}
-                    className="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-bold text-indigo-700"
+                    className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold focus:outline-none text-[#34c759]"
                   >
+                    <option value={6.0}>Band 6.0</option>
                     <option value={6.5}>Band 6.5</option>
                     <option value={7.0}>Band 7.0 (推荐)</option>
                     <option value={7.5}>Band 7.5</option>
@@ -357,47 +358,46 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                    备考天数
+                  <label className="block text-[11px] font-medium text-[#86868b] mb-1">
+                    备考周期
                   </label>
-                  <input
-                    type="number"
-                    min={30}
-                    max={365}
+                  <select
                     value={regDays}
-                    onChange={(e) => setRegDays(parseInt(e.target.value) || 178)}
-                    className="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-bold text-center"
+                    onChange={(e) => setRegDays(parseInt(e.target.value))}
+                    className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold focus:outline-none"
+                  >
+                    <option value={60}>60 天 (急速冲刺)</option>
+                    <option value={90}>90 天 (强化突破)</option>
+                    <option value={120}>120 天 (阶段进阶)</option>
+                    <option value={178}>178 天 (4分升7分)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Optional Password */}
+              <div>
+                <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
+                  密码保护 (可选，防止他人误登)
+                </label>
+                <div className="relative">
+                  <Lock className="w-3.5 h-3.5 text-[#86868b] absolute left-3 top-3" />
+                  <input
+                    type="password"
+                    placeholder="如需隐私保护请设置密码，无需可留空"
+                    value={regPassword}
+                    onChange={(e) => setRegPassword(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 bg-[#f5f5f7] border border-black/[0.06] rounded-xl text-xs focus:bg-white focus:border-[#0071e3] focus:outline-none font-normal"
                   />
                 </div>
               </div>
 
-              {/* Password */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  访问密码 / PIN 码 (选填，留空则免密登录)
-                </label>
-                <input
-                  type="password"
-                  placeholder="留空即为免密码随心登录"
-                  value={regPassword}
-                  onChange={(e) => setRegPassword(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-indigo-500 focus:outline-none"
-                />
-              </div>
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setMode('switch')}
-                  className="px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50"
-                >
-                  返回账号列表
-                </button>
+              <div className="pt-2">
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-md transition-all active:scale-95"
+                  className="w-full py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
                 >
-                  创建并进入独立空间
+                  <PlusCircle className="w-4 h-4" />
+                  <span>立即创建并开启专属备考</span>
                 </button>
               </div>
             </form>
@@ -407,52 +407,52 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {mode === 'login' && (
             <form onSubmit={handleLogin} className="space-y-4 text-sm">
               {loginError && (
-                <div className="p-3 bg-red-50 text-red-700 text-xs rounded-xl border border-red-200 flex items-center gap-2">
+                <div className="p-3 bg-[#ff3b30]/10 text-[#ff3b30] text-xs rounded-2xl border border-[#ff3b30]/20 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{loginError}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
                   用户名
                 </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="输入已注册的用户名"
-                  value={loginUsername}
-                  onChange={(e) => setLoginUsername(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-indigo-500 focus:outline-none font-medium"
-                />
+                <div className="relative">
+                  <User className="w-3.5 h-3.5 text-[#86868b] absolute left-3 top-3" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="输入您的学员用户名"
+                    value={loginUsername}
+                    onChange={(e) => setLoginUsername(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 bg-[#f5f5f7] border border-black/[0.06] rounded-xl text-xs focus:bg-white focus:border-[#0071e3] focus:outline-none font-medium"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  密码 / PIN 码 (若未设置密码可直接留空)
+                <label className="block text-xs font-medium text-[#1d1d1f] mb-1">
+                  密码 (如注册时未设则留空)
                 </label>
-                <input
-                  type="password"
-                  placeholder="输入密码（若有）"
-                  value={loginPassword}
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:bg-white focus:border-indigo-500 focus:outline-none"
-                />
+                <div className="relative">
+                  <Lock className="w-3.5 h-3.5 text-[#86868b] absolute left-3 top-3" />
+                  <input
+                    type="password"
+                    placeholder="输入密码（未设密码请留空）"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 bg-[#f5f5f7] border border-black/[0.06] rounded-xl text-xs focus:bg-white focus:border-[#0071e3] focus:outline-none font-normal"
+                  />
+                </div>
               </div>
 
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setMode('switch')}
-                  className="px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50"
-                >
-                  返回账号列表
-                </button>
+              <div className="pt-2">
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-md transition-all active:scale-95"
+                  className="w-full py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
                 >
-                  登录进入
+                  <LogIn className="w-4 h-4" />
+                  <span>验证并登录</span>
                 </button>
               </div>
             </form>

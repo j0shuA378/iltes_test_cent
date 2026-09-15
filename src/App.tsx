@@ -189,29 +189,29 @@ export function App() {
             )}
           </main>
 
-          {/* Global Footer */}
-          <footer className="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-12">
-            <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          {/* Global Footer (Apple Minimalist Style) */}
+          <footer className="bg-[#f5f5f7] border-t border-black/[0.06] py-6 text-center text-xs text-[#86868b] mt-12">
+            <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2.5">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-400">IELTS Master Desktop Portal</span>
-                <span>· 全真学术类雅思机考与艾宾浩斯抗遗忘系统</span>
+                <span className="font-semibold text-[#1d1d1f]">IELTS Master Portal</span>
+                <span>· 雅思全真机考与艾宾浩斯抗遗忘记忆系统</span>
               </div>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleOpenDictionary()}
-                  className="text-teal-400 hover:text-teal-300 font-medium cursor-pointer"
+                  className="text-[#0071e3] hover:underline font-medium cursor-pointer"
                 >
-                  📖 即时词典 (Ctrl+D)
+                  即时学术词典 (Ctrl+D)
                 </button>
-                <span>·</span>
+                <span className="text-black/10">·</span>
                 <button
                   onClick={() => setIsSearchOpen(true)}
-                  className="text-amber-400 hover:text-amber-300 font-medium cursor-pointer"
+                  className="text-[#0071e3] hover:underline font-medium cursor-pointer"
                 >
-                  🔍 题库搜寻 (Ctrl+K)
+                  题库搜寻中心 (Ctrl+K)
                 </button>
-                <span>·</span>
-                <span className="text-slate-400">当前账号: <strong className="text-white">{activeUser.displayName}</strong></span>
+                <span className="text-black/10">·</span>
+                <span>当前学员: <strong className="text-[#1d1d1f] font-medium">{activeUser.displayName}</strong></span>
               </div>
             </div>
           </footer>

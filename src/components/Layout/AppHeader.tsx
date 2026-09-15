@@ -3,11 +3,7 @@ import {
   Search, 
   BookOpen, 
   Brain, 
-  Calendar, 
-  User, 
-  Users, 
-  Sparkles,
-  Command
+  Calendar
 } from 'lucide-react';
 import { UserAccount } from '../../types/auth';
 
@@ -31,78 +27,75 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   remainingDays = 178
 }) => {
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 select-none shadow-sm">
-      {/* Left: Quick Actions & Search */}
-      <div className="flex items-center gap-3">
-        {/* Search button with keyboard shortcut badge */}
+    <header className="h-14 bg-white/80 backdrop-blur-xl border-b border-black/[0.06] px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 select-none">
+      {/* Left: Quick Search & Dictionary Pill Triggers */}
+      <div className="flex items-center gap-2.5">
+        {/* Search button styled like Apple Spotlight / Search pill */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-500 hover:text-slate-800 transition-all text-xs font-medium border border-slate-200"
-          title="快速搜寻剑桥雅思题库 (快捷键: Ctrl+K)"
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#86868b] hover:text-[#1d1d1f] transition-all text-xs font-normal border border-black/[0.04] cursor-pointer"
+          title="搜寻剑桥雅思题库 (快捷键: Ctrl+K)"
         >
-          <Search className="w-3.5 h-3.5 text-slate-400" />
-          <span className="hidden sm:inline">搜寻最新剑18/19题库...</span>
+          <Search className="w-3.5 h-3.5 text-[#86868b]" />
+          <span className="hidden sm:inline">搜寻题库、精听与真题...</span>
           <span className="sm:hidden">搜题库</span>
-          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono bg-white border border-slate-200 rounded text-slate-400 shadow-2xs">
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono bg-white border border-black/[0.06] rounded-md text-[#86868b] shadow-2xs">
             Ctrl+K
           </kbd>
         </button>
 
-        {/* Dictionary quick open */}
+        {/* Dictionary quick open pill button */}
         <button
           onClick={onOpenDictionary}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100/80 text-teal-800 text-xs font-semibold border border-teal-200/80 transition-all active:scale-95"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0071e3]/10 hover:bg-[#0071e3]/15 text-[#0071e3] text-xs font-medium border border-[#0071e3]/15 transition-all active:scale-98 cursor-pointer"
           title="打开即时学术词典 (快捷键: Ctrl+D)"
         >
-          <BookOpen className="w-3.5 h-3.5 text-teal-600" />
+          <BookOpen className="w-3.5 h-3.5 text-[#0071e3]" />
           <span>即时词典</span>
         </button>
       </div>
 
-      {/* Right: Ebbinghaus Due Alert, Countdown, and User Profile */}
-      <div className="flex items-center gap-3">
+      {/* Right: Ebbinghaus Review Due Pill, Countdown & User Account */}
+      <div className="flex items-center gap-2.5">
         {/* Ebbinghaus Review Due Capsule */}
         <button
           onClick={() => onNavigateTab('vocabulary')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+          className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
             dueVocabCount > 0 
-              ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 shadow-sm animate-pulse' 
-              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+              ? 'bg-[#ff9500]/10 text-[#ff9500] border border-[#ff9500]/25 hover:bg-[#ff9500]/15' 
+              : 'bg-black/[0.03] text-[#86868b] border border-black/[0.04] hover:bg-black/[0.05]'
           }`}
-          title="根据艾宾浩斯遗忘曲线，今日需要复习的词汇"
+          title="根据艾宾浩斯曲线，今日需要复习的词汇"
         >
-          <Brain className={`w-3.5 h-3.5 ${dueVocabCount > 0 ? 'text-amber-600' : 'text-slate-400'}`} />
-          <span className="hidden md:inline">艾宾浩斯抗遗忘:</span>
+          <Brain className={`w-3.5 h-3.5 ${dueVocabCount > 0 ? 'text-[#ff9500]' : 'text-[#86868b]'}`} />
+          <span className="hidden md:inline">抗遗忘:</span>
           {dueVocabCount > 0 ? (
-            <span className="font-black text-amber-700">{dueVocabCount} 词待复习</span>
+            <span className="font-semibold">{dueVocabCount} 词待复核</span>
           ) : (
-            <span className="text-slate-500 font-medium">今日已清空 ✓</span>
+            <span className="text-[#86868b]">今日已清空 ✓</span>
           )}
         </button>
 
-        {/* Countdown badge */}
-        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 text-slate-700 text-xs font-medium border border-slate-200">
-          <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-          <span>距考期 <strong className="text-slate-900">{remainingDays}</strong> 天</span>
+        {/* Countdown capsule */}
+        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.03] text-[#86868b] text-xs font-normal border border-black/[0.04]">
+          <Calendar className="w-3 h-3 text-[#86868b]" />
+          <span>距考期 <strong className="text-[#1d1d1f] font-semibold">{remainingDays}</strong> 天</span>
         </div>
 
-        <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
+        <div className="h-4 w-px bg-black/[0.08] hidden sm:block"></div>
 
         {/* User Account Capsule */}
         <button
           onClick={onOpenAuthModal}
-          className="flex items-center gap-2 pl-2 pr-3 py-1 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 transition-all group"
-          title="点击切换账号或注册新用户"
+          className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full bg-black/[0.03] hover:bg-black/[0.06] border border-black/[0.04] transition-all group cursor-pointer"
+          title="点击切换账号或注册新学员"
         >
-          <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 shadow-xs flex items-center justify-center text-sm group-hover:scale-105 transition-transform">
+          <div className="w-6 h-6 rounded-full bg-white border border-black/[0.08] shadow-2xs flex items-center justify-center text-xs group-hover:scale-105 transition-transform">
             {activeUser.avatar}
           </div>
-          <div className="text-left hidden sm:block">
-            <div className="font-bold text-xs text-slate-800 group-hover:text-indigo-600 transition-colors leading-none truncate max-w-[100px]">
+          <div className="text-left hidden sm:block leading-none">
+            <div className="font-medium text-xs text-[#1d1d1f] group-hover:text-[#0071e3] transition-colors truncate max-w-[90px]">
               {activeUser.displayName}
-            </div>
-            <div className="text-[10px] text-slate-400 mt-0.5 leading-none">
-              Band {activeUser.currentBand.toFixed(1)} ➔ {activeUser.targetBand.toFixed(1)}
             </div>
           </div>
         </button>
