@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { UserProfile, TestResult } from '../../types/ielts';
 import { PersonalStudyPlanCard } from './PersonalStudyPlanCard';
+import { EbbinghausWidget } from './EbbinghausWidget';
 import { getStudyPlanConfig } from '../../services/storage';
 
 interface DashboardViewProps {
@@ -97,6 +98,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     <div className="space-y-6">
       {/* 1. Personalized Adaptation Study Plan (Hero + 4-Phase Roadmap + Phase Quota Checklist) */}
       <PersonalStudyPlanCard onNavigate={onNavigate} />
+
+      {/* 2. Ebbinghaus Spaced Repetition Memory Engine */}
+      <EbbinghausWidget onNavigate={onNavigate} />
 
       {/* 4 Skills Target Progress Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
