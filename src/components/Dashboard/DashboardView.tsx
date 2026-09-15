@@ -47,16 +47,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     totalDays: 178
   };
 
-  // 4 Skills configured for 4.0 -> 7.0 Leap
+  // 4 Skills configured for 4.0 -> 7.0 Leap (Monochrome Apple Minimalist)
   const skills = [
     { 
       name: '听力 Listening', 
       current: results.filter(r => r.module === 'listening')[0]?.band ?? planConfig.currentBand, 
       target: planConfig.targetListening, 
       icon: Headphones, 
-      color: 'text-[#0071e3]', 
-      bg: 'bg-[#0071e3]/10', 
-      barColor: 'bg-[#0071e3]',
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
       note: '核心拉分项 · 目标 32/40 题'
     },
     { 
@@ -64,9 +64,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       current: results.filter(r => r.module === 'reading')[0]?.band ?? planConfig.currentBand, 
       target: planConfig.targetReading, 
       icon: BookOpen, 
-      color: 'text-[#34c759]', 
-      bg: 'bg-[#34c759]/10', 
-      barColor: 'bg-[#34c759]',
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
       note: '核心拉分项 · 目标 33/40 题'
     },
     { 
@@ -74,9 +74,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       current: planConfig.currentBand, 
       target: planConfig.targetWriting, 
       icon: PenTool, 
-      color: 'text-[#ff9500]', 
-      bg: 'bg-[#ff9500]/10', 
-      barColor: 'bg-[#ff9500]',
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
       note: '稳健输出项 · 论证严密不跑题'
     },
     { 
@@ -84,9 +84,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       current: planConfig.currentBand, 
       target: planConfig.targetSpeaking, 
       icon: Mic, 
-      color: 'text-[#af52de]', 
-      bg: 'bg-[#af52de]/10', 
-      barColor: 'bg-[#af52de]',
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
       note: '流畅沟通项 · 万能故事串题'
     },
   ];
@@ -95,26 +95,26 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     <div className="space-y-6">
       {/* 0. Diagnostic Placement Test Hero Banner (Appears when activeUser.currentBand === 0) */}
       {(!activeUser || activeUser.currentBand === 0) && (
-        <div className="bg-gradient-to-r from-[#0071e3]/10 via-[#0071e3]/5 to-[#5856d6]/10 border border-[#0071e3]/20 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="bg-white border border-black/[0.06] rounded-3xl p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center shadow-md shrink-0">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-11 h-11 rounded-2xl bg-[#1d1d1f] text-white flex items-center justify-center shadow-xs shrink-0">
+              <Sparkles className="w-5 h-5 text-white/90" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-base text-[#1d1d1f]">新学员初始水平待定级 (Band 0.0)</h3>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3]/15 text-[#0071e3] text-[11px] font-semibold">
+                <span className="px-2.5 py-0.5 rounded-full bg-black/[0.04] text-[#1d1d1f] text-[11px] font-medium border border-black/[0.04]">
                   推荐完成
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-[#86868b] mt-0.5">
-                只需 3 分钟（6 道精选核心题），快速摸底学术英语基础，即可生成针对你个人的 178 天提分路线图。
+                只需 3 分钟（6 道精选核心题），快速摸底学术英语基础，生成专属个人的 178 天提分路线图。
               </p>
             </div>
           </div>
           <button
             onClick={onOpenPlacementTest}
-            className="px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-medium shadow-sm hover:shadow transition-all shrink-0 cursor-pointer active:scale-98 flex items-center gap-1.5"
+            className="px-5 py-2.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs sm:text-sm font-medium shadow-xs hover:shadow transition-all shrink-0 cursor-pointer active:scale-98 flex items-center gap-1.5"
           >
             <span>开始 3 分钟简易测验</span>
             <ArrowRight className="w-4 h-4" />
@@ -172,7 +172,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
             <h2 className="text-base font-semibold text-[#1d1d1f] mb-4 flex items-center gap-2">
-              <Flame className="w-4 h-4 text-[#ff9500]" />
+              <Flame className="w-4 h-4 text-[#86868b]" />
               快速开启备考实战
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -181,8 +181,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 className="group p-4 rounded-2xl bg-[#f5f5f7] hover:bg-[#e8e8ed]/80 border border-black/[0.02] transition-all cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-[#34c759] font-medium text-sm">
-                    <BookOpen className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-[#1d1d1f] font-medium text-sm">
+                    <BookOpen className="w-4 h-4 text-[#86868b]" />
                     <span>学术类阅读机考</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 transition-transform" />
@@ -195,8 +195,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 className="group p-4 rounded-2xl bg-[#f5f5f7] hover:bg-[#e8e8ed]/80 border border-black/[0.02] transition-all cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-[#0071e3] font-medium text-sm">
-                    <Headphones className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-[#1d1d1f] font-medium text-sm">
+                    <Headphones className="w-4 h-4 text-[#86868b]" />
                     <span>听力真题与精听</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 transition-transform" />
@@ -209,8 +209,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 className="group p-4 rounded-2xl bg-[#f5f5f7] hover:bg-[#e8e8ed]/80 border border-black/[0.02] transition-all cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-[#ff9500] font-medium text-sm">
-                    <PenTool className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-[#1d1d1f] font-medium text-sm">
+                    <PenTool className="w-4 h-4 text-[#86868b]" />
                     <span>写作限时与智能批改</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 transition-transform" />
@@ -223,8 +223,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 className="group p-4 rounded-2xl bg-[#f5f5f7] hover:bg-[#e8e8ed]/80 border border-black/[0.02] transition-all cursor-pointer"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-[#af52de] font-medium text-sm">
-                    <Mic className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-[#1d1d1f] font-medium text-sm">
+                    <Mic className="w-4 h-4 text-[#86868b]" />
                     <span>口语仿真考场</span>
                   </div>
                   <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 transition-transform" />
@@ -241,10 +241,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="bg-white rounded-3xl p-6 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-[#1d1d1f] text-sm flex items-center gap-1.5">
-                <Award className="w-4 h-4 text-[#ff9500]" />
+                <Award className="w-4 h-4 text-[#86868b]" />
                 错题本与弱项突破
               </span>
-              <span className="px-2.5 py-0.5 bg-[#ff9500]/10 text-[#ff9500] font-medium text-xs rounded-full">
+              <span className="px-2.5 py-0.5 bg-black/[0.04] text-[#1d1d1f] font-medium text-xs rounded-full">
                 {mistakesCount} 题待温习
               </span>
             </div>
@@ -264,10 +264,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="bg-white rounded-3xl p-6 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-[#1d1d1f] text-sm flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-[#0071e3]" />
+                <Sparkles className="w-4 h-4 text-[#86868b]" />
                 同义替换与核心词库
               </span>
-              <span className="px-2.5 py-0.5 bg-[#0071e3]/10 text-[#0071e3] font-medium text-xs rounded-full">
+              <span className="px-2.5 py-0.5 bg-black/[0.04] text-[#1d1d1f] font-medium text-xs rounded-full">
                 100+ 核心组
               </span>
             </div>
@@ -276,7 +276,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </p>
             <button
               onClick={() => onNavigate('vocabulary')}
-              className="w-full py-2 bg-[#0071e3] hover:bg-[#0077ed] text-white font-medium text-xs rounded-full shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-2 bg-[#1d1d1f] hover:bg-black text-white font-medium text-xs rounded-full shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>开始刷词闪卡</span>
               <ArrowRight className="w-3.5 h-3.5" />

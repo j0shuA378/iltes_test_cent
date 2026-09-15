@@ -148,7 +148,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
                 欢迎开启雅思备考之旅
               </h1>
               <p className="text-xs sm:text-sm text-[#86868b] leading-relaxed">
-                所有新学员默认初始分为 <span className="font-semibold text-[#ff9500]">Band 0.0</span>。通过 6 道涵盖核心词汇、语法逻辑、长难句与真题题型的简易摸底题，精准测定您的起点基线。
+                所有新学员默认初始分为 <span className="font-semibold text-[#1d1d1f]">Band 0.0</span>。通过 6 道涵盖核心词汇、语法逻辑、长难句与真题题型的简易摸底题，精准测定您的起点基线。
               </p>
             </div>
 
@@ -328,10 +328,10 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
                   经测定初始成绩 (Baseline Band)
                 </span>
                 <div className="flex items-baseline justify-center sm:justify-start gap-2">
-                  <span className="text-4xl sm:text-5xl font-semibold text-[#1d1d1f] tracking-tight">
+                  <span className="text-4xl sm:text-5xl font-semibold text-[#1d1d1f] tracking-tight tabular-nums">
                     Band {evaluation.testedBand.toFixed(1)}
                   </span>
-                  <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#34c759]/10 text-[#34c759]">
+                  <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-black/[0.05] text-[#1d1d1f]">
                     答对 {rawScore}/6 题
                   </span>
                 </div>
@@ -344,11 +344,11 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
 
               <div className="space-y-1">
                 <div className="text-xs text-[#86868b]">冲刺目标分数</div>
-                <div className="text-2xl font-semibold text-[#0071e3]">
+                <div className="text-2xl font-semibold text-[#1d1d1f] tabular-nums">
                   Band {activeUser.targetBand.toFixed(1)}
                 </div>
-                <div className="text-[11px] text-[#ff9500] font-medium">
-                  提分空间：+{((activeUser.targetBand - evaluation.testedBand)).toFixed(1)} 分
+                <div className="text-xs text-[#86868b] font-normal">
+                  提分空间：<strong className="text-[#1d1d1f] font-medium">+{((activeUser.targetBand - evaluation.testedBand)).toFixed(1)}</strong> 分
                 </div>
               </div>
             </div>

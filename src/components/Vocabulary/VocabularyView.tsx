@@ -220,15 +220,15 @@ export const VocabularyView: React.FC = () => {
               }}
               className={`p-4 rounded-2xl border transition-all text-left cursor-pointer ${
                 selectedCategory === 'DueReview'
-                  ? 'bg-white border-[#ff9500] ring-2 ring-[#ff9500]/20 shadow-sm'
+                  ? 'bg-white border-[#1d1d1f] shadow-sm'
                   : 'bg-white border-black/[0.04] hover:bg-[#f5f5f7]'
               }`}
             >
               <div className="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
                 <span>今日待强化</span>
-                <Clock className="w-3.5 h-3.5 text-[#ff9500]" />
+                <Clock className="w-3.5 h-3.5 text-[#86868b]" />
               </div>
-              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#ff9500]">
+              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
                 {ebStats.dueTodayCount} <span className="text-xs font-normal text-[#86868b]">词到期</span>
               </div>
             </button>
@@ -236,9 +236,9 @@ export const VocabularyView: React.FC = () => {
             <div className="bg-white p-4 rounded-2xl border border-black/[0.04] text-left">
               <div className="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
                 <span>当前记忆留存率</span>
-                <TrendingUp className="w-3.5 h-3.5 text-[#34c759]" />
+                <TrendingUp className="w-3.5 h-3.5 text-[#86868b]" />
               </div>
-              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#34c759]">
+              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
                 {ebStats.averageRetention}%
               </div>
             </div>
@@ -246,9 +246,9 @@ export const VocabularyView: React.FC = () => {
             <div className="bg-white p-4 rounded-2xl border border-black/[0.04] text-left">
               <div className="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
                 <span>已达到永久掌握</span>
-                <Award className="w-3.5 h-3.5 text-[#0071e3]" />
+                <Award className="w-3.5 h-3.5 text-[#86868b]" />
               </div>
-              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#0071e3]">
+              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
                 {ebStats.masteredCount} <span className="text-xs font-normal text-[#86868b]">词牢固</span>
               </div>
             </div>
@@ -256,9 +256,9 @@ export const VocabularyView: React.FC = () => {
             <div className="bg-white p-4 rounded-2xl border border-black/[0.04] text-left">
               <div className="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
                 <span>总词汇量收录</span>
-                <BookMarked className="w-3.5 h-3.5 text-[#af52de]" />
+                <BookMarked className="w-3.5 h-3.5 text-[#86868b]" />
               </div>
-              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#af52de]">
+              <div className="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
                 {CORE_VOCABULARY.length} <span className="text-xs font-normal text-[#86868b]">核心词</span>
               </div>
             </div>

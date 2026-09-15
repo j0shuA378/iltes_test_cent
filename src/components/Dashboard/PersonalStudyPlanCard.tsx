@@ -73,8 +73,8 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
         <div className="space-y-6">
           {/* Top Tag & Settings Button */}
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ff9500]/10 border border-[#ff9500]/20 text-[#ff9500] text-xs font-medium">
-              <Sparkles className="w-3.5 h-3.5 text-[#ff9500]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.04] border border-black/[0.06] text-[#1d1d1f] text-xs font-medium">
+              <Sparkles className="w-3.5 h-3.5 text-[#86868b]" />
               <span>个人专属适配方案 · 178天进阶跃迁</span>
             </div>
 
@@ -82,9 +82,9 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
               {config.currentBand === 0 && onOpenPlacementTest && (
                 <button
                   onClick={onOpenPlacementTest}
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-98"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-sm transition-all cursor-pointer active:scale-98"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3.5 h-3.5 text-white/80" />
                   <span>参加定级测验</span>
                 </button>
               )}
@@ -103,9 +103,9 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="space-y-2">
               <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
-                当前水平 <span className="text-[#ff9500]">{config.currentBand === 0 ? 'Band 0.0 (待定级)' : `Band ${config.currentBand.toFixed(1)}`}</span>
+                当前水平 <span className="font-semibold text-[#1d1d1f]">{config.currentBand === 0 ? 'Band 0.0 (待定级)' : `Band ${config.currentBand.toFixed(1)}`}</span>
                 <span className="mx-2.5 text-[#86868b] font-normal">➔</span>
-                目标总分 <span className="text-[#34c759]">Band {config.targetBand.toFixed(1)}</span>
+                目标总分 <span className="font-semibold text-[#1d1d1f]">Band {config.targetBand.toFixed(1)}</span>
               </h1>
               <p className="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
                 针对 4.0 基础（词汇量较小、长难句结构薄弱、精听连读弱）定制。178天 4 阶段平稳爬坡，四科目标分解：
@@ -116,22 +116,22 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
               </p>
             </div>
 
-            {/* Key Metrics Counter (Apple Inset Style) */}
+            {/* Key Metrics Counter (Apple Clean Editorial Style) */}
             <div className="flex items-center gap-3 sm:gap-4 bg-[#f5f5f7] p-3 sm:p-4 rounded-2xl border border-black/[0.02] shrink-0">
               <div className="text-center px-2 sm:px-3">
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#ff9500]">{config.totalDays}</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{config.totalDays}</div>
                 <div className="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">备考周期 (天)</div>
               </div>
               <div className="h-8 w-px bg-black/[0.08]"></div>
               <div className="text-center px-2 sm:px-3">
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0071e3]">
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
                   {config.currentBand === 0 ? '待测定' : `+${(config.targetBand - config.currentBand).toFixed(1)}`}
                 </div>
                 <div className="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">净提分幅度</div>
               </div>
               <div className="h-8 w-px bg-black/[0.08]"></div>
               <div className="text-center px-2 sm:px-3">
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#34c759]">{config.dailyHours}h</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{config.dailyHours}h</div>
                 <div className="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">每日投入</div>
               </div>
             </div>
@@ -190,10 +190,10 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
                 }`}
               >
                 {isCurrent && (
-                  <span className={`absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                    isActive ? 'bg-[#ff9500] text-black' : 'bg-[#ff9500]/15 text-[#ff9500]'
+                  <span className={`absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                    isActive ? 'bg-white/20 text-white' : 'bg-black/[0.05] text-[#1d1d1f]'
                   }`}>
-                    当前进行
+                    进行中
                   </span>
                 )}
                 <div className={`text-[11px] font-medium uppercase tracking-wider ${isActive ? 'text-slate-300' : 'text-[#86868b]'}`}>
@@ -203,7 +203,7 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
                   {phase.name.split('·')[0]}
                 </div>
                 <div className={`text-xs font-medium mt-2 inline-block px-2.5 py-0.5 rounded-full ${
-                  isActive ? 'bg-white/20 text-white' : 'bg-white text-[#0071e3] border border-black/[0.06]'
+                  isActive ? 'bg-white/20 text-white' : 'bg-white text-[#1d1d1f] border border-black/[0.06]'
                 }`}>
                   {phase.targetBand}
                 </div>
@@ -216,7 +216,7 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
         <div className="bg-[#fbfbfd] rounded-2xl p-5 sm:p-6 border border-black/[0.04] space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <span className="text-xs font-semibold text-[#0071e3] uppercase tracking-wide">
+              <span className="text-xs font-medium text-[#86868b] uppercase tracking-wide">
                 Phase {currentPhase.phaseNumber} 规划细节
               </span>
               <h3 className="text-lg font-semibold text-[#1d1d1f] mt-0.5">
@@ -226,7 +226,7 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
                 {currentPhase.subtitle}
               </p>
             </div>
-            <div className="px-3 py-1 rounded-full bg-[#34c759]/10 text-[#34c759] font-medium text-xs shrink-0 self-start sm:self-auto border border-[#34c759]/20">
+            <div className="px-3 py-1 rounded-full bg-black/[0.04] text-[#1d1d1f] font-medium text-xs shrink-0 self-start sm:self-auto border border-black/[0.06]">
               🎯 目标：{currentPhase.targetBand}
             </div>
           </div>
@@ -234,8 +234,8 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
           {/* 4 Skills Strategy Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
             <div className="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-              <div className="flex items-center gap-2 font-medium text-xs text-[#0071e3]">
-                <Headphones className="w-4 h-4 text-[#0071e3]" />
+              <div className="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
+                <Headphones className="w-4 h-4 text-[#86868b]" />
                 <span>听力精听攻坚</span>
               </div>
               <p className="text-xs text-[#6e6e73] leading-relaxed">
@@ -244,9 +244,9 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-              <div className="flex items-center gap-2 font-medium text-xs text-[#34c759]">
-                <BookOpen className="w-4 h-4 text-[#34c759]" />
-                <span>阅读精读定位</span>
+              <div className="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
+                <BookOpen className="w-4 h-4 text-[#86868b]" />
+                <span>阅读结构化定位</span>
               </div>
               <p className="text-xs text-[#6e6e73] leading-relaxed">
                 {currentPhase.readingStrategy}
@@ -254,8 +254,8 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-              <div className="flex items-center gap-2 font-medium text-xs text-[#ff9500]">
-                <PenTool className="w-4 h-4 text-[#ff9500]" />
+              <div className="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
+                <PenTool className="w-4 h-4 text-[#86868b]" />
                 <span>写作结构规范</span>
               </div>
               <p className="text-xs text-[#6e6e73] leading-relaxed">
@@ -264,8 +264,8 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
             </div>
 
             <div className="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-              <div className="flex items-center gap-2 font-medium text-xs text-[#af52de]">
-                <Mic className="w-4 h-4 text-[#af52de]" />
+              <div className="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
+                <Mic className="w-4 h-4 text-[#86868b]" />
                 <span>口语流利串题</span>
               </div>
               <p className="text-xs text-[#6e6e73] leading-relaxed">

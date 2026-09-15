@@ -231,7 +231,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         <div className="text-xs text-[#86868b] mt-0.5 flex items-center gap-2 font-normal">
                           <span>{acc.currentBand === 0 ? '待定级 (Band 0.0)' : `基础 Band ${acc.currentBand.toFixed(1)}`}</span>
                           <span>➔</span>
-                          <span className="text-[#34c759] font-medium">目标 Band {acc.targetBand.toFixed(1)}</span>
+                          <span className="text-[#1d1d1f] font-medium">目标 Band {acc.targetBand.toFixed(1)}</span>
                           <span className="text-[#86868b]">· 考期 {acc.examDate}</span>
                         </div>
                       </div>
@@ -330,7 +330,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <label className="block text-[11px] font-medium text-[#86868b] mb-1">
                     初始成绩起点
                   </label>
-                  <div className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold text-[#ff9500] flex items-center justify-between shadow-2xs">
+                  <div className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold text-[#1d1d1f] flex items-center justify-between shadow-2xs">
                     <span>Band 0.0</span>
                     <span className="text-[10px] font-normal text-[#86868b]">注册后测验定级</span>
                   </div>
@@ -338,12 +338,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
                 <div>
                   <label className="block text-[11px] font-medium text-[#86868b] mb-1">
-                    目标目标分
+                    冲刺目标分
                   </label>
                   <select
                     value={regTargetBand}
                     onChange={(e) => setRegTargetBand(parseFloat(e.target.value))}
-                    className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold focus:outline-none text-[#34c759]"
+                    className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold focus:outline-none text-[#1d1d1f]"
                   >
                     <option value={6.0}>Band 6.0</option>
                     <option value={6.5}>Band 6.5</option>

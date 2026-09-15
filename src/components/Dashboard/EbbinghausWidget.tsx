@@ -116,9 +116,9 @@ export const EbbinghausWidget: React.FC<EbbinghausWidgetProps> = ({ onNavigate }
           <div className="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
             <div className="flex items-center justify-between text-xs text-[#86868b] mb-1">
               <span>今日临界待复习</span>
-              <Clock className="w-3.5 h-3.5 text-[#ff9500]" />
+              <Clock className="w-3.5 h-3.5 text-[#86868b]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#ff9500] flex items-baseline gap-1">
+            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
               <span>{stats.dueTodayCount}</span>
               <span className="text-xs font-normal text-[#86868b]">项到期</span>
             </div>
@@ -130,9 +130,9 @@ export const EbbinghausWidget: React.FC<EbbinghausWidgetProps> = ({ onNavigate }
           <div className="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
             <div className="flex items-center justify-between text-xs text-[#86868b] mb-1">
               <span>综合留存率</span>
-              <TrendingUp className="w-3.5 h-3.5 text-[#34c759]" />
+              <TrendingUp className="w-3.5 h-3.5 text-[#86868b]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#34c759] flex items-baseline gap-1">
+            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
               <span>{stats.averageRetention}%</span>
               <span className="text-xs font-normal text-[#86868b]">稳定度</span>
             </div>
@@ -144,9 +144,9 @@ export const EbbinghausWidget: React.FC<EbbinghausWidgetProps> = ({ onNavigate }
           <div className="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
             <div className="flex items-center justify-between text-xs text-[#86868b] mb-1">
               <span>Stage 6 永久记忆</span>
-              <ShieldCheck className="w-3.5 h-3.5 text-[#0071e3]" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#86868b]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0071e3] flex items-baseline gap-1">
+            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
               <span>{stats.masteredCount}</span>
               <span className="text-xs font-normal text-[#86868b]">项牢固</span>
             </div>
@@ -158,9 +158,9 @@ export const EbbinghausWidget: React.FC<EbbinghausWidgetProps> = ({ onNavigate }
           <div className="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
             <div className="flex items-center justify-between text-xs text-[#86868b] mb-1">
               <span>记忆网络收录</span>
-              <Sparkles className="w-3.5 h-3.5 text-[#af52de]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#86868b]" />
             </div>
-            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#af52de] flex items-baseline gap-1">
+            <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
               <span>{stats.totalItems}</span>
               <span className="text-xs font-normal text-[#86868b]">总跟踪</span>
             </div>

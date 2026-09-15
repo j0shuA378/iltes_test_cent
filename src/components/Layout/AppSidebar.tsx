@@ -136,14 +136,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                 <div className="font-medium text-xs text-[#1d1d1f] truncate group-hover:text-[#0071e3] transition-colors">
                   {activeUser.displayName}
                 </div>
-                <div className="text-[10px] text-[#86868b] flex items-center gap-1 mt-0.5 font-normal">
+                <div className="text-[10px] text-[#86868b] flex items-center gap-1.5 mt-0.5 font-normal">
                   {activeUser.currentBand === 0 ? (
-                    <span className="text-[#ff9500] font-medium bg-[#ff9500]/10 px-1 py-0.5 rounded text-[9px]">待定级</span>
+                    <span className="text-[#86868b] font-medium bg-black/[0.04] px-1.5 py-0.5 rounded text-[10px]">待定级</span>
                   ) : (
-                    <span className="text-[#ff9500] font-medium">B{activeUser.currentBand.toFixed(1)}</span>
+                    <span className="text-[#1d1d1f] font-medium">B{activeUser.currentBand.toFixed(1)}</span>
                   )}
-                  <span>➔</span>
-                  <span className="text-[#34c759] font-medium">B{activeUser.targetBand.toFixed(1)}</span>
+                  <span className="text-black/30">➔</span>
+                  <span className="text-[#1d1d1f] font-medium">B{activeUser.targetBand.toFixed(1)}</span>
                 </div>
               </div>
             )}
