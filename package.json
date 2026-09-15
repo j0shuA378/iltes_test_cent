@@ -10,20 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lucide/vue": "^1.46.0",
+    "@vitejs/plugin-vue": "^6.0.9",
     "autoprefixer": "^10.6.0",
     "canvas-confetti": "^1.9.4",
-    "lucide-react": "^1.45.0",
+    "lucide-vue-next": "^1.0.0",
     "postcss": "^8.5.28",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "vue": "^3.5.42"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.81.0",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"

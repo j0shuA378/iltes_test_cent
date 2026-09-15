@@ -14,7 +14,7 @@
     "verbatimModuleSyntax": false,
     "moduleDetection": "force",
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
 
     /* Linting */
     "noUnusedLocals": false,

@@ -1,10 +1,10 @@
-import react from '@vitejs/plugin-react'
+import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
-  plugins: [react()],
+  plugins: [vue()],
   server: {
     proxy: {
       '/api/dict': {
