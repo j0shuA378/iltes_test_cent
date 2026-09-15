@@ -15,6 +15,7 @@ import SpeakingView from './components/Speaking/SpeakingView.vue';
 import VocabularyView from './components/Vocabulary/VocabularyView.vue';
 import MistakesView from './components/Mistakes/MistakesView.vue';
 import SettingsView from './components/Settings/SettingsView.vue';
+import AdminView from './components/Admin/AdminView.vue';
 import { getUserProfile, getTestResults, getMistakes } from './services/storage';
 import { getActiveUser } from './services/authService';
 import { getDueEbbinghausItems } from './services/ebbinghausService';
@@ -27,6 +28,8 @@ const profile = ref<UserProfile>(getUserProfile());
 const results = ref<TestResult[]>(getTestResults());
 const mistakesCount = ref<number>(0);
 const dueVocabCount = ref<number>(0);
+const isAdminMode = ref<boolean>(false);
+const isMobileMenuOpen = ref<boolean>(false);
 
 // Modals
 const isAuthModalOpen = ref(false);
@@ -60,6 +63,31 @@ const handleEbbinghausChange = () => {
   dueVocabCount.value = getDueEbbinghausItems('vocab').length;
 };
 
+const checkAdminRoute = () => {
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  return path.endsWith('/admin') || path.endsWith('/admin/') || hash === '#/admin' || hash === '#admin';
+};
+
+const handleHashOrPopState = () => {
+  isAdminMode.value = checkAdminRoute();
+};
+
+const navigateToAdmin = () => {
+  isAdminMode.value = true;
+  isMobileMenuOpen.value = false;
+  if (!window.location.hash.includes('admin')) {
+    window.location.hash = '#/admin';
+  }
+};
+
+const handleReturnToPortal = () => {
+  isAdminMode.value = false;
+  if (window.location.hash.includes('admin')) {
+    history.replaceState(null, '', window.location.pathname);
+  }
+};
+
 const handleKeyDown = (e: KeyboardEvent) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();
@@ -73,15 +101,20 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
 onMounted(() => {
   refreshUserData();
+  isAdminMode.value = checkAdminRoute();
   window.addEventListener('ielts_auth_changed', handleAuthChange);
   window.addEventListener('ielts_ebbinghaus_updated', handleEbbinghausChange);
   window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('hashchange', handleHashOrPopState);
+  window.addEventListener('popstate', handleHashOrPopState);
 });
 
 onUnmounted(() => {
   window.removeEventListener('ielts_auth_changed', handleAuthChange);
   window.removeEventListener('ielts_ebbinghaus_updated', handleEbbinghausChange);
   window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('hashchange', handleHashOrPopState);
+  window.removeEventListener('popstate', handleHashOrPopState);
 });
 
 const handleSelectTestFromSearch = (module: string, testId: string) => {
@@ -105,15 +138,25 @@ const remainingDays = computed(() => {
 </script>
 
 <template>
-  <div class="flex h-screen w-screen overflow-hidden bg-[#f5f5f7] font-sans selection:bg-[#1d1d1f] selection:text-white">
+  <!-- ADMIN MANAGEMENT PORTAL (/admin) -->
+  <AdminView 
+    v-if="isAdminMode" 
+    @returnToPortal="handleReturnToPortal" 
+  />
+
+  <!-- STUDENT EXAM PORTAL (DEFAULT) -->
+  <div v-else class="flex h-screen w-screen overflow-hidden bg-[#f5f5f7] font-sans selection:bg-[#1d1d1f] selection:text-white relative">
     <!-- Left Application Portal Sidebar -->
     <AppSidebar 
       :currentTab="currentTab"
       :activeUser="activeUser"
       :dueVocabCount="dueVocabCount"
       :mistakesCount="mistakesCount"
+      :isMobileOpen="isMobileMenuOpen"
       @selectTab="currentTab = $event"
       @openAuthModal="isAuthModalOpen = true"
+      @openAdmin="navigateToAdmin"
+      @closeMobile="isMobileMenuOpen = false"
     />
 
     <!-- Main Right Application Window -->
@@ -128,6 +171,8 @@ const remainingDays = computed(() => {
         @openAuthModal="isAuthModalOpen = true"
         @navigateTab="currentTab = $event"
         @openPlacementTest="isPlacementOpen = true"
+        @toggleMobileMenu="isMobileMenuOpen = !isMobileMenuOpen"
+        @openAdmin="navigateToAdmin"
       />
 
       <!-- Scrollable Workspace Content View -->
@@ -188,6 +233,7 @@ const remainingDays = computed(() => {
               profile = updated;
               refreshUserData();
             }" 
+            @openAdmin="navigateToAdmin"
           />
         </main>
 
@@ -211,6 +257,13 @@ const remainingDays = computed(() => {
                 class="text-[#0071e3] hover:underline font-medium cursor-pointer"
               >
                 题库搜寻中心 (Ctrl+K)
+              </button>
+              <span class="text-black/10">·</span>
+              <button
+                @click="navigateToAdmin()"
+                class="text-[#86868b] hover:text-[#1d1d1f] hover:underline font-medium cursor-pointer"
+              >
+                管理控制台 (/admin)
               </button>
               <span class="text-black/10">·</span>
               <span>当前学员: <strong class="text-[#1d1d1f] font-medium">{{ activeUser.displayName }}</strong></span>

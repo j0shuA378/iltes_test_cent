@@ -10,7 +10,9 @@ import {
   Settings, 
   ChevronLeft, 
   ChevronRight, 
-  Brain
+  Brain,
+  ShieldCheck,
+  X
 } from 'lucide-vue-next';
 import type { UserAccount } from '../../types/auth';
 
@@ -19,14 +21,18 @@ const props = withDefaults(defineProps<{
   activeUser: UserAccount;
   dueVocabCount?: number;
   mistakesCount?: number;
+  isMobileOpen?: boolean;
 }>(), {
   dueVocabCount: 0,
-  mistakesCount: 0
+  mistakesCount: 0,
+  isMobileOpen: false
 });
 
 const emit = defineEmits<{
   (e: 'selectTab', tab: string): void;
   (e: 'openAuthModal'): void;
+  (e: 'openAdmin'): void;
+  (e: 'closeMobile'): void;
 }>();
 
 const isCollapsed = ref<boolean>(() => {
@@ -95,16 +101,25 @@ const getItemBadge = (badgeType: string | null) => {
 </script>
 
 <template>
+  <!-- Mobile Backdrop Overlay -->
+  <div 
+    v-if="isMobileOpen" 
+    class="fixed inset-0 bg-black/30 backdrop-blur-xs z-35 sm:hidden animate-fadeIn" 
+    @click="emit('closeMobile')" 
+  />
+
   <aside 
     :class="[
-      'bg-[#fbfbfd]/90 backdrop-blur-xl border-r border-black/[0.06] text-[#1d1d1f] flex flex-col transition-all duration-300 select-none z-30 shrink-0',
+      'bg-[#fbfbfd]/95 sm:bg-[#fbfbfd]/90 backdrop-blur-xl border-r border-black/[0.06] text-[#1d1d1f] flex flex-col transition-all duration-300 select-none z-40 sm:z-30 shrink-0',
+      'fixed sm:static inset-y-0 left-0',
+      isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full sm:translate-x-0',
       isCollapsed ? 'w-[72px]' : 'w-60'
     ]"
   >
     <!-- App Branding Header -->
     <div class="h-14 flex items-center justify-between px-4 border-b border-black/[0.04] shrink-0">
       <div 
-        @click="emit('selectTab', 'dashboard')"
+        @click="emit('selectTab', 'dashboard'); emit('closeMobile');"
         class="flex items-center gap-3 cursor-pointer overflow-hidden group"
       >
         <!-- Apple Squircle Icon -->
@@ -120,6 +135,15 @@ const getItemBadge = (badgeType: string | null) => {
           </div>
         </div>
       </div>
+
+      <!-- Mobile Close Button -->
+      <button 
+        @click="emit('closeMobile')"
+        class="p-1.5 rounded-lg hover:bg-black/[0.05] text-[#86868b] hover:text-[#1d1d1f] sm:hidden cursor-pointer"
+        title="关闭菜单"
+      >
+        <X class="w-4 h-4" />
+      </button>
     </div>
 
     <!-- User Profile Capsule (macOS style) -->
@@ -171,7 +195,7 @@ const getItemBadge = (badgeType: string | null) => {
         <button
           v-for="item in group.items"
           :key="item.id"
-          @click="emit('selectTab', item.id)"
+          @click="emit('selectTab', item.id); emit('closeMobile');"
           :class="[
             'w-full flex items-center rounded-xl p-2 text-xs transition-all relative group cursor-pointer',
             currentTab === item.id
@@ -209,6 +233,26 @@ const getItemBadge = (badgeType: string | null) => {
           />
         </button>
       </div>
+    </div>
+
+    <!-- Admin Console Quick Launcher -->
+    <div class="px-3 pb-2 shrink-0">
+      <button
+        @click="emit('openAdmin'); emit('closeMobile');"
+        :class="[
+          'w-full py-2 px-3 rounded-2xl bg-black/[0.03] hover:bg-[#1d1d1f] text-[#86868b] hover:text-white transition-all flex items-center gap-2 cursor-pointer group',
+          isCollapsed ? 'justify-center px-0' : 'justify-between'
+        ]"
+        title="访问管理控制台 (/admin)"
+      >
+        <div class="flex items-center gap-2.5 min-w-0">
+          <ShieldCheck class="w-4 h-4 shrink-0 text-[#86868b] group-hover:text-white transition-colors" />
+          <span v-if="!isCollapsed" class="text-xs font-medium truncate">管理控制台</span>
+        </div>
+        <span v-if="!isCollapsed" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-black/[0.04] group-hover:bg-white/20 text-[#86868b] group-hover:text-white">
+          /admin
+        </span>
+      </button>
     </div>
 
     <!-- Collapse Toggle Footer -->

@@ -1,11 +1,21 @@
-﻿<!doctype html>
-<html lang=zh-CN>
+<!doctype html>
+<html lang="zh-CN">
   <head>
-    <meta charset=UTF-8 />
-    <meta http-equiv=refresh content=0; url=./ />
-    <title>Redirecting...</title>
+    <meta charset="UTF-8" />
+    <title>Redirecting to IELTS Master...</title>
+    <script>
+      (function() {
+        var path = window.location.pathname;
+        if (path.indexOf('/admin') !== -1) {
+          var base = path.substring(0, path.indexOf('/admin'));
+          window.location.replace(window.location.origin + (base ? base : '') + '/#/admin');
+        } else {
+          window.location.replace('./');
+        }
+      })();
+    </script>
   </head>
   <body>
-    <p>Redirecting to <a href=./>IELTS Master</a>...</p>
+    <p>Redirecting to <a href="./">IELTS Master</a>...</p>
   </body>
 </html>

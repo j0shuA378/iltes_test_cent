@@ -8,7 +8,9 @@ import {
   Upload, 
   Save, 
   Check, 
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  ArrowRight
 } from 'lucide-vue-next';
 import type { UserProfile } from '../../types/ielts';
 import { saveUserProfile, exportBackupData, importBackupData } from '../../services/storage';
@@ -19,6 +21,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'updateProfile', p: UserProfile): void;
+  (e: 'openAdmin'): void;
 }>();
 
 const formData = ref<UserProfile>({ ...props.profile });
@@ -270,6 +273,29 @@ const handleImportFile = (e: Event) => {
       <div v-if="importStatus" class="text-xs font-medium text-[#0071e3] bg-[#0071e3]/10 p-3 rounded-2xl border border-[#0071e3]/20">
         {{ importStatus }}
       </div>
+    </div>
+
+    <!-- Admin Console Entrance Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <ShieldCheck class="w-4 h-4 text-[#1d1d1f]" />
+          <h2 class="text-sm font-semibold text-[#1d1d1f]">后台管理控制台 (Admin Console)</h2>
+          <span class="px-2 py-0.5 rounded-full bg-black/[0.04] text-[10px] font-mono text-[#86868b]">/admin</span>
+        </div>
+        <p class="text-xs text-[#86868b]">
+          管理员专属面板：监控全员学习数据、管理剑桥真题库、查看艾宾浩斯记忆模型及全系统灾备导出。
+        </p>
+      </div>
+
+      <button
+        type="button"
+        @click="emit('openAdmin')"
+        class="px-5 py-2.5 bg-[#1d1d1f] hover:bg-black text-white text-xs font-semibold rounded-full shadow-xs transition-all flex items-center gap-1.5 shrink-0 cursor-pointer active:scale-98"
+      >
+        <span>进入管理控制台</span>
+        <ArrowRight class="w-3.5 h-3.5" />
+      </button>
     </div>
   </div>
 </template>

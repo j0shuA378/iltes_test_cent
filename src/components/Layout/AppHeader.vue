@@ -3,7 +3,9 @@ import {
   Search, 
   BookOpen, 
   Brain, 
-  Calendar
+  Calendar,
+  Menu,
+  ShieldCheck
 } from 'lucide-vue-next';
 import type { UserAccount } from '../../types/auth';
 
@@ -22,13 +24,24 @@ const emit = defineEmits<{
   (e: 'openAuthModal'): void;
   (e: 'navigateTab', tab: string): void;
   (e: 'openPlacementTest'): void;
+  (e: 'toggleMobileMenu'): void;
+  (e: 'openAdmin'): void;
 }>();
 </script>
 
 <template>
   <header class="h-14 bg-white/80 backdrop-blur-xl border-b border-black/[0.06] px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 select-none">
-    <!-- Left: Quick Search & Dictionary Pill Triggers -->
-    <div class="flex items-center gap-2.5">
+    <!-- Left: Mobile menu toggle, Quick Search & Dictionary Pill Triggers -->
+    <div class="flex items-center gap-2">
+      <!-- Mobile hamburger button -->
+      <button
+        @click="emit('toggleMobileMenu')"
+        class="sm:hidden p-1.5 rounded-xl hover:bg-black/[0.05] text-[#1d1d1f] transition-colors cursor-pointer"
+        title="打开导航菜单"
+      >
+        <Menu class="w-4 h-4" />
+      </button>
+
       <!-- Search button styled like Apple Spotlight / Search pill -->
       <button
         @click="emit('openSearch')"
@@ -93,6 +106,16 @@ const emit = defineEmits<{
         <Calendar class="w-3 h-3 text-[#86868b]" />
         <span>距考期 <strong class="text-[#1d1d1f] font-semibold tabular-nums">{{ remainingDays }}</strong> 天</span>
       </div>
+
+      <!-- Admin Console Pill -->
+      <button
+        @click="emit('openAdmin')"
+        class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/[0.03] hover:bg-[#1d1d1f] text-[#86868b] hover:text-white transition-all text-xs cursor-pointer group"
+        title="访问管理控制台 (/admin)"
+      >
+        <ShieldCheck class="w-3.5 h-3.5 group-hover:text-white transition-colors" />
+        <span class="text-[11px] font-medium">管理后台</span>
+      </button>
 
       <div class="h-4 w-px bg-black/[0.08] hidden sm:block" />
 
