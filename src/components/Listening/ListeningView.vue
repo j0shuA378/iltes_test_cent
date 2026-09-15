@@ -203,37 +203,42 @@ const resetTest = () => {
 
 <template>
   <div class="space-y-6 max-w-5xl mx-auto pb-12">
-    <!-- Submitted Screen -->
+    <!-- Submitted Screen (Apple Clean Style) -->
     <div v-if="isSubmitted && resultSummary" class="space-y-6 max-w-4xl mx-auto pb-12">
-      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-md text-center space-y-4">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-semibold">
-          <Award class="w-4 h-4 text-sky-600" />
-          听力机考阅卷完成 · 换算标准
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.02)] text-center space-y-4">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.04] border border-black/[0.06] text-[#1d1d1f] text-xs font-medium">
+          <Award class="w-3.5 h-3.5 text-[#86868b]" />
+          <span>听力机考阅卷完成 · 官方换算评分</span>
         </div>
 
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
           {{ currentTest.title }}
         </h2>
 
-        <div class="flex items-center justify-center gap-8 py-4">
+        <div class="flex items-center justify-center gap-6 sm:gap-10 py-4">
           <div class="text-center">
-            <div class="text-5xl font-black text-sky-600">Band {{ resultSummary.band.toFixed(1) }}</div>
-            <div class="text-xs text-slate-500 font-medium uppercase tracking-wider mt-1">雅思听力等级分</div>
+            <div class="text-4xl sm:text-5xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">Band {{ resultSummary.band.toFixed(1) }}</div>
+            <div class="text-xs text-[#86868b] font-normal mt-1">雅思听力等级分</div>
           </div>
-          <div class="h-14 w-px bg-slate-200" />
+          <div class="h-12 w-px bg-black/[0.08]" />
           <div class="text-center">
-            <div class="text-4xl font-bold text-slate-800">{{ resultSummary.rawScore }} / {{ resultSummary.total }}</div>
-            <div class="text-xs text-slate-500 font-medium uppercase tracking-wider mt-1">原始正确题数</div>
+            <div class="text-3xl sm:text-4xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{{ resultSummary.rawScore }} / {{ resultSummary.total }}</div>
+            <div class="text-xs text-[#86868b] font-normal mt-1">原始正确题数</div>
+          </div>
+          <div class="h-12 w-px bg-black/[0.08]" />
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{{ Math.round((resultSummary.rawScore / resultSummary.total) * 100) }}%</div>
+            <div class="text-xs text-[#86868b] font-normal mt-1">综合准确率</div>
           </div>
         </div>
 
         <div class="flex items-center justify-center gap-3 pt-2">
           <button
             @click="resetTest"
-            class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+            class="px-5 py-2 bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium rounded-full transition-all flex items-center gap-2 cursor-pointer shadow-xs active:scale-98"
           >
-            <RotateCcw class="w-4 h-4" />
-            重新训练
+            <RotateCcw class="w-3.5 h-3.5" />
+            <span>重新训练测验</span>
           </button>
         </div>
       </div>
@@ -315,20 +320,20 @@ const resetTest = () => {
       </div>
     </div>
 
-    <!-- Active Listening Exam -->
+    <!-- Active Listening Exam (Apple Clean Station) -->
     <div v-else class="space-y-6">
       <!-- Listening Header & Player Bar -->
-      <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-xl space-y-4">
+      <div class="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-5">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div class="flex items-center gap-2 text-xs text-sky-400 font-semibold mb-1">
-              <Headphones class="w-4 h-4" />
+            <div class="flex items-center gap-1.5 text-xs text-[#0071e3] font-medium mb-1">
+              <Headphones class="w-3.5 h-3.5" />
               <span>IELTS Official Listening Simulation</span>
             </div>
-            <h1 class="text-xl font-extrabold text-white">
+            <h1 class="text-xl sm:text-2xl font-semibold text-[#1d1d1f] tracking-tight">
               {{ activeSection.title }}
             </h1>
-            <p class="text-xs text-slate-400 mt-1 max-w-xl">
+            <p class="text-xs text-[#86868b] mt-1 max-w-xl leading-relaxed">
               {{ activeSection.description }}
             </p>
           </div>
@@ -336,7 +341,7 @@ const resetTest = () => {
           <div class="flex flex-wrap items-center gap-2">
             <select
               v-model="currentTestId"
-              class="bg-slate-800 text-slate-200 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-sky-500 max-w-[220px] truncate"
+              class="bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium px-3 py-1.5 rounded-full border border-black/[0.06] focus:outline-none focus:border-[#0071e3] transition-all cursor-pointer max-w-[200px] truncate"
             >
               <option v-for="t in LISTENING_TESTS" :key="t.id" :value="t.id">
                 {{ t.title }}
@@ -345,69 +350,70 @@ const resetTest = () => {
 
             <button
               @click="emit('openSearch')"
-              class="px-2.5 py-1.5 bg-amber-950/40 text-amber-300 hover:text-amber-200 border border-amber-800/40 rounded-lg text-xs font-semibold cursor-pointer"
+              class="text-xs text-[#86868b] hover:text-[#1d1d1f] px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-full border border-black/[0.04] flex items-center gap-1 font-normal cursor-pointer transition-colors"
             >
-              搜题库
+              <Sparkles class="w-3.5 h-3.5 text-[#86868b]" />
+              <span>搜题库</span>
             </button>
 
             <button
               @click="emit('openDictionary')"
-              class="px-2.5 py-1.5 bg-teal-950/40 text-teal-300 hover:text-teal-200 border border-teal-800/40 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer"
+              class="text-xs text-[#0071e3] px-3 py-1.5 bg-[#0071e3]/10 hover:bg-[#0071e3]/15 rounded-full border border-[#0071e3]/15 flex items-center gap-1 font-medium cursor-pointer transition-colors"
             >
-              <BookOpen class="w-3 h-3 text-teal-400" />
-              <span>词典</span>
+              <BookOpen class="w-3.5 h-3.5 text-[#0071e3]" />
+              <span>即时词典</span>
             </button>
 
             <button
               @click="handleSubmitTest"
-              class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg shadow-md transition-all cursor-pointer"
+              class="px-4 py-1.5 bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-medium rounded-full shadow-xs hover:shadow transition-all active:scale-98 cursor-pointer"
             >
               交卷评分
             </button>
           </div>
         </div>
 
-        <!-- Audio Controls Bar -->
-        <div class="bg-slate-800/90 rounded-xl p-4 border border-slate-700 flex flex-wrap items-center justify-between gap-4">
+        <!-- Audio Controls Bar (Apple Style) -->
+        <div class="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.04] flex flex-wrap items-center justify-between gap-4">
           <!-- Play / Pause -->
           <div class="flex items-center gap-3">
             <button
               @click="togglePlayAudio"
               :class="[
-                'w-11 h-11 rounded-full flex items-center justify-center transition-all cursor-pointer',
+                'w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95',
                 isPlaying 
-                  ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20' 
-                  : 'bg-sky-500 hover:bg-sky-400 text-slate-950 shadow-lg shadow-sky-500/20'
+                  ? 'bg-[#ff9500] text-white hover:bg-[#ff9500]/90' 
+                  : 'bg-[#1d1d1f] hover:bg-black text-white'
               ]"
             >
-              <Pause v-if="isPlaying" class="w-5 h-5" />
-              <Play v-else class="w-5 h-5 ml-0.5" />
+              <Pause v-if="isPlaying" class="w-4 h-4" />
+              <Play v-else class="w-4 h-4 ml-0.5" />
             </button>
 
             <div>
-              <div class="text-xs font-bold text-white flex items-center gap-2">
-                <span>{{ isPlaying ? '正在播放考场听力录音' : '点击播放音频' }}</span>
+              <div class="text-xs font-semibold text-[#1d1d1f] flex items-center gap-2">
+                <span>{{ isPlaying ? '正在播放考场真实录音' : '轻点开始播放音频' }}</span>
                 <span v-if="isPlaying" class="flex gap-0.5 items-end h-3">
-                  <span class="w-1 h-2 bg-sky-400 animate-pulse" />
-                  <span class="w-1 h-3 bg-sky-400 animate-pulse delay-75" />
-                  <span class="w-1 h-1.5 bg-sky-400 animate-pulse delay-150" />
+                  <span class="w-1 h-2 bg-[#0071e3] animate-pulse" />
+                  <span class="w-1 h-3 bg-[#0071e3] animate-pulse delay-75" />
+                  <span class="w-1 h-1.5 bg-[#0071e3] animate-pulse delay-150" />
                 </span>
               </div>
-              <span class="text-[11px] text-slate-400">英式/澳式原生语音合成播放</span>
+              <span class="text-[11px] text-[#86868b]">英式/澳式原生语音合成播放</span>
             </div>
           </div>
 
           <!-- Speed Selector -->
           <div class="flex items-center gap-2">
-            <span class="text-xs text-slate-400">播放语速:</span>
-            <div class="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-700 text-xs">
+            <span class="text-xs text-[#86868b]">语速:</span>
+            <div class="flex items-center gap-1 bg-white p-0.5 rounded-full border border-black/[0.06] text-xs">
               <button
                 v-for="rate in [0.8, 1.0, 1.2, 1.5]"
                 :key="rate"
                 @click="handleRateChange(rate)"
                 :class="[
-                  'px-2 py-1 rounded font-medium transition-colors cursor-pointer',
-                  playbackRate === rate ? 'bg-sky-600 text-white' : 'text-slate-400 hover:text-white'
+                  'px-2.5 py-0.5 rounded-full font-medium transition-colors cursor-pointer text-xs',
+                  playbackRate === rate ? 'bg-[#1d1d1f] text-white shadow-2xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
                 ]"
               >
                 {{ rate }}x
@@ -419,10 +425,10 @@ const resetTest = () => {
           <button
             @click="showTranscript = !showTranscript"
             :class="[
-              'px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer',
+              'px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer',
               showTranscript 
-                ? 'bg-indigo-600 text-white' 
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                ? 'bg-[#1d1d1f] text-white shadow-xs' 
+                : 'bg-white border border-black/[0.06] text-[#1d1d1f] hover:bg-black/[0.02]'
             ]"
           >
             <BookOpen class="w-3.5 h-3.5" />
@@ -431,7 +437,7 @@ const resetTest = () => {
         </div>
 
         <!-- Section Tabs -->
-        <div class="flex space-x-2 pt-1 border-t border-slate-800">
+        <div class="flex items-center gap-1.5 pt-1 border-t border-black/[0.04] overflow-x-auto">
           <button
             v-for="(sec, idx) in currentTest.sections"
             :key="sec.sectionNumber"
@@ -441,10 +447,10 @@ const resetTest = () => {
               activeSectionIndex = idx;
             }"
             :class="[
-              'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
+              'px-3.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer',
               activeSectionIndex === idx 
-                ? 'bg-sky-600 text-white shadow-sm' 
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-[#1d1d1f] text-white shadow-xs' 
+                : 'text-[#86868b] hover:text-[#1d1d1f] hover:bg-black/[0.04]'
             ]"
           >
             Section {{ sec.sectionNumber }}
@@ -452,63 +458,63 @@ const resetTest = () => {
         </div>
       </div>
 
-      <!-- Optional Transcript / Dictation Panel -->
-      <div v-if="showTranscript" class="bg-white rounded-xl p-5 border border-indigo-200 shadow-sm space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-          <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-            <Headphones class="w-4 h-4 text-indigo-600" />
+      <!-- Optional Transcript / Dictation Panel (Apple Style) -->
+      <div v-if="showTranscript" class="bg-white rounded-3xl p-6 border border-black/[0.06] shadow-xs space-y-3">
+        <div class="flex items-center justify-between pb-2 border-b border-black/[0.04]">
+          <span class="font-semibold text-[#1d1d1f] text-xs flex items-center gap-1.5">
+            <Headphones class="w-4 h-4 text-[#0071e3]" />
             Section {{ activeSection.sectionNumber }} 精听逐句跟读与点播
           </span>
-          <span class="text-[11px] text-slate-400">点击单句扬声器图标可单句复读</span>
+          <span class="text-[11px] text-[#86868b]">点击单句扬声器图标可单句复读</span>
         </div>
         <div class="space-y-2 max-h-72 overflow-y-auto pr-2">
           <div 
             v-for="(line, idx) in activeSection.transcript" 
             :key="idx" 
-            class="flex items-start gap-2.5 p-2 rounded-lg hover:bg-slate-50 text-xs"
+            class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-[#f5f5f7] text-xs"
           >
             <button
               @click="playSingleSentence(line.text)"
-              class="p-1 rounded bg-indigo-50 text-indigo-600 hover:bg-indigo-100 shrink-0 mt-0.5 cursor-pointer"
+              class="p-1.5 rounded-full bg-[#0071e3]/10 text-[#0071e3] hover:bg-[#0071e3]/20 shrink-0 mt-0.5 cursor-pointer"
               title="单句复读"
             >
               <Volume2 class="w-3.5 h-3.5" />
             </button>
             <div class="flex-1">
-              <span class="font-bold text-slate-700">{{ line.speaker }}: </span>
-              <span class="text-slate-600 leading-relaxed">{{ line.text }}</span>
+              <span class="font-medium text-[#1d1d1f]">{{ line.speaker }}: </span>
+              <span class="text-[#86868b] leading-relaxed">{{ line.text }}</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Questions Form Area -->
-      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-        <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
-          <h2 class="text-base font-bold text-slate-900">
+      <!-- Questions Form Area (Apple Style) -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-6">
+        <div class="border-b border-black/[0.04] pb-3 flex items-center justify-between">
+          <h2 class="text-base font-semibold text-[#1d1d1f]">
             Section {{ activeSection.sectionNumber }} 答题卡 (Questions {{ activeSection.questions[0].id }} - {{ activeSection.questions[activeSection.questions.length - 1].id }})
           </h2>
-          <span class="text-xs text-slate-500">
+          <span class="text-xs text-[#86868b]">
             共 {{ activeSection.questions.length }} 题
           </span>
         </div>
 
-        <div class="space-y-5">
+        <div class="space-y-4">
           <div 
             v-for="q in activeSection.questions"
             :key="q.id"
-            class="p-4 rounded-xl border border-slate-200 hover:border-sky-300 transition-all bg-slate-50/50 space-y-2.5"
+            class="p-5 rounded-2xl border border-black/[0.06] hover:border-black/[0.12] transition-all bg-[#fbfbfd] space-y-3"
           >
             <div class="flex items-center gap-2">
-              <span class="w-6 h-6 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center">
+              <span class="w-6 h-6 rounded-lg bg-[#1d1d1f] text-white font-semibold text-xs flex items-center justify-center shrink-0">
                 {{ q.id }}
               </span>
-              <span class="text-xs font-semibold text-slate-500 uppercase">
+              <span class="text-xs font-medium text-[#86868b] uppercase tracking-wide">
                 {{ q.type.replace(/_/g, ' ') }}
               </span>
             </div>
 
-            <p class="text-sm font-medium text-slate-800">
+            <p class="text-sm font-normal text-[#1d1d1f] leading-relaxed">
               {{ q.prompt }}
             </p>
 
@@ -518,7 +524,7 @@ const resetTest = () => {
               placeholder="输入听到的一到两个单词或数字..."
               :value="answers[q.id] || ''"
               @input="handleAnswerChange(q.id, ($event.target as HTMLInputElement).value)"
-              class="w-full sm:w-80 px-3.5 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-sky-500 bg-white"
+              class="w-full sm:w-80 px-3.5 py-2 text-xs border border-black/[0.06] rounded-xl focus:outline-none focus:border-[#0071e3] bg-white text-[#1d1d1f]"
             />
 
             <div v-else-if="q.type === 'multiple_choice' && q.options" class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
@@ -527,13 +533,21 @@ const resetTest = () => {
                 :key="opt"
                 @click="handleAnswerChange(q.id, opt)"
                 :class="[
-                  'p-3 rounded-lg border text-xs cursor-pointer transition-all',
+                  'p-3 rounded-xl border text-xs cursor-pointer transition-all flex items-center justify-between',
                   answers[q.id] === opt
-                    ? 'bg-sky-50 border-sky-500 font-semibold text-sky-900 shadow-sm'
-                    : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-700'
+                    ? 'bg-[#0071e3]/10 border-[#0071e3] font-medium text-[#0071e3] shadow-2xs'
+                    : 'bg-white border-black/[0.06] hover:bg-[#f5f5f7] text-[#1d1d1f]'
                 ]"
               >
-                {{ opt }}
+                <span>{{ opt }}</span>
+                <div 
+                  :class="[
+                    'w-4 h-4 rounded-full border flex items-center justify-center shrink-0',
+                    answers[q.id] === opt ? 'border-[#0071e3] bg-[#0071e3]' : 'border-black/[0.2]'
+                  ]"
+                >
+                  <div v-if="answers[q.id] === opt" class="w-1.5 h-1.5 rounded-full bg-white" />
+                </div>
               </div>
             </div>
           </div>

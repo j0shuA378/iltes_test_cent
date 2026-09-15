@@ -237,53 +237,54 @@ const questionsToDisplay = computed(() => {
   <div>
     <!-- If submitted, show the score report and review -->
     <div v-if="isSubmitted && resultSummary" class="space-y-6 max-w-5xl mx-auto pb-12">
-      <!-- Score Hero -->
-      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-md text-center space-y-4">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold">
-          <Award class="w-4 h-4 text-indigo-600" />
-          机考阅卷完成 · 官方换算
+      <!-- Score Hero (Apple Clean Minimalist Style) -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.02)] text-center space-y-4">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.04] border border-black/[0.06] text-[#1d1d1f] text-xs font-medium">
+          <Award class="w-3.5 h-3.5 text-[#86868b]" />
+          <span>机考阅卷完成 · 官方换算评分</span>
         </div>
 
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">
+        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
           {{ currentTest.title }}
         </h2>
 
-        <div class="flex items-center justify-center gap-8 py-4">
+        <div class="flex items-center justify-center gap-6 sm:gap-10 py-4">
           <div class="text-center">
-            <div class="text-5xl font-black text-indigo-600">Band {{ resultSummary.band.toFixed(1) }}</div>
-            <div class="text-xs text-slate-500 font-medium uppercase tracking-wider mt-1">雅思阅读等级分</div>
+            <div class="text-4xl sm:text-5xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">Band {{ resultSummary.band.toFixed(1) }}</div>
+            <div class="text-xs text-[#86868b] font-normal mt-1">雅思阅读等级分</div>
           </div>
-          <div class="h-14 w-px bg-slate-200" />
+          <div class="h-12 w-px bg-black/[0.08]" />
           <div class="text-center">
-            <div class="text-4xl font-bold text-slate-800">{{ resultSummary.rawScore }} / {{ resultSummary.total }}</div>
-            <div class="text-xs text-slate-500 font-medium uppercase tracking-wider mt-1">原始正确题数</div>
+            <div class="text-3xl sm:text-4xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{{ resultSummary.rawScore }} / {{ resultSummary.total }}</div>
+            <div class="text-xs text-[#86868b] font-normal mt-1">原始正确题数</div>
           </div>
-          <div class="h-14 w-px bg-slate-200" />
+          <div class="h-12 w-px bg-black/[0.08]" />
           <div class="text-center">
-            <div class="text-4xl font-bold text-slate-800">{{ Math.round((resultSummary.rawScore / resultSummary.total) * 100) }}%</div>
-            <div class="text-xs text-slate-500 font-medium uppercase tracking-wider mt-1">综合准确率</div>
+            <div class="text-3xl sm:text-4xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{{ Math.round((resultSummary.rawScore / resultSummary.total) * 100) }}%</div>
+            <div class="text-xs text-[#86868b] font-normal mt-1">综合准确率</div>
           </div>
         </div>
 
         <div class="flex items-center justify-center gap-3 pt-2">
           <button
             @click="resetTest"
-            class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+            class="px-5 py-2 bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium rounded-full transition-all flex items-center gap-2 cursor-pointer shadow-xs active:scale-98"
           >
-            <RotateCcw class="w-4 h-4" />
-            重新模考
+            <RotateCcw class="w-3.5 h-3.5" />
+            <span>重新模考测试</span>
           </button>
         </div>
       </div>
 
       <!-- Filter Tabs -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-lg">
+      <!-- Filter Tabs (Apple Pill Style) -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-1.5 p-1 rounded-full bg-[#f5f5f7] border border-black/[0.04] text-xs">
           <button
             @click="filterMode = 'all'"
             :class="[
-              'px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer',
-              filterMode === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              'px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer',
+              filterMode === 'all' ? 'bg-white text-[#1d1d1f] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
             ]"
           >
             全部题目 ({{ allQuestions.length }})
@@ -291,8 +292,8 @@ const questionsToDisplay = computed(() => {
           <button
             @click="filterMode = 'wrong'"
             :class="[
-              'px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer',
-              filterMode === 'wrong' ? 'bg-red-500 text-white shadow-sm' : 'text-red-600 hover:text-red-700'
+              'px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer',
+              filterMode === 'wrong' ? 'bg-white text-[#ff3b30] shadow-xs font-semibold' : 'text-[#86868b] hover:text-[#ff3b30]'
             ]"
           >
             错题精析 ({{ allQuestions.length - resultSummary.rawScore }})
@@ -300,14 +301,14 @@ const questionsToDisplay = computed(() => {
           <button
             @click="filterMode = 'correct'"
             :class="[
-              'px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer',
-              filterMode === 'correct' ? 'bg-emerald-500 text-white shadow-sm' : 'text-emerald-600 hover:text-emerald-700'
+              'px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer',
+              filterMode === 'correct' ? 'bg-white text-[#34c759] shadow-xs font-semibold' : 'text-[#86868b] hover:text-[#34c759]'
             ]"
           >
             正确题目 ({{ resultSummary.rawScore }})
           </button>
         </div>
-        <span class="text-xs text-slate-500">所有错题已自动收入「错题集」</span>
+        <span class="text-xs text-[#86868b] font-normal">所有错题已同步至「艾宾浩斯错题复盘流」</span>
       </div>
 
       <!-- Detailed Question Review List -->
@@ -316,27 +317,27 @@ const questionsToDisplay = computed(() => {
           v-for="q in questionsToDisplay"
           :key="q.id"
           :class="[
-            'bg-white rounded-xl p-5 border shadow-sm transition-all',
+            'bg-white rounded-3xl p-6 border shadow-[0_2px_12px_rgba(0,0,0,0.02)] transition-all',
             (Array.isArray(q.correctAnswer)
               ? q.correctAnswer.some(a => a.toLowerCase().trim() === (answers[q.id] || '').trim().toLowerCase())
               : (answers[q.id] || '').trim().toLowerCase() === q.correctAnswer.toLowerCase().trim())
-              ? 'border-emerald-200 bg-emerald-50/20' 
-              : 'border-red-200 bg-red-50/20'
+              ? 'border-[#34c759]/30 bg-[#34c759]/[0.02]' 
+              : 'border-[#ff3b30]/30 bg-[#ff3b30]/[0.02]'
           ]"
         >
           <div class="flex items-start justify-between gap-4 mb-3">
             <div class="flex items-center gap-2">
               <span :class="[
-                'w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs',
+                'w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shadow-2xs',
                 (Array.isArray(q.correctAnswer)
                   ? q.correctAnswer.some(a => a.toLowerCase().trim() === (answers[q.id] || '').trim().toLowerCase())
                   : (answers[q.id] || '').trim().toLowerCase() === q.correctAnswer.toLowerCase().trim())
-                  ? 'bg-emerald-100 text-emerald-800' 
-                  : 'bg-red-100 text-red-800'
+                  ? 'bg-[#34c759]/10 text-[#34c759]' 
+                  : 'bg-[#ff3b30]/10 text-[#ff3b30]'
               ]">
                 {{ q.id }}
               </span>
-              <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">
+              <span class="text-xs font-medium text-[#86868b] uppercase tracking-wider">
                 {{ q.type.replace(/_/g, ' ') }}
               </span>
             </div>
@@ -388,20 +389,20 @@ const questionsToDisplay = computed(() => {
       </div>
     </div>
 
-    <!-- Active Exam Interface (CDI Layout) -->
-    <div v-else class="flex flex-col h-[calc(100vh-8.5rem)] bg-slate-100 rounded-xl overflow-hidden border border-slate-200 shadow-lg">
+    <!-- Active Exam Interface (CDI Layout - Apple Style) -->
+    <div v-else class="flex flex-col h-[calc(100vh-8.5rem)] bg-white rounded-3xl overflow-hidden border border-black/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
       <!-- Top CDI Exam Control Bar -->
-      <div class="bg-slate-900 text-white px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 select-none">
+      <div class="bg-white/95 backdrop-blur-xl text-[#1d1d1f] px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 select-none border-b border-black/[0.06]">
         <div class="flex items-center gap-3">
-          <div class="font-bold text-sm tracking-tight text-slate-100 flex items-center gap-2">
-            <BookOpen class="w-4 h-4 text-red-500" />
+          <div class="font-semibold text-xs tracking-tight text-[#1d1d1f] flex items-center gap-2">
+            <BookOpen class="w-4 h-4 text-[#0071e3]" />
             <span>IELTS Academic Reading</span>
           </div>
 
           <!-- Test Selector Dropdown -->
           <select
             v-model="currentTestId"
-            class="bg-slate-800 text-slate-200 text-xs font-semibold px-2.5 py-1 rounded-md border border-slate-700 focus:outline-none focus:border-red-500 max-w-[220px] truncate"
+            class="bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium px-3 py-1.5 rounded-full border border-black/[0.06] focus:outline-none focus:border-[#0071e3] transition-all cursor-pointer max-w-[200px] truncate"
           >
             <option v-for="t in READING_TESTS" :key="t.id" :value="t.id">
               {{ t.title }}
@@ -410,31 +411,31 @@ const questionsToDisplay = computed(() => {
 
           <button
             @click="emit('openSearch')"
-            class="text-xs text-amber-300 hover:text-amber-200 px-2 py-1 bg-amber-950/40 rounded border border-amber-800/40 flex items-center gap-1 font-medium cursor-pointer"
+            class="text-xs text-[#86868b] hover:text-[#1d1d1f] px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-full border border-black/[0.04] flex items-center gap-1.5 font-normal cursor-pointer transition-colors"
           >
-            <Sparkles class="w-3 h-3 text-amber-400" />
+            <Sparkles class="w-3.5 h-3.5 text-[#86868b]" />
             <span>搜题库</span>
           </button>
 
           <button
             @click="emit('openDictionary')"
-            class="text-xs text-teal-300 hover:text-teal-200 px-2.5 py-1 bg-teal-950/40 rounded border border-teal-800/40 flex items-center gap-1 font-medium cursor-pointer"
+            class="text-xs text-[#0071e3] px-3 py-1.5 bg-[#0071e3]/10 hover:bg-[#0071e3]/15 rounded-full border border-[#0071e3]/15 flex items-center gap-1.5 font-medium cursor-pointer transition-colors"
           >
-            <BookOpen class="w-3 h-3 text-teal-400" />
+            <BookOpen class="w-3.5 h-3.5 text-[#0071e3]" />
             <span>即时词典</span>
           </button>
 
           <!-- Passage Switcher Tabs -->
-          <div class="flex items-center gap-1 bg-slate-800 p-0.5 rounded-md text-xs">
+          <div class="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full border border-black/[0.04] text-xs">
             <button
               v-for="(p, idx) in currentTest.passages"
               :key="p.id"
               @click="activePassageIndex = idx"
               :class="[
-                'px-3 py-1 rounded font-medium transition-all cursor-pointer',
+                'px-3.5 py-1 rounded-full font-medium transition-all cursor-pointer text-xs',
                 activePassageIndex === idx
-                  ? 'bg-red-600 text-white shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-700'
+                  ? 'bg-[#1d1d1f] text-white shadow-xs'
+                  : 'text-[#86868b] hover:text-[#1d1d1f]'
               ]"
             >
               Passage {{ p.id }}
@@ -443,27 +444,27 @@ const questionsToDisplay = computed(() => {
         </div>
 
         <!-- Timer & Controls -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <div :class="[
-            'flex items-center gap-2 px-3 py-1 rounded-md font-mono text-sm font-bold border',
+            'flex items-center gap-1.5 px-3.5 py-1 rounded-full font-mono text-xs font-semibold tabular-nums border',
             secondsRemaining < 600 
-              ? 'bg-red-950 text-red-400 border-red-800 animate-pulse' 
-              : 'bg-slate-800 text-slate-200 border-slate-700'
+              ? 'bg-[#ff3b30]/10 text-[#ff3b30] border-[#ff3b30]/20 animate-pulse' 
+              : 'bg-[#f5f5f7] text-[#1d1d1f] border-black/[0.04]'
           ]">
-            <Clock class="w-4 h-4 text-amber-400" />
+            <Clock class="w-3.5 h-3.5 text-[#86868b]" />
             <span>{{ formatTime(secondsRemaining) }}</span>
           </div>
 
           <button
             @click="isTimerPaused = !isTimerPaused"
-            class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors cursor-pointer"
+            class="text-xs text-[#86868b] hover:text-[#1d1d1f] px-3 py-1 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] border border-black/[0.04] transition-colors cursor-pointer"
           >
             {{ isTimerPaused ? '继续计时' : '暂停计时' }}
           </button>
 
           <button
             @click="handleSubmitTest"
-            class="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded shadow transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            class="px-4 py-1.5 bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-medium rounded-full shadow-xs hover:shadow transition-all active:scale-98 cursor-pointer"
           >
             交卷评分
           </button>
@@ -472,42 +473,42 @@ const questionsToDisplay = computed(() => {
 
       <!-- Main Split Body -->
       <div class="flex-1 flex overflow-hidden relative">
-        <!-- Left Pane: Passage Text -->
+        <!-- Left Pane: Passage Text (Apple Clean Reading Typography) -->
         <div 
           @mouseup="handlePassageMouseUp"
-          class="w-1/2 p-6 overflow-y-auto bg-white border-r border-slate-200 leading-relaxed font-serif text-[15px] text-slate-800 select-text"
+          class="w-1/2 p-7 overflow-y-auto bg-white border-r border-black/[0.06] leading-[1.8] font-serif text-[15px] text-[#1d1d1f] select-text"
         >
-          <div class="max-w-2xl mx-auto space-y-4">
-            <div class="pb-3 border-b border-slate-200">
-              <span class="text-xs font-sans font-bold text-red-600 uppercase tracking-widest">
+          <div class="max-w-2xl mx-auto space-y-5">
+            <div class="pb-3.5 border-b border-black/[0.06]">
+              <span class="text-xs font-sans font-semibold text-[#86868b] uppercase tracking-widest">
                 READING PASSAGE {{ currentPassage.id }}
               </span>
-              <h1 class="text-xl font-bold font-sans text-slate-900 mt-1">
+              <h1 class="text-xl sm:text-2xl font-semibold font-sans text-[#1d1d1f] mt-1 tracking-tight">
                 {{ currentPassage.title }}
               </h1>
-              <p v-if="currentPassage.subtitle" class="text-xs font-sans text-slate-500 italic mt-0.5">
+              <p v-if="currentPassage.subtitle" class="text-xs font-sans text-[#86868b] italic mt-0.5">
                 {{ currentPassage.subtitle }}
               </p>
             </div>
 
             <!-- Note alert if any -->
-            <div v-if="highlights.length > 0" class="bg-amber-50 p-2.5 rounded-lg border border-amber-200 text-xs font-sans text-amber-800 flex items-center justify-between">
-              <span>已在本文中做记号/划线 {{ highlights.length }} 处</span>
+            <div v-if="highlights.length > 0" class="bg-[#f5f5f7] p-3 rounded-2xl border border-black/[0.04] text-xs font-sans text-[#1d1d1f] flex items-center justify-between">
+              <span>已在本文中做记号/划线 <strong class="text-[#1d1d1f] font-semibold">{{ highlights.length }}</strong> 处</span>
               <button 
                 @click="highlights = []"
-                class="text-amber-700 hover:text-amber-900 font-bold cursor-pointer"
+                class="text-[#ff3b30] hover:underline font-medium cursor-pointer"
               >
                 清除所有高亮
               </button>
             </div>
 
             <!-- Paragraphs -->
-            <div class="space-y-4 pt-2">
-              <div v-for="p in currentPassage.paragraphs" :key="p.id" class="relative pl-6">
-                <span class="absolute left-0 top-0 font-sans font-bold text-sm text-red-600 select-none">
+            <div class="space-y-4 pt-1">
+              <div v-for="p in currentPassage.paragraphs" :key="p.id" class="relative pl-7">
+                <span class="absolute left-0 top-0.5 font-mono font-semibold text-[11px] text-[#86868b] bg-black/[0.04] px-1 rounded select-none">
                   [{{ p.id }}]
                 </span>
-                <p class="text-slate-800 text-justify">
+                <p class="text-[#1d1d1f] text-justify leading-[1.8]">
                   {{ p.text }}
                 </p>
               </div>
@@ -515,46 +516,46 @@ const questionsToDisplay = computed(() => {
           </div>
         </div>
 
-        <!-- Floating Highlighting Toolbar -->
+        <!-- Floating Highlighting Toolbar (Apple Pill Style) -->
         <div 
           v-if="showHighlightMenu"
           :style="{ position: 'fixed', left: `${showHighlightMenu.x}px`, top: `${showHighlightMenu.y}px`, zIndex: 100 }"
-          class="bg-slate-900 text-white shadow-xl rounded-lg px-2 py-1.5 flex items-center gap-1.5 border border-slate-700 text-xs select-none"
+          class="bg-[#1d1d1f]/95 backdrop-blur-xl text-white shadow-xl rounded-full px-2.5 py-1.5 flex items-center gap-1.5 border border-white/10 text-xs select-none animate-fadeIn"
         >
           <button 
             @click="addHighlight('yellow')"
-            class="p-1.5 hover:bg-slate-800 rounded flex items-center gap-1 text-amber-300 cursor-pointer"
+            class="p-1.5 hover:bg-white/10 rounded-full flex items-center gap-1 text-white cursor-pointer"
             title="黄色高亮"
           >
-            <div class="w-3.5 h-3.5 rounded bg-yellow-300" />
-            <span>高亮</span>
+            <div class="w-3.5 h-3.5 rounded-full bg-[#ffd60a]" />
+            <span class="text-[11px]">高亮</span>
           </button>
           <button 
             @click="addHighlight('green')"
-            class="p-1.5 hover:bg-slate-800 rounded flex items-center gap-1 text-emerald-300 cursor-pointer"
+            class="p-1.5 hover:bg-white/10 rounded-full flex items-center gap-1 text-white cursor-pointer"
             title="绿色高亮"
           >
-            <div class="w-3.5 h-3.5 rounded bg-emerald-400" />
+            <div class="w-3.5 h-3.5 rounded-full bg-[#34c759]" />
           </button>
           <button 
             @click="addHighlight('pink')"
-            class="p-1.5 hover:bg-slate-800 rounded flex items-center gap-1 text-pink-300 cursor-pointer"
+            class="p-1.5 hover:bg-white/10 rounded-full flex items-center gap-1 text-white cursor-pointer"
             title="粉色高亮"
           >
-            <div class="w-3.5 h-3.5 rounded bg-pink-400" />
+            <div class="w-3.5 h-3.5 rounded-full bg-[#ff2d55]" />
           </button>
 
-          <div class="h-4 w-px bg-slate-700" />
+          <div class="h-4 w-px bg-white/20" />
           <button 
             @click="inlineQuickDef = {
               word: selectedText,
               x: showHighlightMenu.rectCenter || (showHighlightMenu.x + 80),
               y: showHighlightMenu.rectTop || showHighlightMenu.y
             }; showHighlightMenu = null;"
-            class="p-1.5 hover:bg-slate-800 rounded flex items-center gap-1 text-teal-300 font-semibold transition-colors cursor-pointer"
+            class="p-1.5 hover:bg-white/10 rounded-full flex items-center gap-1 text-white font-medium transition-colors cursor-pointer text-[11px]"
             title="即时查词典释义（不打断阅读体验）"
           >
-            <BookOpen class="w-3.5 h-3.5 text-teal-400" />
+            <BookOpen class="w-3.5 h-3.5 text-[#0071e3]" />
             <span>查词典</span>
           </button>
         </div>
@@ -569,14 +570,14 @@ const questionsToDisplay = computed(() => {
           @highlight="(color) => { addHighlight(color, true); inlineQuickDef = null; }"
         />
 
-        <!-- Right Pane: Questions -->
-        <div class="w-1/2 p-6 overflow-y-auto bg-slate-50 space-y-6">
+        <!-- Right Pane: Questions (Apple Clean Form Layout) -->
+        <div class="w-1/2 p-7 overflow-y-auto bg-[#fbfbfd] space-y-6">
           <div class="max-w-xl mx-auto space-y-6">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-              <h2 class="text-sm font-bold text-slate-800 font-sans uppercase tracking-wider">
+            <div class="flex items-center justify-between pb-3 border-b border-black/[0.04]">
+              <h2 class="text-xs font-semibold text-[#1d1d1f] font-sans uppercase tracking-wider">
                 Questions for Passage {{ currentPassage.id }}
               </h2>
-              <span class="text-xs text-slate-500">
+              <span class="text-xs text-[#86868b]">
                 本篇包含 {{ currentPassage.questions.length }} 题
               </span>
             </div>
@@ -586,19 +587,19 @@ const questionsToDisplay = computed(() => {
               :key="q.id"
               :id="`question-${q.id}`"
               :class="[
-                'bg-white rounded-xl p-5 border transition-all',
+                'bg-white rounded-2xl p-5 sm:p-6 border transition-all shadow-2xs space-y-3.5',
                 currentQuestionId === q.id 
-                  ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-sm' 
-                  : 'border-slate-200 shadow-sm'
+                  ? 'border-[#0071e3] ring-2 ring-[#0071e3]/15 shadow-sm' 
+                  : 'border-black/[0.06]'
               ]"
               @click="currentQuestionId = q.id"
             >
-              <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-start justify-between gap-3">
                 <div class="flex items-center gap-2">
-                  <span class="w-7 h-7 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center">
+                  <span class="w-6 h-6 rounded-lg bg-[#1d1d1f] text-white font-semibold text-xs flex items-center justify-center shrink-0">
                     {{ q.id }}
                   </span>
-                  <span class="text-xs font-semibold text-slate-500 uppercase">
+                  <span class="text-xs font-medium text-[#86868b] uppercase tracking-wide">
                     {{ q.type.replace(/_/g, ' ') }}
                   </span>
                 </div>
@@ -606,16 +607,16 @@ const questionsToDisplay = computed(() => {
                 <button
                   @click.stop="toggleFlag(q.id)"
                   :class="[
-                    'flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors cursor-pointer',
-                    flagged[q.id] ? 'bg-amber-100 text-amber-800 font-bold' : 'text-slate-400 hover:text-slate-600'
+                    'flex items-center gap-1 px-2.5 py-1 rounded-full text-xs transition-colors cursor-pointer',
+                    flagged[q.id] ? 'bg-[#ff9500]/10 text-[#ff9500] font-medium border border-[#ff9500]/20' : 'text-[#86868b] hover:text-[#1d1d1f] bg-black/[0.02]'
                   ]"
                 >
-                  <Flag :class="['w-3.5 h-3.5', flagged[q.id] ? 'fill-amber-500 text-amber-500' : '']" />
+                  <Flag :class="['w-3.5 h-3.5', flagged[q.id] ? 'fill-[#ff9500] text-[#ff9500]' : '']" />
                   <span>{{ flagged[q.id] ? '已标记' : '标记' }}</span>
                 </button>
               </div>
 
-              <p class="text-sm text-slate-800 font-medium mb-3">
+              <p class="text-sm text-[#1d1d1f] font-normal leading-relaxed">
                 {{ q.prompt }}
               </p>
 
@@ -626,10 +627,10 @@ const questionsToDisplay = computed(() => {
                   :key="opt"
                   @click="handleAnswerChange(q.id, opt)"
                   :class="[
-                    'py-2 px-3 text-xs font-bold rounded-lg border transition-all cursor-pointer',
+                    'py-2 px-3 text-xs font-medium rounded-xl border transition-all cursor-pointer',
                     answers[q.id] === opt
-                      ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
-                      : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                      ? 'bg-[#1d1d1f] text-white border-[#1d1d1f] shadow-xs'
+                      : 'bg-white text-[#1d1d1f] border-black/[0.06] hover:bg-[#f5f5f7]'
                   ]"
                 >
                   {{ opt }}
@@ -642,13 +643,21 @@ const questionsToDisplay = computed(() => {
                   :key="opt"
                   @click="handleAnswerChange(q.id, opt)"
                   :class="[
-                    'p-3 rounded-lg border text-xs cursor-pointer transition-all',
+                    'p-3 rounded-xl border text-xs cursor-pointer transition-all flex items-center justify-between',
                     answers[q.id] === opt
-                      ? 'bg-indigo-50/80 border-indigo-500 font-semibold text-indigo-900 shadow-sm'
-                      : 'bg-white border-slate-200 hover:bg-slate-100 text-slate-700'
+                      ? 'bg-[#0071e3]/10 border-[#0071e3] font-medium text-[#0071e3] shadow-2xs'
+                      : 'bg-white border-black/[0.06] hover:bg-[#f5f5f7] text-[#1d1d1f]'
                   ]"
                 >
-                  {{ opt }}
+                  <span>{{ opt }}</span>
+                  <div 
+                    :class="[
+                      'w-4 h-4 rounded-full border flex items-center justify-center shrink-0',
+                      answers[q.id] === opt ? 'border-[#0071e3] bg-[#0071e3]' : 'border-black/[0.2]'
+                    ]"
+                  >
+                    <div v-if="answers[q.id] === opt" class="w-1.5 h-1.5 rounded-full bg-white" />
+                  </div>
                 </div>
               </div>
 
@@ -656,7 +665,7 @@ const questionsToDisplay = computed(() => {
                 <select
                   :value="answers[q.id] || ''"
                   @change="handleAnswerChange(q.id, ($event.target as HTMLSelectElement).value)"
-                  class="w-full p-2.5 text-xs bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-indigo-500"
+                  class="w-full p-2.5 text-xs bg-[#f5f5f7] border border-black/[0.06] rounded-xl text-[#1d1d1f] focus:outline-none focus:border-[#0071e3] focus:bg-white"
                 >
                   <option value="">-- 选择对应段落标题 --</option>
                   <option v-for="opt in q.options" :key="opt" :value="opt">
@@ -671,7 +680,7 @@ const questionsToDisplay = computed(() => {
                   placeholder="在此输入答案（不区分大小写）..."
                   :value="answers[q.id] || ''"
                   @input="handleAnswerChange(q.id, ($event.target as HTMLInputElement).value)"
-                  class="flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500 bg-white"
+                  class="flex-1 px-3.5 py-2 text-xs border border-black/[0.06] rounded-xl focus:outline-none focus:border-[#0071e3] bg-[#f5f5f7] focus:bg-white text-[#1d1d1f]"
                 />
               </div>
             </div>
@@ -679,10 +688,10 @@ const questionsToDisplay = computed(() => {
         </div>
       </div>
 
-      <!-- Bottom CDI Question Navigator Ribbon -->
-      <div class="bg-white border-t border-slate-200 px-4 py-2.5 flex items-center justify-between shrink-0 select-none shadow-md">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-slate-600 hidden sm:inline">答题进度:</span>
+      <!-- Bottom CDI Question Navigator Ribbon (Apple Style) -->
+      <div class="bg-white/95 backdrop-blur-xl border-t border-black/[0.06] px-5 py-2.5 flex items-center justify-between shrink-0 select-none shadow-xs">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-semibold text-[#86868b] hidden sm:inline">答题进度:</span>
           <div class="flex items-center gap-1.5 overflow-x-auto max-w-xl py-1">
             <button
               v-for="q in allQuestions"
@@ -692,22 +701,22 @@ const questionsToDisplay = computed(() => {
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
               })"
               :class="[
-                'w-7 h-7 rounded text-xs font-bold relative transition-all cursor-pointer',
-                currentQuestionId === q.id ? 'ring-2 ring-indigo-600 ring-offset-1' : '',
+                'w-7 h-7 rounded-lg text-xs font-semibold relative transition-all cursor-pointer',
+                currentQuestionId === q.id ? 'ring-2 ring-[#0071e3] ring-offset-1' : '',
                 answers[q.id] 
-                  ? 'bg-slate-900 text-white' 
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-300'
+                  ? 'bg-[#1d1d1f] text-white shadow-2xs' 
+                  : 'bg-[#f5f5f7] text-[#86868b] hover:text-[#1d1d1f] hover:bg-[#e8e8ed] border border-black/[0.04]'
               ]"
             >
               {{ q.id }}
-              <span v-if="flagged[q.id]" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full border border-white" />
+              <span v-if="flagged[q.id]" class="absolute -top-1 -right-1 w-2 h-2 bg-[#ff9500] rounded-full ring-2 ring-white" />
             </button>
           </div>
         </div>
 
         <div class="flex items-center gap-2">
-          <span class="text-xs text-slate-500">
-            已作答 {{ Object.keys(answers).length }} / {{ totalQuestions }}
+          <span class="text-xs text-[#86868b] font-normal tabular-nums">
+            已作答 <strong class="text-[#1d1d1f] font-semibold">{{ Object.keys(answers).length }}</strong> / {{ totalQuestions }}
           </span>
         </div>
       </div>

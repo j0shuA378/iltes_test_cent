@@ -102,7 +102,7 @@ const getItemBadge = (badgeType: string | null) => {
     ]"
   >
     <!-- App Branding Header -->
-    <div className="h-14 flex items-center justify-between px-4 border-b border-black/[0.04] shrink-0">
+    <div class="h-14 flex items-center justify-between px-4 border-b border-black/[0.04] shrink-0">
       <div 
         @click="emit('selectTab', 'dashboard')"
         class="flex items-center gap-3 cursor-pointer overflow-hidden group"

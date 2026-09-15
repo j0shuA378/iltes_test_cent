@@ -105,7 +105,7 @@ const remainingDays = computed(() => {
 </script>
 
 <template>
-  <div class="flex h-screen w-screen overflow-hidden bg-slate-100 font-sans selection:bg-red-500 selection:text-white">
+  <div class="flex h-screen w-screen overflow-hidden bg-[#f5f5f7] font-sans selection:bg-[#1d1d1f] selection:text-white">
     <!-- Left Application Portal Sidebar -->
     <AppSidebar 
       :currentTab="currentTab"

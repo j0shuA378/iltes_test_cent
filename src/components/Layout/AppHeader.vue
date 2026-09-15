@@ -26,7 +26,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <header className="h-14 bg-white/80 backdrop-blur-xl border-b border-black/[0.06] px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 select-none">
+  <header class="h-14 bg-white/80 backdrop-blur-xl border-b border-black/[0.06] px-4 sm:px-6 flex items-center justify-between z-20 shrink-0 select-none">
     <!-- Left: Quick Search & Dictionary Pill Triggers -->
     <div class="flex items-center gap-2.5">
       <!-- Search button styled like Apple Spotlight / Search pill -->

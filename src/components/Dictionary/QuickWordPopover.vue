@@ -126,30 +126,30 @@ const clampedY = computed(() => {
       width: `${cardWidth}px`,
       zIndex: 110 
     }"
-    class="bg-slate-900/95 backdrop-blur-md text-white shadow-2xl rounded-xl border border-slate-700/80 p-3.5 select-none animate-fadeIn transition-all"
+    class="bg-[#1d1d1f]/95 backdrop-blur-xl text-white shadow-2xl rounded-2xl border border-white/10 p-3.5 select-none animate-fadeIn transition-all"
     @click.stop
     @mousedown.stop
   >
     <!-- Header Bar -->
-    <div class="flex items-center justify-between pb-2 border-b border-slate-800 gap-2">
+    <div class="flex items-center justify-between pb-2 border-b border-white/10 gap-2">
       <div class="flex items-center gap-2 min-w-0 flex-1">
         <span class="font-bold text-sm text-white tracking-tight shrink-0">
           {{ entry?.word || word }}
         </span>
-        <span v-if="entry?.phonetic" class="text-xs text-teal-300 font-mono shrink-0">
+        <span v-if="entry?.phonetic" class="text-xs text-white/60 font-mono shrink-0">
           {{ entry.phonetic }}
         </span>
         <button
           @click="speakWord(entry?.word || word)"
           :class="[
-            'p-1 rounded hover:bg-slate-800 text-slate-300 hover:text-teal-300 transition-colors shrink-0',
-            isPlayingAudio ? 'text-teal-400 animate-pulse' : ''
+            'p-1 rounded-md hover:bg-white/10 text-white/70 hover:text-white transition-colors shrink-0',
+            isPlayingAudio ? 'text-[#0071e3] animate-pulse' : ''
           ]"
           title="播放英音发音"
         >
           <Volume2 class="w-3.5 h-3.5" />
         </button>
-        <span v-if="entry?.ieltsBand" class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 truncate max-w-[110px]">
+        <span v-if="entry?.ieltsBand" class="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/10 text-white/90 border border-white/10 truncate max-w-[110px]">
           {{ entry.ieltsBand }}
         </span>
       </div>
@@ -158,21 +158,21 @@ const clampedY = computed(() => {
         <div class="relative group flex items-center">
           <button
             @click="emit('openFull', entry?.word || word); emit('close');"
-            class="p-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white transition-colors shadow-sm flex items-center justify-center cursor-pointer"
+            class="p-1.5 rounded-lg bg-[#0071e3] hover:bg-[#0077ed] active:scale-95 text-white transition-all shadow-xs flex items-center justify-center cursor-pointer"
             aria-label="完全展示"
             title="完全展示"
           >
             <Maximize2 class="w-3.5 h-3.5" />
           </button>
 
-          <div class="absolute -top-7 right-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-150 -translate-y-1 group-hover:translate-y-0 px-2 py-0.5 rounded bg-slate-950/95 border border-slate-700 text-indigo-200 text-[10px] font-medium whitespace-nowrap shadow-xl z-30">
+          <div class="absolute -top-7 right-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-150 -translate-y-1 group-hover:translate-y-0 px-2 py-0.5 rounded-md bg-[#1d1d1f] border border-white/10 text-white/90 text-[10px] font-medium whitespace-nowrap shadow-xl z-30">
             完全展示
           </div>
         </div>
 
         <button
           @click="emit('close')"
-          class="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors cursor-pointer"
+          class="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           title="关闭简易释义"
         >
           <X class="w-3.5 h-3.5" />
@@ -182,37 +182,37 @@ const clampedY = computed(() => {
 
     <!-- Body: Concise Definition -->
     <div class="py-2 min-h-[48px] flex flex-col justify-center">
-      <div v-if="loading" class="flex items-center gap-2 text-xs text-slate-400 py-1.5">
-        <Loader2 class="w-3.5 h-3.5 animate-spin text-teal-400" />
+      <div v-if="loading" class="flex items-center gap-2 text-xs text-white/60 py-1.5">
+        <Loader2 class="w-3.5 h-3.5 animate-spin text-[#0071e3]" />
         <span>查询即时释义中...</span>
       </div>
       <div v-else-if="entry" class="space-y-1">
-        <div class="text-xs text-slate-100 flex items-baseline gap-1.5 leading-relaxed">
-          <span class="font-bold text-teal-400 shrink-0">{{ entry.partOfSpeech }}</span>
-          <span class="font-medium text-slate-100">{{ entry.chinese }}</span>
+        <div class="text-xs text-white/90 flex items-baseline gap-1.5 leading-relaxed">
+          <span class="font-bold text-blue-400 shrink-0">{{ entry.partOfSpeech }}</span>
+          <span class="font-medium text-white">{{ entry.chinese }}</span>
         </div>
 
-        <div v-if="entry.synonyms && entry.synonyms.length > 0" class="flex items-center gap-1.5 text-[11px] text-slate-400 pt-0.5">
-          <span class="text-slate-500 shrink-0 text-[10px]">同义:</span>
+        <div v-if="entry.synonyms && entry.synonyms.length > 0" class="flex items-center gap-1.5 text-[11px] text-white/60 pt-0.5">
+          <span class="text-white/40 shrink-0 text-[10px]">同义:</span>
           <div class="flex items-center gap-1 overflow-hidden flex-wrap">
-            <span v-for="s in entry.synonyms.slice(0, 3)" :key="s" class="px-1 py-0.2 bg-slate-800/90 text-slate-300 rounded text-[10px]">
+            <span v-for="s in entry.synonyms.slice(0, 3)" :key="s" class="px-1.5 py-0.5 bg-white/10 text-white/80 rounded-md text-[10px]">
               {{ s }}
             </span>
           </div>
         </div>
       </div>
-      <div v-else class="text-xs text-slate-400">暂无释义</div>
+      <div v-else class="text-xs text-white/50">暂无释义</div>
     </div>
 
     <!-- Footer: Quick Actions -->
-    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+    <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
       <button
         @click="handleStar"
         :class="[
-          'flex items-center gap-1 px-2 py-0.5 rounded transition-all cursor-pointer',
+          'flex items-center gap-1 px-2 py-0.5 rounded-lg transition-all cursor-pointer',
           isStarred 
-            ? 'text-amber-300 bg-amber-500/20 font-medium' 
-            : 'text-slate-400 hover:text-amber-300 hover:bg-slate-800'
+            ? 'text-amber-300 bg-amber-400/20 font-medium' 
+            : 'text-white/60 hover:text-amber-300 hover:bg-white/10'
         ]"
         :title="isStarred ? '已收入生词本' : '加入生词本'"
       >
@@ -226,21 +226,21 @@ const clampedY = computed(() => {
         </template>
       </button>
 
-      <div class="flex items-center gap-1 text-slate-400">
-        <span class="text-[10px] text-slate-500 mr-0.5">高亮:</span>
+      <div class="flex items-center gap-1.5 text-white/60">
+        <span class="text-[10px] text-white/40 mr-0.5">高亮:</span>
         <button
           @click="emit('highlight', 'yellow'); emit('close');"
-          class="w-3 h-3 rounded-full bg-yellow-300 hover:scale-125 transition-transform cursor-pointer"
+          class="w-3 h-3 rounded-full bg-amber-300 hover:scale-125 transition-transform cursor-pointer shadow-xs"
           title="黄色高亮"
         />
         <button
           @click="emit('highlight', 'green'); emit('close');"
-          class="w-3 h-3 rounded-full bg-emerald-400 hover:scale-125 transition-transform cursor-pointer"
+          class="w-3 h-3 rounded-full bg-emerald-400 hover:scale-125 transition-transform cursor-pointer shadow-xs"
           title="绿色高亮"
         />
         <button
           @click="emit('highlight', 'pink'); emit('close');"
-          class="w-3 h-3 rounded-full bg-pink-400 hover:scale-125 transition-transform cursor-pointer"
+          class="w-3 h-3 rounded-full bg-rose-400 hover:scale-125 transition-transform cursor-pointer shadow-xs"
           title="粉色高亮"
         />
       </div>

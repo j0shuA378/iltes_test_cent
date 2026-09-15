@@ -122,17 +122,17 @@ const handleCopyModel = () => {
 
 <template>
   <div class="space-y-6 max-w-6xl mx-auto pb-12">
-    <!-- Top Header & Task Switcher -->
-    <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-800 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <!-- Top Header & Task Switcher (Apple Style) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
-        <div class="flex items-center gap-2 text-xs text-amber-400 font-semibold mb-1">
-          <PenTool class="w-4 h-4" />
+        <div class="flex items-center gap-1.5 text-xs text-[#0071e3] font-medium mb-1">
+          <PenTool class="w-3.5 h-3.5" />
           <span>IELTS Academic Writing Studio</span>
         </div>
-        <h1 class="text-xl font-extrabold text-white">
+        <h1 class="text-xl sm:text-2xl font-semibold text-[#1d1d1f] tracking-tight">
           {{ currentTask.title }}
         </h1>
-        <span class="text-xs text-slate-400 mt-0.5 inline-block">
+        <span class="text-xs text-[#86868b] mt-0.5 inline-block">
           {{ currentTask.category }} · 要求字数至少 {{ currentTask.minWords }} 词 · 建议耗时 {{ currentTask.recommendedMinutes }} 分钟
         </span>
       </div>
@@ -141,14 +141,14 @@ const handleCopyModel = () => {
       <div class="flex items-center gap-2">
         <button
           @click="emit('openSearch')"
-          class="px-3 py-2 bg-amber-950/40 text-amber-300 hover:text-amber-200 border border-amber-800/40 rounded-lg text-xs font-semibold cursor-pointer"
+          class="px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#86868b] hover:text-[#1d1d1f] border border-black/[0.04] rounded-full text-xs font-normal transition-colors cursor-pointer"
         >
           搜题库
         </button>
 
         <select
           v-model="selectedTaskId"
-          class="bg-slate-800 text-white text-xs font-semibold px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-amber-400"
+          class="bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium px-3 py-1.5 rounded-full border border-black/[0.06] focus:outline-none focus:border-[#0071e3] transition-all cursor-pointer max-w-[220px] truncate"
         >
           <option v-for="t in WRITING_TASKS" :key="t.id" :value="t.id">
             {{ t.type.toUpperCase() }}: {{ t.title }}
@@ -161,35 +161,35 @@ const handleCopyModel = () => {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       <!-- Left Column: Prompt & Visual -->
       <div class="lg:col-span-5 space-y-4">
-        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-            <span class="font-bold text-slate-800 text-xs uppercase tracking-wider">
+        <div class="bg-white rounded-3xl p-6 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-4">
+          <div class="flex items-center justify-between border-b border-black/[0.04] pb-2.5">
+            <span class="font-semibold text-[#1d1d1f] text-xs uppercase tracking-wider">
               Writing Prompt (试题要求)
             </span>
-            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 font-semibold text-slate-600">
+            <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-black/[0.04] font-medium text-[#1d1d1f]">
               {{ currentTask.type.toUpperCase() }}
             </span>
           </div>
 
-          <p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line font-medium">
+          <p class="text-xs sm:text-sm text-[#1d1d1f] leading-relaxed whitespace-pre-line font-normal">
             {{ currentTask.prompt }}
           </p>
 
           <!-- Task 1 SVG Chart render if applicable -->
           <div v-if="currentTask.chartSvg" class="pt-2">
             <div 
-              class="overflow-hidden"
+              class="overflow-hidden rounded-2xl bg-[#fbfbfd] p-3 border border-black/[0.04]"
               v-html="currentTask.chartSvg"
             />
           </div>
 
           <!-- Key Vocabulary Hints -->
-          <div class="bg-slate-50 rounded-lg p-3.5 border border-slate-200 text-xs space-y-2">
-            <span class="font-bold text-slate-700 flex items-center gap-1.5">
-              <Sparkles class="w-3.5 h-3.5 text-amber-500" />
+          <div class="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02] text-xs space-y-2">
+            <span class="font-semibold text-[#1d1d1f] flex items-center gap-1.5">
+              <Sparkles class="w-3.5 h-3.5 text-[#ff9500]" />
               推荐高分学术表达:
             </span>
-            <ul class="grid grid-cols-1 gap-1 pl-4 list-disc text-slate-600">
+            <ul class="grid grid-cols-1 gap-1.5 pl-4 list-disc text-[#86868b]">
               <li v-for="(v, i) in currentTask.keyVocabulary" :key="i">{{ v }}</li>
             </ul>
           </div>
@@ -199,13 +199,13 @@ const handleCopyModel = () => {
       <!-- Right Column: Writing Pad, Word Count, Model & Feedback -->
       <div class="lg:col-span-7 space-y-4">
         <!-- Navigation Bar inside Right Pane -->
-        <div class="flex items-center justify-between bg-white rounded-xl p-2 border border-slate-200 shadow-sm">
-          <div class="flex items-center gap-1">
+        <div class="flex items-center justify-between bg-white rounded-2xl p-2 border border-black/[0.04] shadow-2xs">
+          <div class="flex items-center gap-1 p-0.5 rounded-full bg-[#f5f5f7] border border-black/[0.04] text-xs">
             <button
               @click="activeTab = 'write'"
               :class="[
-                'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
-                activeTab === 'write' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                'px-3.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer',
+                activeTab === 'write' ? 'bg-[#1d1d1f] text-white shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
               ]"
             >
               写作实战
@@ -213,8 +213,8 @@ const handleCopyModel = () => {
             <button
               @click="activeTab = 'model'"
               :class="[
-                'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
-                activeTab === 'model' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                'px-3.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer',
+                activeTab === 'model' ? 'bg-[#1d1d1f] text-white shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
               ]"
             >
               Band 9 官方范文
@@ -223,8 +223,8 @@ const handleCopyModel = () => {
               v-if="evaluationResult"
               @click="activeTab = 'feedback'"
               :class="[
-                'px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
-                activeTab === 'feedback' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                'px-3.5 py-1 rounded-full text-xs font-medium transition-all cursor-pointer',
+                activeTab === 'feedback' ? 'bg-[#1d1d1f] text-white shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
               ]"
             >
               评分报告 (Band {{ evaluationResult.scores.overall.toFixed(1) }})
@@ -232,14 +232,14 @@ const handleCopyModel = () => {
           </div>
 
           <!-- Timer Controller -->
-          <div class="flex items-center gap-2 pr-2">
-            <div class="flex items-center gap-1 text-xs font-mono font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md">
-              <Clock class="w-3.5 h-3.5 text-amber-500" />
+          <div class="flex items-center gap-2 pr-1">
+            <div class="flex items-center gap-1.5 text-xs font-mono font-semibold text-[#1d1d1f] bg-[#f5f5f7] px-3 py-1 rounded-full border border-black/[0.04] tabular-nums">
+              <Clock class="w-3.5 h-3.5 text-[#86868b]" />
               <span>{{ formatTimer(secondsLeft) }}</span>
             </div>
             <button
               @click="isTimerRunning = !isTimerRunning"
-              class="text-xs px-2 py-1 bg-slate-800 text-white rounded hover:bg-slate-700 cursor-pointer"
+              class="text-xs px-3 py-1 bg-[#1d1d1f] text-white rounded-full hover:bg-black transition-colors cursor-pointer shadow-xs active:scale-95"
             >
               {{ isTimerRunning ? '暂停' : '开始计时' }}
             </button>
@@ -247,29 +247,29 @@ const handleCopyModel = () => {
         </div>
 
         <!-- TAB 1: Real-time Writing Canvas -->
-        <div v-if="activeTab === 'write'" class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+        <div v-if="activeTab === 'write'" class="bg-white rounded-3xl p-6 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-4">
           <!-- Word Count Indicator Bar -->
           <div class="flex items-center justify-between text-xs">
             <div class="flex items-center gap-2">
-              <span class="text-slate-500">字数统计:</span>
-              <span :class="['font-bold text-sm', isWordTargetMet ? 'text-emerald-600' : 'text-amber-600']">
+              <span class="text-[#86868b]">字数统计:</span>
+              <span :class="['font-semibold text-sm tabular-nums', isWordTargetMet ? 'text-[#34c759]' : 'text-[#ff9500]']">
                 {{ wordCount }} 词
               </span>
-              <span class="text-slate-400">/ 最低要求 {{ currentTask.minWords }} 词</span>
+              <span class="text-[#86868b]">/ 最低要求 {{ currentTask.minWords }} 词</span>
             </div>
 
-            <span v-if="isWordTargetMet" class="inline-flex items-center gap-1 text-emerald-600 font-semibold">
+            <span v-if="isWordTargetMet" class="inline-flex items-center gap-1 text-[#34c759] font-medium">
               <CheckCircle2 class="w-4 h-4" /> 已达标
             </span>
-            <span v-else class="inline-flex items-center gap-1 text-amber-600 font-semibold">
+            <span v-else class="inline-flex items-center gap-1 text-[#ff9500] font-medium">
               <AlertTriangle class="w-4 h-4" /> 还差 {{ currentTask.minWords - wordCount }} 词
             </span>
           </div>
 
           <!-- Progress bar -->
-          <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+          <div class="w-full bg-[#f5f5f7] rounded-full h-1.5 overflow-hidden border border-black/[0.02]">
             <div 
-              :class="['h-1.5 transition-all', isWordTargetMet ? 'bg-emerald-500' : 'bg-amber-400']"
+              :class="['h-full rounded-full transition-all duration-300', isWordTargetMet ? 'bg-[#34c759]' : 'bg-[#ff9500]']"
               :style="{ width: `${Math.min(100, Math.round((wordCount / currentTask.minWords) * 100))}%` }"
             />
           </div>
@@ -277,94 +277,94 @@ const handleCopyModel = () => {
           <!-- Textarea -->
           <textarea
             v-model="essayContent"
-            placeholder="在此输入您的学术英语作文... 请注意分段，使用标准学术词汇，避免缩写 (如 don't, can't)。"
+            placeholder="在此输入您的学术英语作文... 请注意分段，使用标准学术词汇，避免口语缩写 (如 don't, can't)。"
             rows="16"
-            class="w-full p-4 text-sm font-mono border border-slate-300 rounded-xl focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 leading-relaxed bg-slate-50/50"
+            class="w-full p-4 text-xs sm:text-sm font-sans border border-black/[0.06] rounded-2xl focus:outline-none focus:border-[#0071e3] focus:ring-2 focus:ring-[#0071e3]/10 leading-relaxed bg-[#fbfbfd] text-[#1d1d1f]"
           />
 
           <!-- Action Buttons -->
           <div class="flex items-center justify-between pt-2">
             <button
               @click="essayContent = ''"
-              class="px-3.5 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 flex items-center gap-1 cursor-pointer"
+              class="px-3.5 py-1.5 text-xs font-normal text-[#86868b] hover:text-[#ff3b30] flex items-center gap-1 cursor-pointer transition-colors"
             >
               <RotateCcw class="w-3.5 h-3.5" />
-              清空重写
+              <span>清空重写</span>
             </button>
 
             <button
               @click="handleEvaluate"
               :disabled="aiLoading"
-              class="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-98"
+              class="px-5 py-2 bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium rounded-full shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer active:scale-98"
             >
-              <Sparkles class="w-4 h-4" />
+              <Sparkles class="w-3.5 h-3.5 text-white/90" />
               <span>{{ aiLoading ? '正在进行考官标准批改...' : '智能考官评卷' }}</span>
             </button>
           </div>
         </div>
 
         <!-- TAB 2: Band 9 Model Essay -->
-        <div v-if="activeTab === 'model'" class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div v-if="activeTab === 'model'" class="bg-white rounded-3xl p-6 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-black/[0.04]">
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold text-xs">
+              <span class="px-2.5 py-0.5 rounded-full bg-black/[0.04] text-[#1d1d1f] font-semibold text-xs border border-black/[0.06]">
                 Band 9.0 满分范文
               </span>
-              <span class="text-xs text-slate-500">剑桥考官示范作答</span>
+              <span class="text-xs text-[#86868b]">剑桥考官示范作答</span>
             </div>
 
             <button
               @click="handleCopyModel"
-              class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer"
+              class="text-xs font-medium text-[#0071e3] hover:underline flex items-center gap-1 cursor-pointer"
             >
-              <Check v-if="copied" class="w-3.5 h-3.5 text-emerald-600" />
+              <Check v-if="copied" class="w-3.5 h-3.5 text-[#34c759]" />
               <Copy v-else class="w-3.5 h-3.5" />
               <span>{{ copied ? '已复制范文' : '一键复制' }}</span>
             </button>
           </div>
 
-          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs font-serif leading-relaxed text-slate-800 whitespace-pre-line">
+          <div class="bg-[#f5f5f7] p-5 rounded-2xl border border-black/[0.02] text-xs sm:text-sm font-serif leading-[1.8] text-[#1d1d1f] whitespace-pre-line">
             {{ currentTask.sampleBand9 }}
           </div>
 
-          <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 text-xs space-y-2">
-            <span class="font-bold text-indigo-900 flex items-center gap-1.5">
-              <BookOpen class="w-4 h-4 text-indigo-600" />
+          <div class="bg-[#fbfbfd] p-4 rounded-2xl border border-black/[0.04] text-xs space-y-2">
+            <span class="font-semibold text-[#1d1d1f] flex items-center gap-1.5">
+              <BookOpen class="w-4 h-4 text-[#0071e3]" />
               考官范文深度架构点评:
             </span>
-            <p class="text-slate-700 leading-relaxed whitespace-pre-line">
+            <p class="text-[#86868b] leading-relaxed whitespace-pre-line">
               {{ currentTask.sampleAnalysis }}
             </p>
           </div>
         </div>
 
         <!-- TAB 3: AI / Heuristic Feedback Report -->
-        <div v-if="activeTab === 'feedback' && evaluationResult" class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-5">
+        <div v-if="activeTab === 'feedback' && evaluationResult" class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-5">
           <!-- Score summary 4 dimensions -->
-          <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-xl p-4 flex items-center justify-between">
+          <div class="bg-[#1d1d1f] text-white rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
             <div>
-              <span class="text-xs text-amber-400 font-semibold">四维官方评测结果</span>
-              <div class="text-3xl font-black mt-0.5">
+              <span class="text-xs text-white/70 font-medium">四维官方评测结果</span>
+              <div class="text-3xl font-semibold tracking-tight mt-0.5 tabular-nums">
                 Band {{ evaluationResult.scores.overall.toFixed(1) }}
               </div>
             </div>
 
-            <div class="grid grid-cols-4 gap-3 text-center">
-              <div class="bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700">
-                <div class="text-sm font-bold text-amber-400">{{ evaluationResult.scores.tr.toFixed(1) }}</div>
-                <div class="text-[10px] text-slate-300 uppercase">TR</div>
+            <div class="grid grid-cols-4 gap-2.5 text-center">
+              <div class="bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
+                <div class="text-sm font-semibold tabular-nums text-white">{{ evaluationResult.scores.tr.toFixed(1) }}</div>
+                <div class="text-[10px] text-white/70 uppercase">TR</div>
               </div>
-              <div class="bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700">
-                <div class="text-sm font-bold text-sky-400">{{ evaluationResult.scores.cc.toFixed(1) }}</div>
-                <div class="text-[10px] text-slate-300 uppercase">CC</div>
+              <div class="bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
+                <div class="text-sm font-semibold tabular-nums text-white">{{ evaluationResult.scores.cc.toFixed(1) }}</div>
+                <div class="text-[10px] text-white/70 uppercase">CC</div>
               </div>
-              <div class="bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700">
-                <div class="text-sm font-bold text-emerald-400">{{ evaluationResult.scores.lr.toFixed(1) }}</div>
-                <div class="text-[10px] text-slate-300 uppercase">LR</div>
+              <div class="bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
+                <div class="text-sm font-semibold tabular-nums text-white">{{ evaluationResult.scores.lr.toFixed(1) }}</div>
+                <div class="text-[10px] text-white/70 uppercase">LR</div>
               </div>
-              <div class="bg-slate-800/80 px-2.5 py-1.5 rounded-lg border border-slate-700">
-                <div class="text-sm font-bold text-purple-400">{{ evaluationResult.scores.gra.toFixed(1) }}</div>
-                <div class="text-[10px] text-slate-300 uppercase">GRA</div>
+              <div class="bg-white/10 px-3 py-1.5 rounded-xl border border-white/10">
+                <div class="text-sm font-semibold tabular-nums text-white">{{ evaluationResult.scores.gra.toFixed(1) }}</div>
+                <div class="text-[10px] text-white/70 uppercase">GRA</div>
               </div>
             </div>
           </div>
