@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
 };
 
 export const AVATAR_OPTIONS = [
+  { id: 'grad', emoji: '🎓', label: '学术帽' },
   { id: 'cat', emoji: '🐱', label: '学霸猫' },
   { id: 'target', emoji: '🎯', label: '7分必过' },
   { id: 'owl', emoji: '🦉', label: '夜读猫头鹰' },
@@ -22,10 +23,11 @@ export function getDefaultUser(): UserAccount {
   return {
     id: 'user_default_joshua',
     username: 'Joshua',
-    displayName: 'Joshua · 4.0➔7.0 冲刺',
-    avatar: '🎯',
-    currentBand: 4.0,
+    displayName: 'Joshua',
+    avatar: '🎓',
+    currentBand: 0, // All users start at 0 initial baseline
     targetBand: 7.0,
+    hasCompletedPlacement: false,
     examDate: futureDate.toISOString().split('T')[0],
     createdAt: new Date().toISOString(),
     lastLoginAt: new Date().toISOString()
@@ -120,9 +122,10 @@ export function registerUser(params: {
     id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     username: trimmedName,
     displayName: params.displayName || trimmedName,
-    avatar: params.avatar || '🐱',
-    currentBand: params.currentBand ?? 4.0,
+    avatar: params.avatar || '🎓',
+    currentBand: 0, // All newly registered users strictly start at 0 before diagnostic placement
     targetBand: params.targetBand ?? 7.0,
+    hasCompletedPlacement: false,
     examDate: params.examDate || futureDate.toISOString().split('T')[0],
     createdAt: new Date().toISOString(),
     lastLoginAt: new Date().toISOString(),
@@ -176,4 +179,63 @@ export function updateActiveUserProfile(updates: Partial<UserAccount>): UserAcco
   }
 
   return accounts[index];
+}
+
+export function updateUserPlacement(
+  userId: string, 
+  placement: { 
+    testedBand: number; 
+    rawScore: number; 
+    totalQuestions: number; 
+    levelSummary: string;
+  }
+): UserAccount {
+  const accounts = getAccounts();
+  const index = accounts.findIndex(a => a.id === userId);
+  if (index === -1) {
+    throw new Error('User not found');
+  }
+
+  const updatedUser: UserAccount = {
+    ...accounts[index],
+    currentBand: placement.testedBand,
+    hasCompletedPlacement: true,
+    placementScore: {
+      ...placement,
+      completedAt: new Date().toISOString()
+    }
+  };
+
+  accounts[index] = updatedUser;
+  localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+
+  // Also sync the study plan config for this user
+  try {
+    const planKey = `user_${userId}_ielts_study_plan_config`;
+    const rawPlan = localStorage.getItem(planKey);
+    if (rawPlan) {
+      const plan = JSON.parse(rawPlan);
+      plan.currentBand = placement.testedBand;
+      localStorage.setItem(planKey, JSON.stringify(plan));
+    } else {
+      localStorage.setItem(planKey, JSON.stringify({
+        currentBand: placement.testedBand,
+        targetBand: updatedUser.targetBand,
+        targetListening: Math.min(9.0, placement.testedBand + 3.0),
+        targetReading: Math.min(9.0, placement.testedBand + 3.0),
+        targetWriting: Math.min(9.0, placement.testedBand + 2.0),
+        targetSpeaking: Math.min(9.0, placement.testedBand + 2.0),
+        totalDays: 178,
+        currentDay: 1,
+        dailyHours: 2.5
+      }));
+    }
+  } catch {}
+
+  // Dispatch event
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('ielts_auth_changed', { detail: updatedUser }));
+  }
+
+  return updatedUser;
 }

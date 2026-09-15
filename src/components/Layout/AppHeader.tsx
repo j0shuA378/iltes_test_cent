@@ -13,6 +13,7 @@ interface AppHeaderProps {
   onOpenDictionary: () => void;
   onOpenAuthModal: () => void;
   onNavigateTab: (tab: string) => void;
+  onOpenPlacementTest?: () => void;
   dueVocabCount?: number;
   remainingDays?: number;
 }
@@ -23,6 +24,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   onOpenDictionary,
   onOpenAuthModal,
   onNavigateTab,
+  onOpenPlacementTest,
   dueVocabCount = 0,
   remainingDays = 178
 }) => {
@@ -57,6 +59,18 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
 
       {/* Right: Ebbinghaus Review Due Pill, Countdown & User Account */}
       <div className="flex items-center gap-2.5">
+        {/* Diagnostic placement pill if currentBand is 0 */}
+        {activeUser.currentBand === 0 && onOpenPlacementTest && (
+          <button
+            onClick={onOpenPlacementTest}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0071e3]/10 hover:bg-[#0071e3]/15 text-[#0071e3] text-xs font-medium border border-[#0071e3]/20 transition-all cursor-pointer active:scale-98"
+            title="完成 3 分钟学术定级测验"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0071e3] animate-pulse"></span>
+            <span>测定初始成绩</span>
+          </button>
+        )}
+
         {/* Ebbinghaus Review Due Capsule */}
         <button
           onClick={() => onNavigateTab('vocabulary')}
@@ -97,6 +111,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             <div className="font-medium text-xs text-[#1d1d1f] group-hover:text-[#0071e3] transition-colors truncate max-w-[90px]">
               {activeUser.displayName}
             </div>
+            {activeUser.currentBand === 0 && (
+              <div className="text-[9px] text-[#ff9500] font-medium mt-0.5">待定级</div>
+            )}
           </div>
         </button>
       </div>

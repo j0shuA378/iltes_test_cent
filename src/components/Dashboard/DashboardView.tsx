@@ -15,6 +15,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { UserProfile, TestResult } from '../../types/ielts';
+import { UserAccount } from '../../types/auth';
 import { PersonalStudyPlanCard } from './PersonalStudyPlanCard';
 import { EbbinghausWidget } from './EbbinghausWidget';
 import { getStudyPlanConfig } from '../../services/storage';
@@ -24,16 +25,20 @@ interface DashboardViewProps {
   results: TestResult[];
   onNavigate: (tab: string) => void;
   mistakesCount: number;
+  activeUser?: UserAccount;
+  onOpenPlacementTest?: () => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   profile,
   results,
   onNavigate,
-  mistakesCount
+  mistakesCount,
+  activeUser,
+  onOpenPlacementTest
 }) => {
   const planConfig = getStudyPlanConfig() || {
-    currentBand: 4.0,
+    currentBand: activeUser?.currentBand ?? 0.0,
     targetBand: 7.0,
     targetListening: 7.5,
     targetReading: 7.5,
@@ -88,8 +93,37 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* 0. Diagnostic Placement Test Hero Banner (Appears when activeUser.currentBand === 0) */}
+      {(!activeUser || activeUser.currentBand === 0) && (
+        <div className="bg-gradient-to-r from-[#0071e3]/10 via-[#0071e3]/5 to-[#5856d6]/10 border border-[#0071e3]/20 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#0071e3] text-white flex items-center justify-center shadow-md shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-base text-[#1d1d1f]">新学员初始水平待定级 (Band 0.0)</h3>
+                <span className="px-2.5 py-0.5 rounded-full bg-[#0071e3]/15 text-[#0071e3] text-[11px] font-semibold">
+                  推荐完成
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-[#86868b] mt-0.5">
+                只需 3 分钟（6 道精选核心题），快速摸底学术英语基础，即可生成针对你个人的 178 天提分路线图。
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onOpenPlacementTest}
+            className="px-5 py-2.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs sm:text-sm font-medium shadow-sm hover:shadow transition-all shrink-0 cursor-pointer active:scale-98 flex items-center gap-1.5"
+          >
+            <span>开始 3 分钟简易测验</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* 1. Personalized Adaptation Study Plan */}
-      <PersonalStudyPlanCard onNavigate={onNavigate} />
+      <PersonalStudyPlanCard onNavigate={onNavigate} onOpenPlacementTest={onOpenPlacementTest} />
 
       {/* 2. Ebbinghaus Spaced Repetition Memory Engine */}
       <EbbinghausWidget onNavigate={onNavigate} />
@@ -112,8 +146,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
               
               <div className="flex items-baseline justify-between mb-2.5">
-                <span className="text-2xl font-semibold tracking-tight text-[#1d1d1f]">Band {skill.current.toFixed(1)}</span>
-                <span className="text-xs font-normal text-[#86868b]">达标度 {pct}%</span>
+                <span className="text-2xl font-semibold tracking-tight text-[#1d1d1f]">
+                  {skill.current === 0 ? 'Band 0.0 (待定级)' : `Band ${skill.current.toFixed(1)}`}
+                </span>
+                <span className="text-xs font-normal text-[#86868b]">
+                  {skill.current === 0 ? '未测定' : `达标度 ${pct}%`}
+                </span>
               </div>
 
               {/* Apple Rounded Pill Progress Bar */}

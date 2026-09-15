@@ -13,6 +13,7 @@ import { SettingsView } from './components/Settings/SettingsView';
 import { QuestionBankSearchModal } from './components/Search/QuestionBankSearchModal';
 import { DictionaryModal } from './components/Dictionary/DictionaryModal';
 import { FloatingDictionaryButton } from './components/Dictionary/FloatingDictionaryButton';
+import { PlacementTestModal } from './components/Placement/PlacementTestModal';
 import { getUserProfile, getTestResults, getMistakes } from './services/storage';
 import { getActiveUser } from './services/authService';
 import { getDueEbbinghausItems } from './services/ebbinghausService';
@@ -29,6 +30,7 @@ export function App() {
 
   // Modals
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isPlacementOpen, setIsPlacementOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDictionaryOpen, setIsDictionaryOpen] = useState(false);
   const [dictionaryWord, setDictionaryWord] = useState('');
@@ -121,6 +123,7 @@ export function App() {
           onOpenDictionary={() => handleOpenDictionary()}
           onOpenAuthModal={() => setIsAuthModalOpen(true)}
           onNavigateTab={setCurrentTab}
+          onOpenPlacementTest={() => setIsPlacementOpen(true)}
           dueVocabCount={dueVocabCount}
           remainingDays={remainingDays}
         />
@@ -134,6 +137,8 @@ export function App() {
                 results={results} 
                 onNavigate={setCurrentTab}
                 mistakesCount={mistakesCount}
+                activeUser={activeUser}
+                onOpenPlacementTest={() => setIsPlacementOpen(true)}
               />
             )}
 
@@ -240,6 +245,21 @@ export function App() {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onUserSwitched={() => refreshUserData()}
+        onUserRegistered={() => {
+          refreshUserData();
+          // Open 3-min diagnostic placement test right after user registration
+          setIsPlacementOpen(true);
+        }}
+      />
+
+      {/* 3-Minute Academic Placement Diagnostic Test Modal */}
+      <PlacementTestModal
+        isOpen={isPlacementOpen}
+        onClose={() => setIsPlacementOpen(false)}
+        activeUser={activeUser}
+        onCompleted={() => {
+          refreshUserData();
+        }}
       />
     </div>
   );

@@ -34,9 +34,10 @@ import { AdaptationConfigModal } from './AdaptationConfigModal';
 
 interface PersonalStudyPlanCardProps {
   onNavigate: (tab: string) => void;
+  onOpenPlacementTest?: () => void;
 }
 
-export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ onNavigate }) => {
+export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ onNavigate, onOpenPlacementTest }) => {
   const [config, setConfig] = useState<PersonalizedPlanConfig>(() => {
     const saved = getStudyPlanConfig();
     return saved || DEFAULT_PLAN_CONFIG;
@@ -77,20 +78,32 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
               <span>个人专属适配方案 · 178天进阶跃迁</span>
             </div>
 
-            <button
-              onClick={() => setIsConfigModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium border border-black/[0.04] transition-all cursor-pointer"
-            >
-              <Sliders className="w-3.5 h-3.5 text-[#86868b]" />
-              <span>个性化参数调优</span>
-            </button>
+            <div className="flex items-center gap-2">
+              {config.currentBand === 0 && onOpenPlacementTest && (
+                <button
+                  onClick={onOpenPlacementTest}
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-98"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>参加定级测验</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => setIsConfigModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium border border-black/[0.04] transition-all cursor-pointer"
+              >
+                <Sliders className="w-3.5 h-3.5 text-[#86868b]" />
+                <span>个性化参数调优</span>
+              </button>
+            </div>
           </div>
 
           {/* Core Title & Band Progression */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="space-y-2">
               <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
-                当前水平 <span className="text-[#ff9500]">Band {config.currentBand.toFixed(1)}</span>
+                当前水平 <span className="text-[#ff9500]">{config.currentBand === 0 ? 'Band 0.0 (待定级)' : `Band ${config.currentBand.toFixed(1)}`}</span>
                 <span className="mx-2.5 text-[#86868b] font-normal">➔</span>
                 目标总分 <span className="text-[#34c759]">Band {config.targetBand.toFixed(1)}</span>
               </h1>
@@ -111,7 +124,9 @@ export const PersonalStudyPlanCard: React.FC<PersonalStudyPlanCardProps> = ({ on
               </div>
               <div className="h-8 w-px bg-black/[0.08]"></div>
               <div className="text-center px-2 sm:px-3">
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0071e3]">+{((config.targetBand - config.currentBand)).toFixed(1)}</div>
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0071e3]">
+                  {config.currentBand === 0 ? '待测定' : `+${(config.targetBand - config.currentBand).toFixed(1)}`}
+                </div>
                 <div className="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">净提分幅度</div>
               </div>
               <div className="h-8 w-px bg-black/[0.08]"></div>

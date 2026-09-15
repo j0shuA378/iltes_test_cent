@@ -6,12 +6,20 @@ export interface UserAccount {
   displayName: string;
   email?: string;
   avatar: string; // Emoji avatar or preset identifier
-  currentBand: number; // e.g. 4.0
+  currentBand: number; // 0 for untested/initial baseline (e.g. 0.0)
   targetBand: number;  // e.g. 7.0
   examDate: string;    // YYYY-MM-DD
   createdAt: string;   // ISO string
   lastLoginAt: string; // ISO string
   passwordHash?: string; // Optional simple password/PIN
+  hasCompletedPlacement?: boolean;
+  placementScore?: {
+    testedBand: number;
+    rawScore: number;
+    totalQuestions: number;
+    completedAt: string;
+    levelSummary: string;
+  };
 }
 
 export type MemoryStage = 0 | 1 | 2 | 3 | 4 | 5 | 6;

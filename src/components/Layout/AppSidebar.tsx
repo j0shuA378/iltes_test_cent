@@ -137,7 +137,11 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   {activeUser.displayName}
                 </div>
                 <div className="text-[10px] text-[#86868b] flex items-center gap-1 mt-0.5 font-normal">
-                  <span className="text-[#ff9500] font-medium">B{activeUser.currentBand.toFixed(1)}</span>
+                  {activeUser.currentBand === 0 ? (
+                    <span className="text-[#ff9500] font-medium bg-[#ff9500]/10 px-1 py-0.5 rounded text-[9px]">待定级</span>
+                  ) : (
+                    <span className="text-[#ff9500] font-medium">B{activeUser.currentBand.toFixed(1)}</span>
+                  )}
                   <span>➔</span>
                   <span className="text-[#34c759] font-medium">B{activeUser.targetBand.toFixed(1)}</span>
                 </div>

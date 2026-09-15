@@ -27,6 +27,7 @@ interface AuthModalProps {
   initialMode?: 'switch' | 'register' | 'login';
   onAuthSuccess?: (user: UserAccount) => void;
   onUserSwitched?: () => void;
+  onUserRegistered?: (user: UserAccount) => void;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({
@@ -34,7 +35,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onClose,
   initialMode = 'switch',
   onAuthSuccess,
-  onUserSwitched
+  onUserSwitched,
+  onUserRegistered
 }) => {
   const [mode, setMode] = useState<'switch' | 'register' | 'login'>(initialMode);
   const [accounts, setAccounts] = useState<UserAccount[]>(() => getAccounts());
@@ -44,7 +46,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [regUsername, setRegUsername] = useState('');
   const [regDisplayName, setRegDisplayName] = useState('');
   const [regAvatar, setRegAvatar] = useState('🎓');
-  const [regCurrentBand, setRegCurrentBand] = useState<number>(4.0);
   const [regTargetBand, setRegTargetBand] = useState<number>(7.0);
   const [regDays, setRegDays] = useState<number>(178);
   const [regPassword, setRegPassword] = useState('');
@@ -89,7 +90,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         username: regUsername,
         displayName: regDisplayName || regUsername,
         avatar: regAvatar,
-        currentBand: regCurrentBand,
+        currentBand: 0, // All registered users start with baseline 0
         targetBand: regTargetBand,
         examDate: futureDate.toISOString().split('T')[0],
         password: regPassword || undefined
@@ -97,6 +98,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
       setAccounts(getAccounts());
       handleNotifySuccess(user);
+      if (onUserRegistered) {
+        onUserRegistered(user);
+      }
       onClose();
     } catch (e: any) {
       setRegError(e.message || '注册失败');
@@ -225,7 +229,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                           )}
                         </div>
                         <div className="text-xs text-[#86868b] mt-0.5 flex items-center gap-2 font-normal">
-                          <span>基础 Band {acc.currentBand.toFixed(1)}</span>
+                          <span>{acc.currentBand === 0 ? '待定级 (Band 0.0)' : `基础 Band ${acc.currentBand.toFixed(1)}`}</span>
                           <span>➔</span>
                           <span className="text-[#34c759] font-medium">目标 Band {acc.targetBand.toFixed(1)}</span>
                           <span className="text-[#86868b]">· 考期 {acc.examDate}</span>
@@ -324,20 +328,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#f5f5f7] p-4 rounded-2xl border border-black/[0.02]">
                 <div>
                   <label className="block text-[11px] font-medium text-[#86868b] mb-1">
-                    当前基础分
+                    初始成绩起点
                   </label>
-                  <select
-                    value={regCurrentBand}
-                    onChange={(e) => setRegCurrentBand(parseFloat(e.target.value))}
-                    className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold focus:outline-none"
-                  >
-                    <option value={3.5}>Band 3.5</option>
-                    <option value={4.0}>Band 4.0 (推荐)</option>
-                    <option value={4.5}>Band 4.5</option>
-                    <option value={5.0}>Band 5.0</option>
-                    <option value={5.5}>Band 5.5</option>
-                    <option value={6.0}>Band 6.0</option>
-                  </select>
+                  <div className="w-full bg-white border border-black/[0.06] rounded-xl p-2 text-xs font-semibold text-[#ff9500] flex items-center justify-between shadow-2xs">
+                    <span>Band 0.0</span>
+                    <span className="text-[10px] font-normal text-[#86868b]">注册后测验定级</span>
+                  </div>
                 </div>
 
                 <div>
