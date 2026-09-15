@@ -48,7 +48,7 @@ export function getUserProfile(): UserProfile {
     if (!raw) {
       // Check legacy migration
       const legacy = localStorage.getItem('ielts_user_profile');
-      if (legacy && getActiveUserId() === 'user_default_joshua') {
+      if (legacy && (getActiveUserId() === 'user_default_joshua' || getActiveUserId() === 'user_guest')) {
         localStorage.setItem(key, legacy);
         return JSON.parse(legacy);
       }
@@ -73,7 +73,7 @@ export function getTestResults(): TestResult[] {
     const raw = localStorage.getItem(key);
     if (!raw) {
       const legacy = localStorage.getItem('ielts_test_results');
-      if (legacy && getActiveUserId() === 'user_default_joshua') {
+      if (legacy && (getActiveUserId() === 'user_default_joshua' || getActiveUserId() === 'user_guest')) {
         localStorage.setItem(key, legacy);
         return JSON.parse(legacy);
       }
@@ -98,7 +98,7 @@ export function getMistakes(): MistakeRecord[] {
     const raw = localStorage.getItem(key);
     if (!raw) {
       const legacy = localStorage.getItem('ielts_mistakes');
-      if (legacy && getActiveUserId() === 'user_default_joshua') {
+      if (legacy && (getActiveUserId() === 'user_default_joshua' || getActiveUserId() === 'user_guest')) {
         localStorage.setItem(key, legacy);
         return JSON.parse(legacy);
       }
@@ -175,7 +175,7 @@ export function getVocabProgress(): Record<string, { status: 'unfamiliar' | 'lea
     const raw = localStorage.getItem(key);
     if (!raw) {
       const legacy = localStorage.getItem('ielts_vocab_progress');
-      if (legacy && getActiveUserId() === 'user_default_joshua') {
+      if (legacy && (getActiveUserId() === 'user_default_joshua' || getActiveUserId() === 'user_guest')) {
         localStorage.setItem(key, legacy);
         return JSON.parse(legacy);
       }
@@ -210,7 +210,7 @@ export function getStudyPlanConfig(): any {
     const raw = localStorage.getItem(key);
     if (!raw) {
       const legacy = localStorage.getItem('ielts_study_plan_config');
-      if (legacy && getActiveUserId() === 'user_default_joshua') {
+      if (legacy && (getActiveUserId() === 'user_default_joshua' || getActiveUserId() === 'user_guest')) {
         localStorage.setItem(key, legacy);
         return JSON.parse(legacy);
       }

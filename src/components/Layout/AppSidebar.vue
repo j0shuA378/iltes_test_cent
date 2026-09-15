@@ -165,22 +165,27 @@ const getItemBadge = (badgeType: string | null) => {
               {{ activeUser.displayName }}
             </div>
             <div class="text-[10px] text-[#86868b] flex items-center gap-1.5 mt-0.5 font-normal">
-              <span v-if="activeUser.currentBand === 0" class="text-[#86868b] font-medium bg-black/[0.04] px-1.5 py-0.5 rounded text-[10px]">
-                待定级
+              <span v-if="activeUser.id === 'user_guest'" class="text-[#0071e3] font-medium">
+                点击登录/注册
               </span>
-              <span v-else class="text-[#1d1d1f] font-medium">
-                B{{ activeUser.currentBand.toFixed(1) }}
-              </span>
-              <span class="text-black/30">➔</span>
-              <span class="text-[#1d1d1f] font-medium">
-                B{{ activeUser.targetBand.toFixed(1) }}
-              </span>
+              <template v-else>
+                <span v-if="activeUser.currentBand === 0" class="text-[#86868b] font-medium bg-black/[0.04] px-1.5 py-0.5 rounded text-[10px]">
+                  待定级
+                </span>
+                <span v-else class="text-[#1d1d1f] font-medium">
+                  B{{ activeUser.currentBand.toFixed(1) }}
+                </span>
+                <span class="text-black/30">➔</span>
+                <span class="text-[#1d1d1f] font-medium">
+                  B{{ activeUser.targetBand.toFixed(1) }}
+                </span>
+              </template>
             </div>
           </div>
         </div>
 
         <div v-if="!isCollapsed" class="text-[10px] font-medium text-[#86868b] group-hover:text-[#1d1d1f] px-2 py-0.5 rounded-full bg-black/[0.04] shrink-0">
-          切换
+          {{ activeUser.id === 'user_guest' ? '登录' : '切换' }}
         </div>
       </button>
     </div>

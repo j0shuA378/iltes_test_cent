@@ -123,7 +123,7 @@ const emit = defineEmits<{
       <button
         @click="emit('openAuthModal')"
         class="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full bg-black/[0.03] hover:bg-black/[0.06] border border-black/[0.04] transition-all group cursor-pointer"
-        title="点击切换账号或注册新学员"
+        :title="activeUser.id === 'user_guest' ? '点击登录或注册学员' : '点击切换账号或查看学员档案'"
       >
         <div class="w-6 h-6 rounded-full bg-white border border-black/[0.08] shadow-2xs flex items-center justify-center text-xs group-hover:scale-105 transition-transform">
           {{ activeUser.avatar }}
@@ -132,8 +132,8 @@ const emit = defineEmits<{
           <div class="font-medium text-xs text-[#1d1d1f] group-hover:text-[#0071e3] transition-colors truncate max-w-[90px]">
             {{ activeUser.displayName }}
           </div>
-          <div v-if="activeUser.currentBand === 0" class="text-[10px] text-[#86868b] font-medium mt-0.5">
-            待定级
+          <div class="text-[10px] text-[#86868b] font-medium mt-0.5">
+            {{ activeUser.id === 'user_guest' ? '未登录' : (activeUser.currentBand === 0 ? '待定级' : `Band ${activeUser.currentBand.toFixed(1)}`) }}
           </div>
         </div>
       </button>

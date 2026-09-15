@@ -234,6 +234,7 @@ const remainingDays = computed(() => {
               refreshUserData();
             }" 
             @openAdmin="navigateToAdmin"
+            @openAuthModal="isAuthModalOpen = true"
           />
         </main>
 

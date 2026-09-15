@@ -1,4 +1,4 @@
-import { getAccounts, getActiveUserId, setActiveUser } from './authService';
+import { getAccounts, getActiveUserId, setActiveUser, getDefaultUser } from './authService';
 import { READING_TESTS } from '../data/readingTests';
 import { LISTENING_TESTS } from '../data/listeningTests';
 import { WRITING_TASKS } from '../data/writingTasks';
@@ -237,7 +237,17 @@ export function getAllStudents(): StudentDetail[] {
 export function deleteStudentAccount(userId: string): { success: boolean; error?: string } {
   const accounts = getAccounts();
   if (accounts.length <= 1) {
-    return { success: false, error: '系统必须保留至少一位学员档案，无法删除最后一位学员。' };
+    const prefix = 'user_' + userId + '_';
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(prefix)) {
+        localStorage.removeItem(k);
+      }
+    }
+    const guest = getDefaultUser();
+    localStorage.setItem('ielts_user_accounts', JSON.stringify([guest]));
+    setActiveUser(guest.id);
+    return { success: true };
   }
 
   const index = accounts.findIndex(a => a.id === userId);

@@ -9,7 +9,10 @@ import {
   PlusCircle, 
   LogIn, 
   ArrowRight, 
-  AlertCircle
+  AlertCircle,
+  Trash2,
+  LogOut,
+  ShieldCheck
 } from 'lucide-vue-next';
 import { 
   getAccounts, 
@@ -17,6 +20,8 @@ import {
   setActiveUser, 
   registerUser, 
   loginUser, 
+  removeAccount,
+  logoutActiveUser,
   AVATAR_OPTIONS 
 } from '../../services/authService';
 import type { UserAccount } from '../../types/auth';
@@ -53,6 +58,11 @@ const loginUsername = ref('');
 const loginPassword = ref('');
 const loginError = ref('');
 
+// Password prompt when switching into a password-protected account
+const verifyPasswordAccount = ref<UserAccount | null>(null);
+const verifyPasswordInput = ref('');
+const verifyPasswordError = ref('');
+
 watch(() => props.isOpen, (open) => {
   if (open) {
     mode.value = props.initialMode;
@@ -60,6 +70,9 @@ watch(() => props.isOpen, (open) => {
     activeUser.value = getActiveUser();
     regError.value = '';
     loginError.value = '';
+    verifyPasswordAccount.value = null;
+    verifyPasswordInput.value = '';
+    verifyPasswordError.value = '';
   }
 });
 
@@ -68,14 +81,74 @@ const handleNotifySuccess = (user: UserAccount) => {
   emit('userSwitched');
 };
 
-const handleSwitch = (userId: string) => {
+const handleSwitch = (acc: UserAccount) => {
+  if (acc.id === activeUser.value.id) return;
+
+  // If the target account is password-protected, prompt for password first
+  if (acc.passwordHash) {
+    verifyPasswordAccount.value = acc;
+    verifyPasswordInput.value = '';
+    verifyPasswordError.value = '';
+    return;
+  }
+
   try {
-    const user = setActiveUser(userId);
+    const user = setActiveUser(acc.id);
+    activeUser.value = user;
     handleNotifySuccess(user);
     emit('close');
   } catch (e: any) {
     alert(e.message || '切换失败');
   }
+};
+
+const handleVerifyPasswordSwitch = () => {
+  if (!verifyPasswordAccount.value) return;
+  verifyPasswordError.value = '';
+
+  const target = verifyPasswordAccount.value;
+  if (target.passwordHash && btoa(verifyPasswordInput.value) !== target.passwordHash) {
+    verifyPasswordError.value = '密码不正确，请重新输入';
+    return;
+  }
+
+  try {
+    const user = setActiveUser(target.id);
+    activeUser.value = user;
+    verifyPasswordAccount.value = null;
+    handleNotifySuccess(user);
+    emit('close');
+  } catch (e: any) {
+    verifyPasswordError.value = e.message || '切换失败';
+  }
+};
+
+const handleRemove = (acc: UserAccount, e: Event) => {
+  e.stopPropagation();
+  const isSelf = acc.id === activeUser.value.id;
+  const confirmMsg = isSelf 
+    ? `确定要从本设备移除当前学员 @${acc.username} (${acc.displayName}) 吗？\n移除后将清空本机做题记录并切换至访客模式。`
+    : `确定要从本设备移除学员 @${acc.username} (${acc.displayName}) 吗？\n移除后该学员的数据将不再保存在本设备中。`;
+
+  if (!confirm(confirmMsg)) {
+    return;
+  }
+
+  const res = removeAccount(acc.id);
+  accounts.value = getAccounts();
+  activeUser.value = getActiveUser();
+
+  if (res.newActiveUser) {
+    handleNotifySuccess(res.newActiveUser);
+  }
+};
+
+const handleLogoutActive = () => {
+  if (!confirm('确定要退出当前学员登录并切换至访客模式吗？')) return;
+  const guest = logoutActiveUser();
+  accounts.value = getAccounts();
+  activeUser.value = guest;
+  handleNotifySuccess(guest);
 };
 
 const handleRegister = () => {
@@ -101,6 +174,7 @@ const handleRegister = () => {
     });
 
     accounts.value = getAccounts();
+    activeUser.value = user;
     handleNotifySuccess(user);
     emit('userRegistered', user);
     emit('close');
@@ -120,6 +194,7 @@ const handleLogin = () => {
   const res = loginUser(loginUsername.value, loginPassword.value || undefined);
   if (res.success && res.user) {
     accounts.value = getAccounts();
+    activeUser.value = res.user;
     handleNotifySuccess(res.user);
     emit('close');
   } else {
@@ -135,9 +210,56 @@ const handleLogin = () => {
     @click.self="emit('close')"
   >
     <div 
-      class="bg-white/95 backdrop-blur-2xl rounded-3xl w-full max-w-lg shadow-[0_24px_70px_rgba(0,0,0,0.14)] border border-black/[0.06] overflow-hidden flex flex-col animate-scaleUp max-h-[90vh]"
+      class="bg-white/95 backdrop-blur-2xl rounded-3xl w-full max-w-lg shadow-[0_24px_70px_rgba(0,0,0,0.14)] border border-black/[0.06] overflow-hidden flex flex-col animate-scaleUp max-h-[90vh] relative"
       @click.stop
     >
+      <!-- Sub-dialog: Password verification modal when switching -->
+      <div 
+        v-if="verifyPasswordAccount"
+        class="absolute inset-0 bg-white/95 backdrop-blur-2xl z-30 p-6 flex flex-col justify-center items-center text-center animate-fadeIn"
+      >
+        <div class="w-12 h-12 rounded-2xl bg-[#1d1d1f] text-white flex items-center justify-center mb-3 shadow-sm">
+          <Lock class="w-5 h-5" />
+        </div>
+        <h3 class="text-base font-semibold text-[#1d1d1f]">验证安全密码</h3>
+        <p class="text-xs text-[#86868b] mt-1 max-w-xs">
+          学员 <strong>@{{ verifyPasswordAccount.username }}</strong> 已开启密码保护，请输入密码以切换档案：
+        </p>
+
+        <form @submit.prevent="handleVerifyPasswordSwitch" class="w-full max-w-xs mt-4 space-y-3">
+          <div>
+            <input
+              v-model="verifyPasswordInput"
+              type="password"
+              autofocus
+              placeholder="输入该学员密码"
+              required
+              class="w-full px-4 py-2.5 bg-[#f5f5f7] border border-black/[0.06] rounded-xl text-xs text-[#1d1d1f] focus:outline-none focus:bg-white focus:border-[#0071e3] transition-all font-mono"
+            />
+            <p v-if="verifyPasswordError" class="text-xs text-[#ff3b30] mt-1.5 font-medium flex items-center justify-center gap-1">
+              <AlertCircle class="w-3.5 h-3.5" />
+              <span>{{ verifyPasswordError }}</span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2 pt-1">
+            <button
+              type="button"
+              @click="verifyPasswordAccount = null"
+              class="flex-1 py-2 rounded-full text-xs font-medium text-[#86868b] hover:bg-[#f5f5f7] cursor-pointer"
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              class="flex-1 py-2 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-semibold shadow-xs cursor-pointer active:scale-98"
+            >
+              验证切换
+            </button>
+          </div>
+        </form>
+      </div>
+
       <!-- Header (Apple Sheet Style) -->
       <div class="p-5 sm:p-6 pb-4 flex items-center justify-between border-b border-black/[0.04]">
         <div class="flex items-center gap-3">
@@ -199,55 +321,83 @@ const handleLogin = () => {
       <div class="p-5 sm:p-6 overflow-y-auto space-y-4">
         <!-- MODE: SWITCH ACCOUNTS -->
         <div v-if="mode === 'switch'" class="space-y-2.5">
-          <div class="text-xs text-[#86868b] mb-2 font-normal">
-            轻点切换进入学员专属档案（数据完全物理隔离）：
+          <div class="text-xs text-[#86868b] mb-2 font-normal flex items-center justify-between">
+            <span>本设备已保存学员档案（数据完全物理隔离）：</span>
           </div>
 
           <div 
             v-for="acc in accounts"
             :key="acc.id"
-            @click="handleSwitch(acc.id)"
+            @click="handleSwitch(acc)"
             :class="[
-              'p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer',
+              'p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer group',
               acc.id === activeUser.id
                 ? 'bg-white border-[#0071e3] ring-2 ring-[#0071e3]/15 shadow-sm'
                 : 'bg-[#f5f5f7] hover:bg-[#e8e8ed]/80 border-transparent'
             ]"
           >
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 min-w-0">
               <div class="w-10 h-10 rounded-2xl bg-white border border-black/[0.04] shadow-2xs flex items-center justify-center text-xl shrink-0">
                 {{ acc.avatar }}
               </div>
-              <div>
+              <div class="min-w-0 truncate">
                 <div class="flex items-center gap-2">
-                  <span class="font-semibold text-sm text-[#1d1d1f]">{{ acc.displayName }}</span>
-                  <span class="text-[11px] text-[#86868b]">(@{{ acc.username }})</span>
-                  <span v-if="acc.id === activeUser.id" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#0071e3] text-white">
+                  <span class="font-semibold text-sm text-[#1d1d1f] truncate">{{ acc.displayName }}</span>
+                  <span class="text-[11px] text-[#86868b] shrink-0">(@{{ acc.username }})</span>
+                  <span v-if="acc.id === activeUser.id" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#0071e3] text-white shrink-0">
                     当前使用
                   </span>
+                  <span v-if="acc.id === 'user_guest'" class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/[0.05] text-[#86868b] shrink-0">
+                    访客
+                  </span>
                 </div>
-                <div class="text-xs text-[#86868b] mt-0.5 flex items-center gap-2 font-normal">
-                  <span>{{ acc.currentBand === 0 ? '待定级 (Band 0.0)' : `基础 Band ${acc.currentBand.toFixed(1)}` }}</span>
+                <div class="text-xs text-[#86868b] mt-0.5 flex items-center gap-2 font-normal truncate">
+                  <span>{{ acc.currentBand === 0 ? '待定级 (0.0)' : `基础 Band ${acc.currentBand.toFixed(1)}` }}</span>
                   <span>➔</span>
                   <span class="text-[#1d1d1f] font-medium">目标 Band {{ acc.targetBand.toFixed(1) }}</span>
-                  <span class="text-[#86868b]">· 考期 {{ acc.examDate }}</span>
+                  <span v-if="acc.examDate" class="text-[#86868b] hidden sm:inline">· 考期 {{ acc.examDate }}</span>
                 </div>
               </div>
             </div>
 
-            <div class="shrink-0">
+            <div class="shrink-0 flex items-center gap-1.5 ml-2">
+              <div v-if="acc.passwordHash" class="p-1 text-[#86868b]" title="已设置安全密码保护">
+                <Lock class="w-3.5 h-3.5" />
+              </div>
+              
               <Check v-if="acc.id === activeUser.id" class="w-5 h-5 text-[#0071e3]" />
               <ArrowRight v-else class="w-4 h-4 text-[#86868b]" />
+
+              <!-- Delete / Remove button on account card -->
+              <button
+                type="button"
+                @click.stop="handleRemove(acc, $event)"
+                class="p-1.5 rounded-xl text-[#86868b] hover:text-[#ff3b30] hover:bg-red-50/80 transition-colors cursor-pointer"
+                title="从本设备移除此学员档案"
+              >
+                <Trash2 class="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
-          <div class="pt-2">
+          <div class="pt-3 space-y-2">
             <button
               @click="mode = 'register'"
               class="w-full py-2.5 rounded-full border border-dashed border-black/[0.15] hover:border-[#0071e3] text-[#86868b] hover:text-[#0071e3] text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <PlusCircle class="w-4 h-4" />
               <span>添加新的学员档案</span>
+            </button>
+
+            <!-- Sign out button when logged in as a student -->
+            <button
+              v-if="activeUser.id !== 'user_guest'"
+              type="button"
+              @click="handleLogoutActive"
+              class="w-full py-2 rounded-full bg-[#f5f5f7] hover:bg-red-50 text-[#86868b] hover:text-[#ff3b30] text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-black/[0.04]"
+            >
+              <LogOut class="w-3.5 h-3.5" />
+              <span>退出当前账号 (切换至访客模式)</span>
             </button>
           </div>
         </div>
@@ -358,7 +508,7 @@ const handleLogin = () => {
           <!-- Optional Password -->
           <div>
             <label class="block text-xs font-medium text-[#1d1d1f] mb-1">
-              密码保护 (可选，防止他人误登)
+              密码保护 (可选，设置后切换需验证密码)
             </label>
             <div class="relative">
               <Lock class="w-3.5 h-3.5 text-[#86868b] absolute left-3 top-3" />
@@ -399,7 +549,7 @@ const handleLogin = () => {
                 v-model="loginUsername"
                 type="text"
                 required
-                placeholder="输入您的学员用户名"
+                placeholder="输入已在本机注册的用户名"
                 class="w-full pl-9 pr-3 py-2.5 bg-[#f5f5f7] border border-black/[0.06] rounded-xl text-xs focus:bg-white focus:border-[#0071e3] focus:outline-none font-medium"
               />
             </div>

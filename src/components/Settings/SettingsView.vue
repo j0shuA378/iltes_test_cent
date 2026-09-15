@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { 
   Settings, 
   Target, 
@@ -8,12 +8,16 @@ import {
   Upload, 
   Save, 
   Check, 
-  Sparkles,
-  ShieldCheck,
-  ArrowRight
+  Sparkles, 
+  ShieldCheck, 
+  ArrowRight,
+  Users,
+  LogOut
 } from 'lucide-vue-next';
 import type { UserProfile } from '../../types/ielts';
+import type { UserAccount } from '../../types/auth';
 import { saveUserProfile, exportBackupData, importBackupData } from '../../services/storage';
+import { getActiveUser, logoutActiveUser } from '../../services/authService';
 
 const props = defineProps<{
   profile: UserProfile;
@@ -22,11 +26,31 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'updateProfile', p: UserProfile): void;
   (e: 'openAdmin'): void;
+  (e: 'openAuthModal'): void;
 }>();
 
 const formData = ref<UserProfile>({ ...props.profile });
 const savedSuccess = ref(false);
 const importStatus = ref<string | null>(null);
+const activeUser = ref<UserAccount>(getActiveUser());
+
+const handleAuthChanged = () => {
+  activeUser.value = getActiveUser();
+};
+
+onMounted(() => {
+  window.addEventListener('ielts_auth_changed', handleAuthChanged);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('ielts_auth_changed', handleAuthChanged);
+});
+
+const handleLogout = () => {
+  if (!confirm('确定要退出当前学员登录并切换至访客模式吗？')) return;
+  const guest = logoutActiveUser();
+  activeUser.value = guest;
+};
 
 watch(() => props.profile, (newP) => {
   formData.value = { ...newP };
@@ -85,6 +109,49 @@ const handleImportFile = (e: Event) => {
         <span class="text-xs text-[#86868b] mt-0.5 inline-block font-normal">
           个性化定制备考倒计时、目标小分与离线数据安全存储
         </span>
+      </div>
+    </div>
+
+    <!-- Candidate Account Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-[#f5f5f7] border border-black/[0.04] flex items-center justify-center text-2xl shadow-2xs shrink-0">
+          {{ activeUser.avatar }}
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-semibold text-[#1d1d1f]">{{ activeUser.displayName }}</h2>
+            <span class="text-xs text-[#86868b]">(@{{ activeUser.username }})</span>
+            <span v-if="activeUser.id === 'user_guest'" class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/[0.04] text-[#86868b]">
+              访客模式
+            </span>
+          </div>
+          <p class="text-xs text-[#86868b] mt-0.5">
+            {{ activeUser.id === 'user_guest' ? '未登录专属学员档案，数据保存在本地临时沙箱中' : `基础 Band ${activeUser.currentBand.toFixed(1)} ➔ 目标 Band ${activeUser.targetBand.toFixed(1)} · 考期 ${activeUser.examDate}` }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          @click="emit('openAuthModal')"
+          class="px-4 py-2 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-semibold shadow-2xs transition-all cursor-pointer active:scale-98 flex items-center gap-1.5"
+        >
+          <Users class="w-3.5 h-3.5" />
+          <span>{{ activeUser.id === 'user_guest' ? '登录 / 注册学员' : '切换学员档案' }}</span>
+        </button>
+
+        <button
+          v-if="activeUser.id !== 'user_guest'"
+          type="button"
+          @click="handleLogout"
+          class="px-3.5 py-2 rounded-full bg-[#f5f5f7] hover:bg-red-50 text-[#86868b] hover:text-[#ff3b30] text-xs font-medium transition-colors cursor-pointer flex items-center gap-1 border border-black/[0.04]"
+          title="退出当前登录"
+        >
+          <LogOut class="w-3.5 h-3.5" />
+          <span>退出登录</span>
+        </button>
       </div>
     </div>
 
