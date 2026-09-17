@@ -15,11 +15,15 @@ import { LISTENING_TESTS } from '../../data/listeningTests';
 import { WRITING_TASKS } from '../../data/writingTasks';
 import { SPEAKING_TOPICS } from '../../data/speakingTopics';
 
+import { inferBankCategory } from '../../services/questionBankService';
+import type { BankCategory } from '../../types/ielts';
+
 export interface SearchResultItem {
   id: string;
   module: 'reading' | 'listening' | 'writing' | 'speaking';
   title: string;
   source: string;
+  bankCategory: BankCategory;
   year?: string;
   category: string;
   description: string;
@@ -51,6 +55,7 @@ const allItems = computed<SearchResultItem[]>(() => {
       module: 'reading',
       title: rt.title,
       source: rt.source,
+      bankCategory: inferBankCategory(rt),
       year: rt.year || '2024',
       category: `包含 ${rt.passages.length} 篇学术长难篇章`,
       description: rt.passages.map(p => `Passage ${p.id}: ${p.title}`).join(' | '),
@@ -67,6 +72,7 @@ const allItems = computed<SearchResultItem[]>(() => {
       module: 'listening',
       title: lt.title,
       source: lt.source,
+      bankCategory: inferBankCategory(lt),
       year: lt.year || '2024',
       category: `包含 Section 1 - ${lt.sections.length} 仿真音频`,
       description: lt.sections.map(s => `Section ${s.sectionNumber}: ${s.title}`).join(' | '),
@@ -82,6 +88,7 @@ const allItems = computed<SearchResultItem[]>(() => {
       module: 'writing',
       title: `[${wt.type.toUpperCase()}] ${wt.title}`,
       source: wt.source || 'Cambridge IELTS Collection',
+      bankCategory: inferBankCategory(wt),
       year: wt.year || '2024-2025',
       category: wt.category,
       description: wt.prompt.slice(0, 120) + '...',
@@ -97,6 +104,7 @@ const allItems = computed<SearchResultItem[]>(() => {
       module: 'speaking',
       title: `[Part ${st.part}] ${st.title}`,
       source: st.source || '2024-2025 官方轮换题库',
+      bankCategory: inferBankCategory(st),
       year: '2024-2025',
       category: st.category,
       description: st.part === 2 ? (st.cueCard?.topic || '') : (st.questions?.slice(0, 2).join(' | ') || ''),
@@ -112,9 +120,7 @@ const filteredItems = computed(() => {
   return allItems.value.filter(item => {
     if (selectedModule.value !== 'all' && item.module !== selectedModule.value) return false;
     if (selectedSource.value !== 'all') {
-      if (selectedSource.value === 'cam19' && !item.source.toLowerCase().includes('19')) return false;
-      if (selectedSource.value === 'cam18' && !item.source.toLowerCase().includes('18')) return false;
-      if (selectedSource.value === 'cdi' && !item.source.toLowerCase().includes('机考') && !item.source.toLowerCase().includes('回忆') && !item.source.toLowerCase().includes('轮换')) return false;
+      if (item.bankCategory !== selectedSource.value) return false;
     }
 
     if (!query.value.trim()) return true;
@@ -219,10 +225,11 @@ const getModuleBadge = (module: string) => {
             <span class="text-[#86868b] text-[11px]">来源:</span>
             <button
               v-for="src in [
-                { id: 'all', label: '全部' },
-                { id: 'cam19', label: '剑 19 最新' },
-                { id: 'cam18', label: '剑 18' },
-                { id: 'cdi', label: '机考回忆库' },
+                { id: 'all', label: '全部题库' },
+                { id: 'cam19', label: '剑桥 19' },
+                { id: 'cam18', label: '剑桥 18' },
+                { id: 'cam17', label: '剑桥 17' },
+                { id: 'cdi_recent', label: '机考精选' },
               ]"
               :key="src.id"
               @click="selectedSource = src.id"

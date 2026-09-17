@@ -1,5 +1,17 @@
 export type ModuleType = 'reading' | 'listening' | 'writing' | 'speaking';
 
+export type BankCategory = 'all' | 'cam19' | 'cam18' | 'cam17' | 'cdi_recent';
+
+export type RandomDrillType = 'full_test' | 'single_passage' | 'question_type' | 'mistake_weighted';
+
+export interface RandomDrillConfig {
+  module: ModuleType;
+  bankCategory: BankCategory;
+  drillType: RandomDrillType;
+  targetQuestionType?: QuestionType;
+  targetPassageOrSection?: number;
+}
+
 export interface UserProfile {
   targetOverall: number;
   targetListening: number;
@@ -50,6 +62,7 @@ export interface ReadingTest {
   id: string;
   title: string;
   source: string; // e.g., 'Cambridge IELTS 19'
+  bankCategory?: BankCategory;
   year?: string;
   difficulty?: 'Medium' | 'Hard' | 'Authentic Exam';
   tags?: string[];
@@ -72,6 +85,7 @@ export interface ListeningTest {
   id: string;
   title: string;
   source: string;
+  bankCategory?: BankCategory;
   year?: string;
   difficulty?: 'Medium' | 'Hard' | 'Authentic Exam';
   tags?: string[];
@@ -84,6 +98,7 @@ export interface WritingTask {
   type: 'task1' | 'task2';
   title: string;
   category: string; // 'Line Chart', 'Bar Chart', 'Education', 'Technology', etc.
+  bankCategory?: BankCategory;
   prompt: string;
   year?: string;
   source?: string;
@@ -127,6 +142,7 @@ export interface SpeakingTopic {
   part: 1 | 2 | 3;
   title: string;
   category: string;
+  bankCategory?: BankCategory;
   year?: string;
   source?: string;
   tags?: string[];

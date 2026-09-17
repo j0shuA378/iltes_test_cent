@@ -1,7 +1,7 @@
-import { ListeningTest } from '../types/ielts';
+const fs = require('fs');
+const path = require('path');
 
-export const LISTENING_TESTS: ListeningTest[] = [
-  {
+const cam19Test1 = `  {
     id: 'cam19_test1_listening',
     title: 'Academic Listening Practice Test 1 (Cambridge 19 官方全真卷)',
     source: 'Cambridge IELTS 19 Academic Official',
@@ -106,8 +106,9 @@ export const LISTENING_TESTS: ListeningTest[] = [
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cam19Test2 = `  {
     id: 'cam19_test2_listening',
     title: 'Academic Listening Practice Test 2 (Cambridge 19 全真卷)',
     source: 'Cambridge IELTS 19 Academic Official',
@@ -181,9 +182,9 @@ export const LISTENING_TESTS: ListeningTest[] = [
         description: 'A university psychology lecture discussing the suprachiasmatic nucleus and blue-light disruption.',
         audioPrompt: 'Good afternoon students. Today we examine the circadian pacemaker located within the anterior hypothalamus...',
         transcript: [
-          { speaker: 'Lecturer', text: "In today's lecture on chronobiology, we examine the suprachiasmatic nucleus, or SCN." },
+          { speaker: 'Lecturer', text: 'In today\'s lecture on chronobiology, we examine the suprachiasmatic nucleus, or SCN.' },
           { speaker: 'Lecturer', text: 'Specialized intrinsically photosensitive retinal ganglion cells detect blue light wavelengths between 460 and 480 nanometers.' },
-          { speaker: 'Lecturer', text: "Exposure to digital screens suppresses the pineal gland's secretion of melatonin, delaying sleep onset by an average of 90 minutes." }
+          { speaker: 'Lecturer', text: 'Exposure to digital screens suppresses the pineal gland\'s secretion of melatonin, delaying sleep onset by an average of 90 minutes.' }
         ],
         questions: [
           {
@@ -199,14 +200,15 @@ export const LISTENING_TESTS: ListeningTest[] = [
             type: 'sentence_completion',
             prompt: 'Screen light suppresses the secretion of the hormone ______.',
             correctAnswer: 'melatonin',
-            explanation: "Lecturer states: \"suppresses the pineal gland's secretion of melatonin\".",
+            explanation: 'Lecturer states: "suppresses the pineal gland\'s secretion of melatonin".',
             paragraphReference: 'Transcript Line 3'
           }
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cam18Test1 = `  {
     id: 'cam18_test1_listening',
     title: 'Academic Listening Practice Test 1 (Cambridge 18 全真模考)',
     source: 'Cambridge IELTS 18 Academic Official',
@@ -257,8 +259,9 @@ export const LISTENING_TESTS: ListeningTest[] = [
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cam17Test1 = `  {
     id: 'cam17_test1_listening',
     title: 'Academic Listening Practice Test 1 (Cambridge 17 经典全真)',
     source: 'Cambridge IELTS 17 Academic Official',
@@ -275,7 +278,7 @@ export const LISTENING_TESTS: ListeningTest[] = [
         transcript: [
           { speaker: 'Librarian', text: 'Central City Library, Community Desk. How can I help?' },
           { speaker: 'Parent', text: 'Hello, I want to enrol my son in the Junior Bookworm Challenge.' },
-          { speaker: 'Librarian', text: "Wonderful! What is your son's name and date of birth?" },
+          { speaker: 'Librarian', text: 'Wonderful! What is your son\'s name and date of birth?' },
           { speaker: 'Parent', text: 'His name is Oliver Thornton. T-H-O-R-N-T-O-N.' },
           { speaker: 'Librarian', text: 'The reading club meets every Tuesday at 10:30 in the garden pavilion.' }
         ],
@@ -299,8 +302,9 @@ export const LISTENING_TESTS: ListeningTest[] = [
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cdiRecentTest = `  {
     id: 'cdi_2025_listening_recall',
     title: '2025/2026 机考高频回忆听力专项 (CDI Machine Recall)',
     source: '2025/2026 CDI Machine Exam Recall Pool',
@@ -341,5 +345,19 @@ export const LISTENING_TESTS: ListeningTest[] = [
         ]
       }
     ]
-  }
+  }`;
+
+const fileContent = `import { ListeningTest } from '../types/ielts';
+
+export const LISTENING_TESTS: ListeningTest[] = [
+${cam19Test1},
+${cam19Test2},
+${cam18Test1},
+${cam17Test1},
+${cdiRecentTest}
 ];
+`;
+
+const dest = path.join(__dirname, '..', 'src', 'data', 'listeningTests.ts');
+fs.writeFileSync(dest, fileContent, 'utf8');
+console.log('Successfully wrote expanded listeningTests.ts with 5 full test papers!');

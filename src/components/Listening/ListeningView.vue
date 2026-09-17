@@ -17,6 +17,8 @@ import { LISTENING_TESTS } from '../../data/listeningTests';
 import { calculateListeningBand } from '../../services/scoring';
 import { saveTestResult, saveMistake } from '../../services/storage';
 
+import QuestionBankSelector from '../Common/QuestionBankSelector.vue';
+
 const props = defineProps<{
   selectedTestId?: string;
 }>();
@@ -25,6 +27,7 @@ const emit = defineEmits<{
   (e: 'refreshMistakes'): void;
   (e: 'openSearch'): void;
   (e: 'openDictionary', word?: string): void;
+  (e: 'openSmartRandom'): void;
 }>();
 
 const currentTestId = ref(props.selectedTestId || LISTENING_TESTS[0].id);
@@ -203,6 +206,16 @@ const resetTest = () => {
 
 <template>
   <div class="space-y-6 max-w-5xl mx-auto pb-12">
+    <!-- Top Question Bank Selector Bar -->
+    <div class="bg-white rounded-3xl p-3.5 sm:px-6 sm:py-3.5 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+      <QuestionBankSelector
+        module="listening"
+        v-model="currentTestId"
+        @openSmartRandom="emit('openSmartRandom')"
+        @openSearch="emit('openSearch')"
+      />
+    </div>
+
     <!-- Submitted Screen (Apple Clean Style) -->
     <div v-if="isSubmitted && resultSummary" class="space-y-6 max-w-4xl mx-auto pb-12">
       <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.02)] text-center space-y-4">
@@ -339,23 +352,6 @@ const resetTest = () => {
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
-            <select
-              v-model="currentTestId"
-              class="bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium px-3 py-1.5 rounded-full border border-black/[0.06] focus:outline-none focus:border-[#0071e3] transition-all cursor-pointer max-w-[200px] truncate"
-            >
-              <option v-for="t in LISTENING_TESTS" :key="t.id" :value="t.id">
-                {{ t.title }}
-              </option>
-            </select>
-
-            <button
-              @click="emit('openSearch')"
-              class="text-xs text-[#86868b] hover:text-[#1d1d1f] px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-full border border-black/[0.04] flex items-center gap-1 font-normal cursor-pointer transition-colors"
-            >
-              <Sparkles class="w-3.5 h-3.5 text-[#86868b]" />
-              <span>搜题库</span>
-            </button>
-
             <button
               @click="emit('openDictionary')"
               class="text-xs text-[#0071e3] px-3 py-1.5 bg-[#0071e3]/10 hover:bg-[#0071e3]/15 rounded-full border border-[#0071e3]/15 flex items-center gap-1 font-medium cursor-pointer transition-colors"

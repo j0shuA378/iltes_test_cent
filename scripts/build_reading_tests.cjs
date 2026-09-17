@@ -1,7 +1,7 @@
-import { ReadingTest } from '../types/ielts';
+const fs = require('fs');
+const path = require('path');
 
-export const READING_TESTS: ReadingTest[] = [
-  {
+const originalTest1 = `  {
     id: 'cam19_test1_reading',
     title: 'Academic Reading Practice Test 1 (Cambridge 19 官方全真卷)',
     source: 'Cambridge IELTS 19 Academic Official',
@@ -108,7 +108,7 @@ export const READING_TESTS: ReadingTest[] = [
             type: 'sentence_completion',
             prompt: 'Subtle landscape design indicators that reassure the public of intentional care are termed "cues to ______".',
             correctAnswer: 'care',
-            explanation: "Paragraph C: \"...landscape ecologists like Joan Nassauer advocate for 'cues to care'—subtle design touches...\"",
+            explanation: 'Paragraph C: "...landscape ecologists like Joan Nassauer advocate for \'cues to care\'—subtle design touches..."',
             paragraphReference: 'Paragraph C'
           }
         ]
@@ -231,8 +231,9 @@ export const READING_TESTS: ReadingTest[] = [
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cam19Test2 = `  {
     id: 'cam19_test2_reading',
     title: 'Academic Reading Practice Test 2 (Cambridge 19 全真卷)',
     source: 'Cambridge IELTS 19 Academic Official',
@@ -397,8 +398,9 @@ export const READING_TESTS: ReadingTest[] = [
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cam18Test1 = `  {
     id: 'cam18_test1_reading',
     title: 'Academic Reading Practice Test 1 (Cambridge 18 全真模考)',
     source: 'Cambridge IELTS 18 Academic Official',
@@ -464,7 +466,7 @@ export const READING_TESTS: ReadingTest[] = [
             type: 'sentence_completion',
             prompt: 'Indigenous low-temperature controlled burning is commonly known as "______ burning".',
             correctAnswer: 'cool',
-            explanation: "Paragraph B: \"...often characterized as 'cool burning'.\"",
+            explanation: 'Paragraph B: "...often characterized as \'cool burning\'."',
             paragraphReference: 'Paragraph B'
           }
         ]
@@ -522,8 +524,9 @@ export const READING_TESTS: ReadingTest[] = [
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cam17Test1 = `  {
     id: 'cam17_test1_reading',
     title: 'Academic Reading Practice Test 1 (Cambridge 17 经典全真)',
     source: 'Cambridge IELTS 17 Academic Official',
@@ -563,7 +566,7 @@ export const READING_TESTS: ReadingTest[] = [
               'D. Furrow irrigation consumes zero water'
             ],
             correctAnswer: 'A. Most of the world’s arable land is already under cultivation',
-            explanation: "Paragraph A states: \"over 80% of Earth's arable land is already cultivated, while climate extremes and soil erosion deplete millions of fertile hectares\".",
+            explanation: 'Paragraph A states: "over 80% of Earth\'s arable land is already cultivated, while climate extremes and soil erosion deplete millions of fertile hectares".',
             paragraphReference: 'Paragraph A'
           },
           {
@@ -586,8 +589,9 @@ export const READING_TESTS: ReadingTest[] = [
         ]
       }
     ]
-  },
-  {
+  }`;
+
+const cdiRecentTest = `  {
     id: 'cdi_2025_reading_recall',
     title: '2025/2026 机考高频回忆专项卷 (CDI Academic Recall)',
     source: '2025/2026 CDI Machine Exam Recall Pool',
@@ -632,5 +636,19 @@ export const READING_TESTS: ReadingTest[] = [
         ]
       }
     ]
-  }
+  }`;
+
+const fileContent = `import { ReadingTest } from '../types/ielts';
+
+export const READING_TESTS: ReadingTest[] = [
+${originalTest1},
+${cam19Test2},
+${cam18Test1},
+${cam17Test1},
+${cdiRecentTest}
 ];
+`;
+
+const dest = path.join(__dirname, '..', 'src', 'data', 'readingTests.ts');
+fs.writeFileSync(dest, fileContent, 'utf8');
+console.log('Successfully wrote expanded readingTests.ts with 5 full test papers!');

@@ -12,12 +12,15 @@ import { SPEAKING_TOPICS } from '../../data/speakingTopics';
 import { saveSpeakingRecording, getSpeakingRecordings } from '../../services/storage';
 import type { SpeakingRecording } from '../../types/ielts';
 
+import QuestionBankSelector from '../Common/QuestionBankSelector.vue';
+
 const props = defineProps<{
   selectedTopicId?: string;
 }>();
 
 const emit = defineEmits<{
   (e: 'openSearch'): void;
+  (e: 'openSmartRandom'): void;
 }>();
 
 const selectedTopicId = ref(props.selectedTopicId || SPEAKING_TOPICS[0].id);
@@ -26,6 +29,14 @@ watch(() => props.selectedTopicId, (newId) => {
   if (newId) {
     selectedTopicId.value = newId;
   }
+});
+
+watch(selectedTopicId, () => {
+  isPrepping.value = false;
+  isSpeaking.value = false;
+  prepSeconds.value = 60;
+  speechSeconds.value = 120;
+  audioUrl.value = null;
 });
 
 const currentTopic = computed(() => SPEAKING_TOPICS.find(t => t.id === selectedTopicId.value) || SPEAKING_TOPICS[1]);
@@ -168,6 +179,16 @@ const stopRecording = () => {
 
 <template>
   <div class="space-y-6 max-w-6xl mx-auto pb-12">
+    <!-- Top Question Bank Selector Bar -->
+    <div class="bg-white rounded-3xl p-3.5 sm:px-6 sm:py-3.5 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+      <QuestionBankSelector
+        module="speaking"
+        v-model="selectedTopicId"
+        @openSmartRandom="emit('openSmartRandom')"
+        @openSearch="emit('openSearch')"
+      />
+    </div>
+
     <!-- Header & Topic Switcher (Apple Style) -->
     <div class="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
@@ -184,28 +205,9 @@ const stopRecording = () => {
       </div>
 
       <div class="flex items-center gap-2">
-        <button
-          @click="emit('openSearch')"
-          class="px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#86868b] hover:text-[#1d1d1f] border border-black/[0.04] rounded-full text-xs font-normal transition-colors cursor-pointer"
-        >
-          搜题库
-        </button>
-
-        <select
-          v-model="selectedTopicId"
-          @change="() => {
-            isPrepping = false;
-            isSpeaking = false;
-            prepSeconds = 60;
-            speechSeconds = 120;
-            audioUrl = null;
-          }"
-          class="bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium px-3 py-1.5 rounded-full border border-black/[0.06] focus:outline-none focus:border-[#0071e3] transition-all cursor-pointer max-w-[220px] truncate"
-        >
-          <option v-for="t in SPEAKING_TOPICS" :key="t.id" :value="t.id">
-            PART {{ t.part }}: {{ t.title }}
-          </option>
-        </select>
+        <span class="text-xs px-3 py-1 rounded-full bg-black/[0.04] text-[#1d1d1f] font-medium">
+          {{ currentTopic.source || 'Official Speaking Pool' }}
+        </span>
       </div>
     </div>
 

@@ -16,6 +16,8 @@ import { evaluateWritingOffline, type HeuristicEvaluationResult } from '../../se
 import { saveWritingSubmission } from '../../services/storage';
 import type { UserProfile } from '../../types/ielts';
 
+import QuestionBankSelector from '../Common/QuestionBankSelector.vue';
+
 const props = defineProps<{
   profile: UserProfile;
   selectedTaskId?: string;
@@ -23,6 +25,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'openSearch'): void;
+  (e: 'openSmartRandom'): void;
 }>();
 
 const selectedTaskId = ref(props.selectedTaskId || WRITING_TASKS[0].id);
@@ -122,12 +125,22 @@ const handleCopyModel = () => {
 
 <template>
   <div class="space-y-6 max-w-6xl mx-auto pb-12">
+    <!-- Top Question Bank Selector Bar -->
+    <div class="bg-white rounded-3xl p-3.5 sm:px-6 sm:py-3.5 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+      <QuestionBankSelector
+        module="writing"
+        v-model="selectedTaskId"
+        @openSmartRandom="emit('openSmartRandom')"
+        @openSearch="emit('openSearch')"
+      />
+    </div>
+
     <!-- Top Header & Task Switcher (Apple Style) -->
     <div class="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-1.5 text-xs text-[#0071e3] font-medium mb-1">
           <PenTool class="w-3.5 h-3.5" />
-          <span>IELTS Academic Writing Studio</span>
+          <span>IELTS Academic Writing Studio · {{ currentTask.type.toUpperCase() }}</span>
         </div>
         <h1 class="text-xl sm:text-2xl font-semibold text-[#1d1d1f] tracking-tight">
           {{ currentTask.title }}
@@ -137,23 +150,10 @@ const handleCopyModel = () => {
         </span>
       </div>
 
-      <!-- Task dropdown selector -->
       <div class="flex items-center gap-2">
-        <button
-          @click="emit('openSearch')"
-          class="px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#86868b] hover:text-[#1d1d1f] border border-black/[0.04] rounded-full text-xs font-normal transition-colors cursor-pointer"
-        >
-          搜题库
-        </button>
-
-        <select
-          v-model="selectedTaskId"
-          class="bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium px-3 py-1.5 rounded-full border border-black/[0.06] focus:outline-none focus:border-[#0071e3] transition-all cursor-pointer max-w-[220px] truncate"
-        >
-          <option v-for="t in WRITING_TASKS" :key="t.id" :value="t.id">
-            {{ t.type.toUpperCase() }}: {{ t.title }}
-          </option>
-        </select>
+        <span class="text-xs px-3 py-1 rounded-full bg-black/[0.04] text-[#1d1d1f] font-medium">
+          {{ currentTask.source || 'Official IELTS Bank' }}
+        </span>
       </div>
     </div>
 

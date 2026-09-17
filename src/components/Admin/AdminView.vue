@@ -49,6 +49,8 @@ import { LISTENING_TESTS } from '../../data/listeningTests';
 import { WRITING_TASKS } from '../../data/writingTasks';
 import { SPEAKING_TOPICS } from '../../data/speakingTopics';
 import { CORE_VOCABULARY } from '../../data/vocabularyData';
+import { inferBankCategory, getBankInfo, BANK_COLLECTIONS } from '../../services/questionBankService';
+import type { BankCategory } from '../../types/ielts';
 
 const emit = defineEmits<{
   (e: 'returnToPortal'): void;
@@ -87,8 +89,34 @@ const newTargetBand = ref(7.0);
 const newExamDate = ref('');
 const addError = ref('');
 
-// Question Bank Module Tab
+// Question Bank Module Tab & Bank Filter
 const questionModuleTab = ref<'reading' | 'listening' | 'writing' | 'speaking'>('reading');
+const selectedAdminBank = ref<BankCategory>('all');
+
+const getBankBadge = (item: any) => {
+  const cat = inferBankCategory(item);
+  return getBankInfo(cat);
+};
+
+const filteredAdminReading = computed(() => {
+  if (selectedAdminBank.value === 'all') return READING_TESTS;
+  return READING_TESTS.filter(t => inferBankCategory(t) === selectedAdminBank.value);
+});
+
+const filteredAdminListening = computed(() => {
+  if (selectedAdminBank.value === 'all') return LISTENING_TESTS;
+  return LISTENING_TESTS.filter(t => inferBankCategory(t) === selectedAdminBank.value);
+});
+
+const filteredAdminWriting = computed(() => {
+  if (selectedAdminBank.value === 'all') return WRITING_TASKS;
+  return WRITING_TASKS.filter(t => inferBankCategory(t) === selectedAdminBank.value);
+});
+
+const filteredAdminSpeaking = computed(() => {
+  if (selectedAdminBank.value === 'all') return SPEAKING_TOPICS;
+  return SPEAKING_TOPICS.filter(t => inferBankCategory(t) === selectedAdminBank.value);
+});
 
 // Maintenance status
 const restoreStatus = ref<{ success?: boolean; message?: string } | null>(null);
@@ -668,68 +696,90 @@ const formatBytes = (bytes: number) => {
 
       <!-- 3. TAB: QUESTION BANK -->
       <div v-else-if="activeTab === 'questions'" class="space-y-4 animate-fadeIn">
-        <div class="bg-white rounded-3xl p-5 border border-black/[0.04] shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div class="flex items-center gap-1.5 p-1 bg-[#f5f5f7] rounded-full text-xs border border-black/[0.03]">
-            <button
-              @click="questionModuleTab = 'reading'"
-              :class="[
-                'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
-                questionModuleTab === 'reading' ? 'bg-white text-[#34c759] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
-              ]"
-            >
-              <BookOpen class="w-3.5 h-3.5" />
-              <span>学术阅读 ({{ READING_TESTS.length }})</span>
-            </button>
-            <button
-              @click="questionModuleTab = 'listening'"
-              :class="[
-                'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
-                questionModuleTab === 'listening' ? 'bg-white text-[#0071e3] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
-              ]"
-            >
-              <Headphones class="w-3.5 h-3.5" />
-              <span>机考听力 ({{ LISTENING_TESTS.length }})</span>
-            </button>
-            <button
-              @click="questionModuleTab = 'writing'"
-              :class="[
-                'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
-                questionModuleTab === 'writing' ? 'bg-white text-[#ff9500] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
-              ]"
-            >
-              <PenTool class="w-3.5 h-3.5" />
-              <span>写作题库 ({{ WRITING_TASKS.length }})</span>
-            </button>
-            <button
-              @click="questionModuleTab = 'speaking'"
-              :class="[
-                'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
-                questionModuleTab === 'speaking' ? 'bg-white text-[#af52de] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
-              ]"
-            >
-              <Mic class="w-3.5 h-3.5" />
-              <span>口语题库 ({{ SPEAKING_TOPICS.length }})</span>
-            </button>
-          </div>
+        <div class="bg-white rounded-3xl p-5 border border-black/[0.04] shadow-2xs space-y-4">
+          <!-- Module Tabs & Bank Selector Row -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-1.5 p-1 bg-[#f5f5f7] rounded-full text-xs border border-black/[0.03]">
+              <button
+                @click="questionModuleTab = 'reading'"
+                :class="[
+                  'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
+                  questionModuleTab === 'reading' ? 'bg-white text-[#34c759] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
+                ]"
+              >
+                <BookOpen class="w-3.5 h-3.5" />
+                <span>学术阅读 ({{ filteredAdminReading.length }})</span>
+              </button>
+              <button
+                @click="questionModuleTab = 'listening'"
+                :class="[
+                  'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
+                  questionModuleTab === 'listening' ? 'bg-white text-[#0071e3] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
+                ]"
+              >
+                <Headphones class="w-3.5 h-3.5" />
+                <span>机考听力 ({{ filteredAdminListening.length }})</span>
+              </button>
+              <button
+                @click="questionModuleTab = 'writing'"
+                :class="[
+                  'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
+                  questionModuleTab === 'writing' ? 'bg-white text-[#ff9500] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
+                ]"
+              >
+                <PenTool class="w-3.5 h-3.5" />
+                <span>写作题库 ({{ filteredAdminWriting.length }})</span>
+              </button>
+              <button
+                @click="questionModuleTab = 'speaking'"
+                :class="[
+                  'px-4 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 cursor-pointer',
+                  questionModuleTab === 'speaking' ? 'bg-white text-[#af52de] shadow-xs' : 'text-[#86868b] hover:text-[#1d1d1f]'
+                ]"
+              >
+                <Mic class="w-3.5 h-3.5" />
+                <span>口语题库 ({{ filteredAdminSpeaking.length }})</span>
+              </button>
+            </div>
 
-          <div class="text-xs text-[#86868b]">
-            剑桥雅思 18/19 官方全真卷
+            <!-- Bank Filter Pills -->
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="text-[#86868b] text-[11px]">题库归属:</span>
+              <button
+                v-for="b in BANK_COLLECTIONS"
+                :key="b.id"
+                @click="selectedAdminBank = b.id"
+                :class="[
+                  'px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer border',
+                  selectedAdminBank === b.id
+                    ? 'bg-[#1d1d1f] text-white border-[#1d1d1f]'
+                    : 'bg-[#f5f5f7] text-[#86868b] hover:text-[#1d1d1f] border-transparent'
+                ]"
+              >
+                {{ b.shortName }}
+              </button>
+            </div>
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <template v-if="questionModuleTab === 'reading'">
             <div 
-              v-for="paper in READING_TESTS" 
+              v-for="paper in filteredAdminReading" 
               :key="paper.id"
               class="bg-white rounded-3xl p-5 border border-black/[0.04] shadow-2xs space-y-3 flex flex-col justify-between"
             >
               <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#34c759]/10 text-[#34c759]">
-                    {{ paper.source }}
-                  </span>
-                  <span class="text-xs text-[#86868b]">3 篇篇章 · 40 题</span>
+                <div class="flex items-center justify-between gap-1.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#1d1d1f] text-white">
+                      {{ getBankBadge(paper).shortName }}
+                    </span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#34c759]/10 text-[#34c759]">
+                      {{ paper.difficulty || 'Authentic' }}
+                    </span>
+                  </div>
+                  <span class="text-xs text-[#86868b]">3 篇长难篇章 · 40 题</span>
                 </div>
                 <h3 class="font-semibold text-sm text-[#1d1d1f]">
                   {{ paper.title }}
@@ -741,7 +791,7 @@ const formatBytes = (bytes: number) => {
                 </ul>
               </div>
               <div class="pt-2 border-t border-black/[0.04] flex items-center justify-between text-xs">
-                <span class="text-[11px] text-[#86868b]">官方标准机考排版</span>
+                <span class="text-[11px] text-[#86868b]">{{ paper.year || '2024' }}</span>
                 <span class="text-[#0071e3] font-medium">状态: 已上线 ✓</span>
               </div>
             </div>
@@ -749,15 +799,20 @@ const formatBytes = (bytes: number) => {
 
           <template v-else-if="questionModuleTab === 'listening'">
             <div 
-              v-for="paper in LISTENING_TESTS" 
+              v-for="paper in filteredAdminListening" 
               :key="paper.id"
               class="bg-white rounded-3xl p-5 border border-black/[0.04] shadow-2xs space-y-3 flex flex-col justify-between"
             >
               <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#0071e3]/10 text-[#0071e3]">
-                    {{ paper.source }}
-                  </span>
+                <div class="flex items-center justify-between gap-1.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#1d1d1f] text-white">
+                      {{ getBankBadge(paper).shortName }}
+                    </span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#0071e3]/10 text-[#0071e3]">
+                      {{ paper.source }}
+                    </span>
+                  </div>
                   <span class="text-xs text-[#86868b]">Section 1-4 · 40 题</span>
                 </div>
                 <h3 class="font-semibold text-sm text-[#1d1d1f]">
@@ -778,15 +833,20 @@ const formatBytes = (bytes: number) => {
 
           <template v-else-if="questionModuleTab === 'writing'">
             <div 
-              v-for="task in WRITING_TASKS" 
+              v-for="task in filteredAdminWriting" 
               :key="task.id"
               class="bg-white rounded-3xl p-5 border border-black/[0.04] shadow-2xs space-y-3 flex flex-col justify-between"
             >
               <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#ff9500]/10 text-[#ff9500] uppercase">
-                    {{ task.type }}
-                  </span>
+                <div class="flex items-center justify-between gap-1.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#1d1d1f] text-white">
+                      {{ getBankBadge(task).shortName }}
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#ff9500]/10 text-[#ff9500] uppercase">
+                      {{ task.type }}
+                    </span>
+                  </div>
                   <span class="text-xs text-[#86868b]">{{ task.category }}</span>
                 </div>
                 <h3 class="font-semibold text-sm text-[#1d1d1f]">
@@ -805,15 +865,20 @@ const formatBytes = (bytes: number) => {
 
           <template v-else>
             <div 
-              v-for="topic in SPEAKING_TOPICS" 
+              v-for="topic in filteredAdminSpeaking" 
               :key="topic.id"
               class="bg-white rounded-3xl p-5 border border-black/[0.04] shadow-2xs space-y-3 flex flex-col justify-between"
             >
               <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#af52de]/10 text-[#af52de]">
-                    Part {{ topic.part }}
-                  </span>
+                <div class="flex items-center justify-between gap-1.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#1d1d1f] text-white">
+                      {{ getBankBadge(topic).shortName }}
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#af52de]/10 text-[#af52de]">
+                      Part {{ topic.part }}
+                    </span>
+                  </div>
                   <span class="text-xs text-[#86868b]">{{ topic.category }}</span>
                 </div>
                 <h3 class="font-semibold text-sm text-[#1d1d1f]">
@@ -824,7 +889,7 @@ const formatBytes = (bytes: number) => {
                 </p>
               </div>
               <div class="pt-2 border-t border-black/[0.04] flex items-center justify-between text-xs">
-                <span class="text-[11px] text-[#86868b]">高频轮换题</span>
+                <span class="text-[11px] text-[#86868b]">高频真题题卡</span>
                 <span class="text-[#0071e3] font-medium">已上线 ✓</span>
               </div>
             </div>

@@ -16,10 +16,11 @@ import VocabularyView from './components/Vocabulary/VocabularyView.vue';
 import MistakesView from './components/Mistakes/MistakesView.vue';
 import SettingsView from './components/Settings/SettingsView.vue';
 import AdminView from './components/Admin/AdminView.vue';
+import SmartRandomModal from './components/Common/SmartRandomModal.vue';
 import { getUserProfile, getTestResults, getMistakes } from './services/storage';
 import { getActiveUser } from './services/authService';
 import { getDueEbbinghausItems } from './services/ebbinghausService';
-import type { UserProfile, TestResult } from './types/ielts';
+import type { UserProfile, TestResult, ModuleType, RandomDrillConfig } from './types/ielts';
 import type { UserAccount } from './types/auth';
 
 const currentTab = ref<string>('dashboard');
@@ -37,14 +38,38 @@ const isPlacementOpen = ref(false);
 const isSearchOpen = ref(false);
 const isDictionaryOpen = ref(false);
 const dictionaryWord = ref('');
+const isSmartRandomOpen = ref(false);
+const smartRandomModule = ref<ModuleType>('reading');
 
-// Selected test IDs from Search
+// Selected test IDs from Search or Randomizer
 const selectedTests = ref<{
   reading?: string;
   listening?: string;
   writing?: string;
   speaking?: string;
 }>({});
+
+const handleOpenSmartRandom = (mod: ModuleType = 'reading') => {
+  smartRandomModule.value = mod;
+  isSmartRandomOpen.value = true;
+};
+
+const handleStartDrill = (config: RandomDrillConfig, targetTestId: string) => {
+  if (config.module === 'reading') {
+    selectedTests.value.reading = targetTestId;
+    currentTab.value = 'reading';
+  } else if (config.module === 'listening') {
+    selectedTests.value.listening = targetTestId;
+    currentTab.value = 'listening';
+  } else if (config.module === 'writing') {
+    selectedTests.value.writing = targetTestId;
+    currentTab.value = 'writing';
+  } else if (config.module === 'speaking') {
+    selectedTests.value.speaking = targetTestId;
+    currentTab.value = 'speaking';
+  }
+  isSmartRandomOpen.value = false;
+};
 
 const refreshUserData = () => {
   activeUser.value = getActiveUser();
@@ -186,6 +211,7 @@ const remainingDays = computed(() => {
             :activeUser="activeUser"
             @navigate="currentTab = $event"
             @openPlacementTest="isPlacementOpen = true"
+            @openSmartRandom="handleOpenSmartRandom"
           />
 
           <ReadingView 
@@ -194,6 +220,7 @@ const remainingDays = computed(() => {
             @refreshMistakes="refreshUserData" 
             @openSearch="isSearchOpen = true"
             @openDictionary="handleOpenDictionary"
+            @openSmartRandom="handleOpenSmartRandom"
           />
 
           <ListeningView 
@@ -202,6 +229,7 @@ const remainingDays = computed(() => {
             @refreshMistakes="refreshUserData" 
             @openSearch="isSearchOpen = true"
             @openDictionary="handleOpenDictionary"
+            @openSmartRandom="handleOpenSmartRandom"
           />
 
           <WritingView 
@@ -209,12 +237,14 @@ const remainingDays = computed(() => {
             :profile="profile" 
             :selectedTaskId="selectedTests.writing"
             @openSearch="isSearchOpen = true"
+            @openSmartRandom="handleOpenSmartRandom"
           />
 
           <SpeakingView 
             v-else-if="currentTab === 'speaking'"
             :selectedTopicId="selectedTests.speaking"
             @openSearch="isSearchOpen = true"
+            @openSmartRandom="handleOpenSmartRandom"
           />
 
           <VocabularyView 
@@ -310,6 +340,14 @@ const remainingDays = computed(() => {
       @completed="() => {
         refreshUserData();
       }"
+    />
+
+    <!-- Global Smart Random Drill Modal -->
+    <SmartRandomModal
+      :isOpen="isSmartRandomOpen"
+      :initialModule="smartRandomModule"
+      @close="isSmartRandomOpen = false"
+      @startDrill="handleStartDrill"
     />
   </div>
 </template>

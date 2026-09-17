@@ -17,6 +17,7 @@ import { calculateReadingBand } from '../../services/scoring';
 import { saveTestResult, saveMistake } from '../../services/storage';
 import type { Question } from '../../types/ielts';
 import QuickWordPopover from '../Dictionary/QuickWordPopover.vue';
+import QuestionBankSelector from '../Common/QuestionBankSelector.vue';
 
 const props = defineProps<{
   selectedTestId?: string;
@@ -26,6 +27,7 @@ const emit = defineEmits<{
   (e: 'refreshMistakes'): void;
   (e: 'openSearch'): void;
   (e: 'openDictionary', word?: string): void;
+  (e: 'openSmartRandom'): void;
 }>();
 
 const currentTestId = ref(props.selectedTestId || READING_TESTS[0].id);
@@ -234,7 +236,17 @@ const questionsToDisplay = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="space-y-4">
+    <!-- Top Question Bank Selector Bar -->
+    <div class="bg-white rounded-3xl p-3.5 sm:px-6 sm:py-3.5 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+      <QuestionBankSelector
+        module="reading"
+        v-model="currentTestId"
+        @openSmartRandom="emit('openSmartRandom')"
+        @openSearch="emit('openSearch')"
+      />
+    </div>
+
     <!-- If submitted, show the score report and review -->
     <div v-if="isSubmitted && resultSummary" class="space-y-6 max-w-5xl mx-auto pb-12">
       <!-- Score Hero (Apple Clean Minimalist Style) -->
@@ -390,32 +402,14 @@ const questionsToDisplay = computed(() => {
     </div>
 
     <!-- Active Exam Interface (CDI Layout - Apple Style) -->
-    <div v-else class="flex flex-col h-[calc(100vh-8.5rem)] bg-white rounded-3xl overflow-hidden border border-black/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+    <div v-else class="flex flex-col h-[calc(100vh-12.5rem)] bg-white rounded-3xl overflow-hidden border border-black/[0.06] shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
       <!-- Top CDI Exam Control Bar -->
       <div class="bg-white/95 backdrop-blur-xl text-[#1d1d1f] px-5 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 select-none border-b border-black/[0.06]">
         <div class="flex items-center gap-3">
           <div class="font-semibold text-xs tracking-tight text-[#1d1d1f] flex items-center gap-2">
             <BookOpen class="w-4 h-4 text-[#0071e3]" />
-            <span>IELTS Academic Reading</span>
+            <span class="truncate max-w-[200px] sm:max-w-xs md:max-w-md font-medium text-[#1d1d1f]">{{ currentTest.title }}</span>
           </div>
-
-          <!-- Test Selector Dropdown -->
-          <select
-            v-model="currentTestId"
-            class="bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium px-3 py-1.5 rounded-full border border-black/[0.06] focus:outline-none focus:border-[#0071e3] transition-all cursor-pointer max-w-[200px] truncate"
-          >
-            <option v-for="t in READING_TESTS" :key="t.id" :value="t.id">
-              {{ t.title }}
-            </option>
-          </select>
-
-          <button
-            @click="emit('openSearch')"
-            class="text-xs text-[#86868b] hover:text-[#1d1d1f] px-3 py-1.5 bg-[#f5f5f7] hover:bg-[#e8e8ed] rounded-full border border-black/[0.04] flex items-center gap-1.5 font-normal cursor-pointer transition-colors"
-          >
-            <Sparkles class="w-3.5 h-3.5 text-[#86868b]" />
-            <span>搜题库</span>
-          </button>
 
           <button
             @click="emit('openDictionary')"

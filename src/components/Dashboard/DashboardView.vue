@@ -10,13 +10,17 @@ import {
   ArrowRight,
   Flame,
   Award,
-  Sparkles
+  Sparkles,
+  Dice5,
+  Layers,
+  CheckCircle2
 } from 'lucide-vue-next';
-import type { UserProfile, TestResult } from '../../types/ielts';
+import type { UserProfile, TestResult, ModuleType } from '../../types/ielts';
 import type { UserAccount } from '../../types/auth';
 import PersonalStudyPlanCard from './PersonalStudyPlanCard.vue';
 import EbbinghausWidget from './EbbinghausWidget.vue';
 import { getStudyPlanConfig } from '../../services/storage';
+import { BANK_COLLECTIONS, getBankStatistics, getBankInfo } from '../../services/questionBankService';
 
 const props = defineProps<{
   profile: UserProfile;
@@ -28,7 +32,11 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'navigate', tab: string): void;
   (e: 'openPlacementTest'): void;
+  (e: 'openSmartRandom', mod?: ModuleType): void;
 }>();
+
+const bankStats = computed(() => getBankStatistics());
+const nonAllBanks = computed(() => BANK_COLLECTIONS.filter(b => b.id !== 'all'));
 
 const planConfig = computed(() => {
   return getStudyPlanConfig() || {
@@ -159,6 +167,58 @@ const skills = computed(() => [
             :class="['h-full rounded-full transition-all duration-500', skill.barColor]" 
             :style="{ width: `${Math.min(100, Math.round((skill.current / skill.target) * 100))}%` }"
           />
+        </div>
+      </div>
+    </div>
+
+    <!-- Multi-Bank Matrix & Smart Random Drill (Apple Studio Card) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-medium text-[#0071e3] mb-1">
+            <Layers class="w-3.5 h-3.5" />
+            <span>雅思全真题库矩阵 · 官方真题与换题季机考</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-semibold text-[#1d1d1f] tracking-tight">
+            四大真题库全景 & 智能随机抽题
+          </h2>
+          <p class="text-xs text-[#86868b] mt-1 max-w-2xl leading-relaxed">
+            涵盖剑桥雅思 17-19 官方全真卷与 2025/2026 机考回忆，累计收录 {{ bankStats.all.readingCount }} 套学术阅读、{{ bankStats.all.listeningCount }} 套机考听力、{{ bankStats.all.writingCount }} 篇高分写作与 {{ bankStats.all.speakingCount }} 组当季口语卡。
+          </p>
+        </div>
+
+        <button
+          @click="emit('openSmartRandom')"
+          class="px-5 py-2.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs sm:text-sm font-medium shadow-xs hover:shadow transition-all shrink-0 cursor-pointer active:scale-98 flex items-center gap-2 self-start sm:self-center"
+        >
+          <Dice5 class="w-4 h-4 text-amber-400" />
+          <span>🎲 智能随机抽题模考</span>
+        </button>
+      </div>
+
+      <!-- 4 Bank Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 pt-1">
+        <div
+          v-for="bank in nonAllBanks"
+          :key="bank.id"
+          class="p-4 rounded-2xl bg-[#fbfbfd] border border-black/[0.04] hover:border-black/[0.12] transition-all flex flex-col justify-between space-y-3"
+        >
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <span class="text-xs font-semibold text-[#1d1d1f]">{{ bank.shortName }}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-black/[0.04] text-[#86868b] font-medium">
+                {{ bank.year }}
+              </span>
+            </div>
+            <p class="text-[11px] text-[#86868b] line-clamp-2 leading-relaxed">
+              {{ bank.subtitle }}
+            </p>
+          </div>
+
+          <div class="pt-2 border-t border-black/[0.04] flex items-center justify-between text-[11px] text-[#86868b]">
+            <span>听读 {{ (bankStats[bank.id]?.readingCount || 0) + (bankStats[bank.id]?.listeningCount || 0) }} 卷</span>
+            <span>写说 {{ (bankStats[bank.id]?.writingCount || 0) + (bankStats[bank.id]?.speakingCount || 0) }} 题</span>
+          </div>
         </div>
       </div>
     </div>
