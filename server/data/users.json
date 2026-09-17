@@ -1,0 +1,31 @@
+[
+  {
+    "id": "user_guest",
+    "username": "guest",
+    "displayName": "访客学员",
+    "avatar": "🎓",
+    "recoveryToken": "MK-GUEST-0000",
+    "vaultKey": "user_vault_user_guest",
+    "currentBand": 0,
+    "targetBand": 7,
+    "hasCompletedPlacement": false,
+    "examDate": "2027-03-14",
+    "createdAt": "2026-09-17T11:33:32.593Z",
+    "lastLoginAt": "2026-09-17T11:33:32.593Z"
+  },
+  {
+    "id": "user_1789645022637_sy5mr",
+    "username": "test_mu5gft6u",
+    "displayName": "Test Candidate",
+    "avatar": "🎓",
+    "recoveryToken": "MK-PQSK-ZHRV",
+    "vaultKey": "user_vault_user_1789645022637_sy5mr",
+    "currentBand": 0,
+    "targetBand": 7,
+    "hasCompletedPlacement": false,
+    "examDate": "2027-03-14",
+    "createdAt": "2026-09-17T11:37:02.637Z",
+    "lastLoginAt": "2026-09-17T11:37:02.637Z",
+    "passwordHash": "YWJj"
+  }
+]

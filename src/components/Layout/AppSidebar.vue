@@ -50,6 +50,16 @@ const toggleCollapse = () => {
   } catch {}
 };
 
+import { onMounted, onUnmounted } from 'vue';
+
+onMounted(() => {
+  window.addEventListener('ielts_toggle_sidebar', toggleCollapse);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('ielts_toggle_sidebar', toggleCollapse);
+});
+
 const navGroups = [
   {
     group: '控制中心',

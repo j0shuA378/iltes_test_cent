@@ -2,6 +2,9 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import AppSidebar from './components/Layout/AppSidebar.vue';
 import AppHeader from './components/Layout/AppHeader.vue';
+import AppTitleBar from './components/AppChrome/AppTitleBar.vue';
+import AppStatusBar from './components/AppChrome/AppStatusBar.vue';
+import ShortcutsModal from './components/AppChrome/ShortcutsModal.vue';
 import AuthModal from './components/Auth/AuthModal.vue';
 import PlacementTestModal from './components/Placement/PlacementTestModal.vue';
 import DictionaryModal from './components/Dictionary/DictionaryModal.vue';
@@ -31,15 +34,22 @@ const mistakesCount = ref<number>(0);
 const dueVocabCount = ref<number>(0);
 const isAdminMode = ref<boolean>(false);
 const isMobileMenuOpen = ref<boolean>(false);
+const isSidebarCollapsed = ref<boolean>(localStorage.getItem('ielts_sidebar_collapsed') === 'true');
 
 // Modals
 const isAuthModalOpen = ref(false);
 const isPlacementOpen = ref(false);
 const isSearchOpen = ref(false);
 const isDictionaryOpen = ref(false);
+const isShortcutsOpen = ref(false);
 const dictionaryWord = ref('');
 const isSmartRandomOpen = ref(false);
 const smartRandomModule = ref<ModuleType>('reading');
+
+const handleToggleSidebar = () => {
+  window.dispatchEvent(new CustomEvent('ielts_toggle_sidebar'));
+  isSidebarCollapsed.value = !isSidebarCollapsed.value;
+};
 
 // Selected test IDs from Search or Randomizer
 const selectedTests = ref<{
@@ -114,13 +124,24 @@ const handleReturnToPortal = () => {
 };
 
 const handleKeyDown = (e: KeyboardEvent) => {
+  const target = e.target as HTMLElement;
+  const isInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();
     isSearchOpen.value = true;
-  }
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
+  } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
     e.preventDefault();
     isDictionaryOpen.value = true;
+  } else if (((e.ctrlKey || e.metaKey) && e.key === '/') || e.key === 'F1') {
+    e.preventDefault();
+    isShortcutsOpen.value = true;
+  } else if (!isInput && e.key >= '1' && e.key <= '7' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    const tabs = ['dashboard', 'reading', 'listening', 'writing', 'speaking', 'vocabulary', 'mistakes'];
+    const idx = parseInt(e.key) - 1;
+    if (tabs[idx]) {
+      currentTab.value = tabs[idx];
+    }
   }
 };
 
@@ -170,147 +191,173 @@ const remainingDays = computed(() => {
   />
 
   <!-- STUDENT EXAM PORTAL (DEFAULT) -->
-  <div v-else class="flex h-screen w-screen overflow-hidden bg-[#f5f5f7] font-sans selection:bg-[#1d1d1f] selection:text-white relative">
-    <!-- Left Application Portal Sidebar -->
-    <AppSidebar 
+  <div v-else class="flex flex-col h-screen w-screen overflow-hidden bg-[#f5f5f7] font-sans selection:bg-[#1d1d1f] selection:text-white relative">
+    <!-- Desktop Native Application TitleBar (macOS Traffic Light Dots & Controls) -->
+    <AppTitleBar 
       :currentTab="currentTab"
       :activeUser="activeUser"
-      :dueVocabCount="dueVocabCount"
-      :mistakesCount="mistakesCount"
-      :isMobileOpen="isMobileMenuOpen"
-      @selectTab="currentTab = $event"
+      :isSidebarCollapsed="isSidebarCollapsed"
+      @navigate="currentTab = $event"
+      @toggleSidebar="handleToggleSidebar"
+      @openSearch="isSearchOpen = true"
+      @openDictionary="handleOpenDictionary()"
+      @openShortcuts="isShortcutsOpen = true"
       @openAuthModal="isAuthModalOpen = true"
-      @openAdmin="navigateToAdmin"
-      @closeMobile="isMobileMenuOpen = false"
+      @openPlacementTest="isPlacementOpen = true"
     />
 
-    <!-- Main Right Application Window -->
-    <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
-      <!-- Top Header Command Bar -->
-      <AppHeader 
+    <!-- Middle Split: Left Sidebar & Right Workspace -->
+    <div class="flex flex-1 min-h-0 overflow-hidden relative">
+      <!-- Left Application Portal Sidebar -->
+      <AppSidebar 
+        :currentTab="currentTab"
         :activeUser="activeUser"
         :dueVocabCount="dueVocabCount"
-        :remainingDays="remainingDays"
-        @openSearch="isSearchOpen = true"
-        @openDictionary="handleOpenDictionary()"
+        :mistakesCount="mistakesCount"
+        :isMobileOpen="isMobileMenuOpen"
+        @selectTab="currentTab = $event"
         @openAuthModal="isAuthModalOpen = true"
-        @navigateTab="currentTab = $event"
-        @openPlacementTest="isPlacementOpen = true"
-        @toggleMobileMenu="isMobileMenuOpen = !isMobileMenuOpen"
         @openAdmin="navigateToAdmin"
+        @closeMobile="isMobileMenuOpen = false"
       />
 
-      <!-- Scrollable Workspace Content View -->
-      <div class="flex-1 overflow-y-auto">
-        <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <DashboardView 
-            v-if="currentTab === 'dashboard'"
-            :key="'dash_' + activeUser.id"
-            :profile="profile" 
-            :results="results" 
-            :mistakesCount="mistakesCount"
-            :activeUser="activeUser"
-            @navigate="currentTab = $event"
-            @openPlacementTest="isPlacementOpen = true"
-            @openSmartRandom="handleOpenSmartRandom"
-          />
+      <!-- Main Right Application Window -->
+      <div class="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
+        <!-- Top Header Command Bar -->
+        <AppHeader 
+          :activeUser="activeUser"
+          :dueVocabCount="dueVocabCount"
+          :remainingDays="remainingDays"
+          @openSearch="isSearchOpen = true"
+          @openDictionary="handleOpenDictionary()"
+          @openAuthModal="isAuthModalOpen = true"
+          @navigateTab="currentTab = $event"
+          @openPlacementTest="isPlacementOpen = true"
+          @toggleMobileMenu="isMobileMenuOpen = !isMobileMenuOpen"
+          @openAdmin="navigateToAdmin"
+        />
 
-          <ReadingView 
-            v-else-if="currentTab === 'reading'"
-            :key="'read_' + activeUser.id"
-            :selectedTestId="selectedTests.reading"
-            @refreshMistakes="refreshUserData" 
-            @openSearch="isSearchOpen = true"
-            @openDictionary="handleOpenDictionary"
-            @openSmartRandom="handleOpenSmartRandom"
-          />
+        <!-- Scrollable Workspace Content View -->
+        <div class="flex-1 overflow-y-auto">
+          <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <DashboardView 
+              v-if="currentTab === 'dashboard'"
+              :key="'dash_' + activeUser.id"
+              :profile="profile" 
+              :results="results" 
+              :mistakesCount="mistakesCount"
+              :activeUser="activeUser"
+              @navigate="currentTab = $event"
+              @openPlacementTest="isPlacementOpen = true"
+              @openSmartRandom="handleOpenSmartRandom"
+            />
 
-          <ListeningView 
-            v-else-if="currentTab === 'listening'"
-            :key="'list_' + activeUser.id"
-            :selectedTestId="selectedTests.listening"
-            @refreshMistakes="refreshUserData" 
-            @openSearch="isSearchOpen = true"
-            @openDictionary="handleOpenDictionary"
-            @openSmartRandom="handleOpenSmartRandom"
-          />
+            <ReadingView 
+              v-else-if="currentTab === 'reading'"
+              :key="'read_' + activeUser.id"
+              :selectedTestId="selectedTests.reading"
+              @refreshMistakes="refreshUserData" 
+              @openSearch="isSearchOpen = true"
+              @openDictionary="handleOpenDictionary"
+              @openSmartRandom="handleOpenSmartRandom"
+            />
 
-          <WritingView 
-            v-else-if="currentTab === 'writing'"
-            :key="'writ_' + activeUser.id"
-            :profile="profile" 
-            :selectedTaskId="selectedTests.writing"
-            @openSearch="isSearchOpen = true"
-            @openSmartRandom="handleOpenSmartRandom"
-          />
+            <ListeningView 
+              v-else-if="currentTab === 'listening'"
+              :key="'list_' + activeUser.id"
+              :selectedTestId="selectedTests.listening"
+              @refreshMistakes="refreshUserData" 
+              @openSearch="isSearchOpen = true"
+              @openDictionary="handleOpenDictionary"
+              @openSmartRandom="handleOpenSmartRandom"
+            />
 
-          <SpeakingView 
-            v-else-if="currentTab === 'speaking'"
-            :key="'spk_' + activeUser.id"
-            :selectedTopicId="selectedTests.speaking"
-            @openSearch="isSearchOpen = true"
-            @openSmartRandom="handleOpenSmartRandom"
-          />
+            <WritingView 
+              v-else-if="currentTab === 'writing'"
+              :key="'writ_' + activeUser.id"
+              :profile="profile" 
+              :selectedTaskId="selectedTests.writing"
+              @openSearch="isSearchOpen = true"
+              @openSmartRandom="handleOpenSmartRandom"
+            />
 
-          <VocabularyView 
-            v-else-if="currentTab === 'vocabulary'"
-            :key="'voc_' + activeUser.id"
-          />
+            <SpeakingView 
+              v-else-if="currentTab === 'speaking'"
+              :key="'spk_' + activeUser.id"
+              :selectedTopicId="selectedTests.speaking"
+              @openSearch="isSearchOpen = true"
+              @openSmartRandom="handleOpenSmartRandom"
+            />
 
-          <MistakesView 
-            v-else-if="currentTab === 'mistakes'"
-            :key="'mst_' + activeUser.id"
-            @refreshMistakes="refreshUserData" 
-          />
+            <VocabularyView 
+              v-else-if="currentTab === 'vocabulary'"
+              :key="'voc_' + activeUser.id"
+            />
 
-          <SettingsView 
-            v-else-if="currentTab === 'settings'"
-            :key="'set_' + activeUser.id"
-            :profile="profile" 
-            @updateProfile="(updated) => {
-              profile = updated;
-              refreshUserData();
-            }" 
-            @openAdmin="navigateToAdmin"
-            @openAuthModal="isAuthModalOpen = true"
-          />
-        </main>
+            <MistakesView 
+              v-else-if="currentTab === 'mistakes'"
+              :key="'mst_' + activeUser.id"
+              @refreshMistakes="refreshUserData" 
+            />
 
-        <!-- Global Footer (Apple Minimalist Style) -->
-        <footer class="bg-[#f5f5f7] border-t border-black/[0.06] py-6 text-center text-xs text-[#86868b] mt-12">
-          <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-            <div class="flex items-center gap-2">
-              <span class="font-semibold text-[#1d1d1f]">IELTS Master Portal</span>
-              <span>· 雅思全真机考与艾宾浩斯抗遗忘记忆系统</span>
+            <SettingsView 
+              v-else-if="currentTab === 'settings'"
+              :key="'set_' + activeUser.id"
+              :profile="profile" 
+              @updateProfile="(updated) => {
+                profile = updated;
+                refreshUserData();
+              }" 
+              @openAdmin="navigateToAdmin"
+              @openAuthModal="isAuthModalOpen = true"
+            />
+          </main>
+
+          <!-- Global Footer (Apple Minimalist Style) -->
+          <footer class="bg-[#f5f5f7] border-t border-black/[0.06] py-6 text-center text-xs text-[#86868b] mt-12">
+            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-[#1d1d1f]">IELTS Master Portal</span>
+                <span>· 雅思全真机考与艾宾浩斯抗遗忘记忆系统</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button
+                  @click="handleOpenDictionary()"
+                  class="text-[#0071e3] hover:underline font-medium cursor-pointer"
+                >
+                  即时学术词典 (Ctrl+D)
+                </button>
+                <span class="text-black/10">·</span>
+                <button
+                  @click="isSearchOpen = true"
+                  class="text-[#0071e3] hover:underline font-medium cursor-pointer"
+                >
+                  题库搜寻中心 (Ctrl+K)
+                </button>
+                <span class="text-black/10">·</span>
+                <button
+                  @click="navigateToAdmin()"
+                  class="text-[#86868b] hover:text-[#1d1d1f] hover:underline font-medium cursor-pointer"
+                >
+                  管理控制台 (/admin)
+                </button>
+                <span class="text-black/10">·</span>
+                <span>当前学员: <strong class="text-[#1d1d1f] font-medium">{{ activeUser.displayName }}</strong></span>
+              </div>
             </div>
-            <div class="flex items-center gap-3">
-              <button
-                @click="handleOpenDictionary()"
-                class="text-[#0071e3] hover:underline font-medium cursor-pointer"
-              >
-                即时学术词典 (Ctrl+D)
-              </button>
-              <span class="text-black/10">·</span>
-              <button
-                @click="isSearchOpen = true"
-                class="text-[#0071e3] hover:underline font-medium cursor-pointer"
-              >
-                题库搜寻中心 (Ctrl+K)
-              </button>
-              <span class="text-black/10">·</span>
-              <button
-                @click="navigateToAdmin()"
-                class="text-[#86868b] hover:text-[#1d1d1f] hover:underline font-medium cursor-pointer"
-              >
-                管理控制台 (/admin)
-              </button>
-              <span class="text-black/10">·</span>
-              <span>当前学员: <strong class="text-[#1d1d1f] font-medium">{{ activeUser.displayName }}</strong></span>
-            </div>
-          </div>
-        </footer>
+          </footer>
+        </div>
       </div>
     </div>
+
+    <!-- Bottom Desktop Application Status Bar -->
+    <AppStatusBar 
+      :activeUser="activeUser"
+      @openShortcuts="isShortcutsOpen = true"
+      @openAdmin="navigateToAdmin"
+      @openAuthModal="isAuthModalOpen = true"
+      @openDictionary="handleOpenDictionary()"
+    />
 
     <!-- Floating Quick Dictionary Trigger Button -->
     <FloatingDictionaryButton @click="handleOpenDictionary()" />
@@ -356,6 +403,12 @@ const remainingDays = computed(() => {
       :initialModule="smartRandomModule"
       @close="isSmartRandomOpen = false"
       @startDrill="handleStartDrill"
+    />
+
+    <!-- Global Keyboard Shortcuts Modal -->
+    <ShortcutsModal 
+      :isOpen="isShortcutsOpen" 
+      @close="isShortcutsOpen = false" 
     />
   </div>
 </template>

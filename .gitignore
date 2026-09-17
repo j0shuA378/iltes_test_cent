@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Server persistent runtime data
+server/data/vaults/*.json
+!server/data/vaults/.gitkeep
