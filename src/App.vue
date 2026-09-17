@@ -205,6 +205,7 @@ const remainingDays = computed(() => {
         <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <DashboardView 
             v-if="currentTab === 'dashboard'"
+            :key="'dash_' + activeUser.id"
             :profile="profile" 
             :results="results" 
             :mistakesCount="mistakesCount"
@@ -216,6 +217,7 @@ const remainingDays = computed(() => {
 
           <ReadingView 
             v-else-if="currentTab === 'reading'"
+            :key="'read_' + activeUser.id"
             :selectedTestId="selectedTests.reading"
             @refreshMistakes="refreshUserData" 
             @openSearch="isSearchOpen = true"
@@ -225,6 +227,7 @@ const remainingDays = computed(() => {
 
           <ListeningView 
             v-else-if="currentTab === 'listening'"
+            :key="'list_' + activeUser.id"
             :selectedTestId="selectedTests.listening"
             @refreshMistakes="refreshUserData" 
             @openSearch="isSearchOpen = true"
@@ -234,6 +237,7 @@ const remainingDays = computed(() => {
 
           <WritingView 
             v-else-if="currentTab === 'writing'"
+            :key="'writ_' + activeUser.id"
             :profile="profile" 
             :selectedTaskId="selectedTests.writing"
             @openSearch="isSearchOpen = true"
@@ -242,6 +246,7 @@ const remainingDays = computed(() => {
 
           <SpeakingView 
             v-else-if="currentTab === 'speaking'"
+            :key="'spk_' + activeUser.id"
             :selectedTopicId="selectedTests.speaking"
             @openSearch="isSearchOpen = true"
             @openSmartRandom="handleOpenSmartRandom"
@@ -249,15 +254,18 @@ const remainingDays = computed(() => {
 
           <VocabularyView 
             v-else-if="currentTab === 'vocabulary'"
+            :key="'voc_' + activeUser.id"
           />
 
           <MistakesView 
             v-else-if="currentTab === 'mistakes'"
+            :key="'mst_' + activeUser.id"
             @refreshMistakes="refreshUserData" 
           />
 
           <SettingsView 
             v-else-if="currentTab === 'settings'"
+            :key="'set_' + activeUser.id"
             :profile="profile" 
             @updateProfile="(updated) => {
               profile = updated;

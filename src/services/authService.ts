@@ -17,6 +17,20 @@ export const AVATAR_OPTIONS = [
 ];
 
 /**
+ * Generate an Apple-style, human-readable user recovery marker/token, e.g. "MK-8E2A-9D4F"
+ */
+export function generateRecoveryToken(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let part1 = '';
+  let part2 = '';
+  for (let i = 0; i < 4; i++) {
+    part1 += chars.charAt(Math.floor(Math.random() * chars.length));
+    part2 += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `MK-${part1}-${part2}`;
+}
+
+/**
  * Standard neutral default guest user for new visitors on clean browsers.
  * Never hardcode personal names so other users opening the site are never defaulted to Joshua.
  */
@@ -29,6 +43,8 @@ export function getDefaultUser(): UserAccount {
     username: 'guest',
     displayName: '访客学员',
     avatar: '🎓',
+    recoveryToken: 'MK-GUEST-0000',
+    vaultKey: 'user_vault_user_guest',
     currentBand: 0, // All users start at 0 initial baseline
     targetBand: 7.0,
     hasCompletedPlacement: false,
@@ -90,6 +106,22 @@ export function getAccounts(): UserAccount[] {
           localStorage.setItem(STORAGE_KEYS.ACTIVE_USER_ID, accounts[0].id);
         }
       }
+    }
+
+    // Auto-migrate: Ensure every existing account has a recovery token & vault key
+    let accountsModified = false;
+    accounts.forEach(a => {
+      if (!a.recoveryToken) {
+        a.recoveryToken = a.id === 'user_guest' ? 'MK-GUEST-0000' : generateRecoveryToken();
+        accountsModified = true;
+      }
+      if (!a.vaultKey) {
+        a.vaultKey = `user_vault_${a.id}`;
+        accountsModified = true;
+      }
+    });
+    if (accountsModified) {
+      localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
     }
 
     return accounts;
@@ -160,11 +192,14 @@ export function registerUser(params: {
   const futureDate = new Date();
   futureDate.setDate(futureDate.getDate() + 178);
 
+  const recoveryToken = generateRecoveryToken();
   const newUser: UserAccount = {
     id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     username: trimmedName,
     displayName: params.displayName?.trim() || trimmedName,
     avatar: params.avatar || '🎓',
+    recoveryToken,
+    vaultKey: `user_vault_user_${Date.now()}`,
     currentBand: 0, // All newly registered users strictly start at 0 before diagnostic placement
     targetBand: params.targetBand ?? 7.0,
     hasCompletedPlacement: false,
@@ -173,6 +208,32 @@ export function registerUser(params: {
     lastLoginAt: new Date().toISOString(),
     passwordHash: params.password ? btoa(params.password) : undefined
   };
+
+  // Initialize a fresh, isolated local sandbox vault for this new user
+  try {
+    const emptyList = JSON.stringify([]);
+    const emptyObj = JSON.stringify({});
+    localStorage.setItem(`user_${newUser.id}_test_results`, emptyList);
+    localStorage.setItem(`user_${newUser.id}_mistakes`, emptyList);
+    localStorage.setItem(`user_${newUser.id}_writing_submissions`, emptyList);
+    localStorage.setItem(`user_${newUser.id}_speaking_recordings`, emptyList);
+    localStorage.setItem(`user_${newUser.id}_vocab_progress`, emptyObj);
+    localStorage.setItem(`user_${newUser.id}_study_plan_tasks`, emptyObj);
+    localStorage.setItem(`user_${newUser.id}_ebbinghaus_records`, emptyObj);
+    localStorage.setItem(`user_${newUser.id}_profile`, JSON.stringify({
+      targetOverall: newUser.targetBand,
+      targetListening: 7.5,
+      targetReading: 7.5,
+      targetWriting: 6.5,
+      targetSpeaking: 6.5,
+      examDate: newUser.examDate,
+      dailyGoalMinutes: 90,
+      completedMinutesToday: 0,
+      lastStudyDate: new Date().toISOString().split('T')[0],
+      streakDays: 0,
+      apiProvider: 'gemini'
+    }));
+  } catch {}
 
   // If previous accounts list only contained an unused placeholder (guest or unused template),
   // replace it with the newly registered user so the device belongs cleanly to the new user.
@@ -192,6 +253,33 @@ export function registerUser(params: {
   }
 
   return newUser;
+}
+
+/**
+ * Rebind / restore user account and their local vault using their unique recovery marker or username
+ */
+export function recoverUserByToken(tokenOrUsername: string): { success: boolean; user?: UserAccount; error?: string } {
+  const accounts = getAccounts();
+  const q = tokenOrUsername.trim().toLowerCase();
+  if (!q) {
+    return { success: false, error: '请输入恢复标记 (如 MK-XXXX-YYYY) 或用户名' };
+  }
+
+  const found = accounts.find(a => 
+    (a.recoveryToken && a.recoveryToken.toLowerCase() === q) || 
+    a.username.toLowerCase() === q || 
+    a.id.toLowerCase() === q
+  );
+
+  if (!found) {
+    return { 
+      success: false, 
+      error: `未在此设备找到恢复标记为 "${tokenOrUsername}" 的学员档案。请核对标记或直接注册新学员。` 
+    };
+  }
+
+  setActiveUser(found.id);
+  return { success: true, user: found };
 }
 
 export function loginUser(username: string, password?: string): { success: boolean; user?: UserAccount; error?: string } {
@@ -331,7 +419,7 @@ export function updateUserPlacement(
 
   // Also sync the study plan config for this user
   try {
-    const planKey = `user_${userId}_ielts_study_plan_config`;
+    const planKey = `user_${userId}_study_plan_config`;
     const rawPlan = localStorage.getItem(planKey);
     if (rawPlan) {
       const plan = JSON.parse(rawPlan);

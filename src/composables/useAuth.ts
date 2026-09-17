@@ -5,6 +5,7 @@ import {
   setActiveUser, 
   registerUser, 
   loginUser, 
+  recoverUserByToken,
   updateUserPlacement 
 } from '../services/authService';
 import type { UserAccount } from '../types/auth';
@@ -57,6 +58,14 @@ export function useAuth() {
     return res;
   };
 
+  const recoverByToken = (token: string) => {
+    const res = recoverUserByToken(token);
+    if (res.success && res.user) {
+      refresh();
+    }
+    return res;
+  };
+
   const setPlacement = (placement: {
     testedBand: number;
     rawScore: number;
@@ -75,6 +84,7 @@ export function useAuth() {
     switchAccount,
     register,
     login,
+    recoverByToken,
     setPlacement
   };
 }

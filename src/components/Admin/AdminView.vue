@@ -643,7 +643,12 @@ const formatBytes = (bytes: number) => {
                         {{ s.avatar }}
                       </div>
                       <div>
-                        <div class="font-semibold text-xs text-[#1d1d1f]">{{ s.displayName }}</div>
+                        <div class="font-semibold text-xs text-[#1d1d1f] flex items-center gap-1.5">
+                          <span>{{ s.displayName }}</span>
+                          <span class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-black/[0.04] text-[#0071e3] border border-black/[0.04]">
+                            {{ s.recoveryToken || 'MK-LOCAL' }}
+                          </span>
+                        </div>
                         <div class="text-[11px] text-[#86868b]">@{{ s.username }}</div>
                       </div>
                     </div>

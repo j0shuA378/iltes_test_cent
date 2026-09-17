@@ -6,6 +6,8 @@ export interface UserAccount {
   displayName: string;
   email?: string;
   avatar: string; // Emoji avatar or preset identifier
+  recoveryToken: string; // Unique recovery marker, e.g. "MK-9E4B-8A1C"
+  vaultKey?: string;     // Local data vault identifier, e.g. "user_vault_..."
   currentBand: number; // 0 for untested/initial baseline (e.g. 0.0)
   targetBand: number;  // e.g. 7.0
   examDate: string;    // YYYY-MM-DD
@@ -20,6 +22,22 @@ export interface UserAccount {
     completedAt: string;
     levelSummary: string;
   };
+}
+
+export interface UserLocalVault {
+  version: number;
+  userId: string;
+  recoveryToken: string;
+  updatedAt: string;
+  profile: UserProfile;
+  testResults: any[];
+  mistakes: any[];
+  writingSubmissions: any[];
+  speakingRecordings: any[];
+  vocabProgress: Record<string, { status: 'unfamiliar' | 'learning' | 'mastered'; isStarred?: boolean }>;
+  studyPlanConfig: any;
+  studyPlanTasks: Record<string, boolean>;
+  ebbinghausRecords: Record<string, EbbinghausItem>;
 }
 
 export type MemoryStage = 0 | 1 | 2 | 3 | 4 | 5 | 6;
