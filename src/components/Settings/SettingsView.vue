@@ -177,7 +177,11 @@ const handleImportFile = (e: Event) => {
               </span>
             </div>
             <p class="text-xs text-[#86868b] mt-0.5">
-              {{ activeUser.id === 'user_guest' ? '未登录专属学员档案，数据临时保存在浏览器沙箱中' : `基础 Band ${activeUser.currentBand.toFixed(1)} ➔ 目标 Band ${activeUser.targetBand.toFixed(1)} · 考期 ${activeUser.examDate}` }}
+              {{ activeUser.id === 'user_guest' 
+                ? '未登录专属学员档案，数据临时保存在浏览器沙箱中' 
+                : (activeUser.currentBand === 0 
+                  ? `当前水平：待学术定级（无初始成绩） ➔ 目标 Band ${activeUser.targetBand.toFixed(1)} · 考期 ${activeUser.examDate}` 
+                  : `实测基础 Band ${activeUser.currentBand.toFixed(1)} ➔ 目标 Band ${activeUser.targetBand.toFixed(1)} · 考期 ${activeUser.examDate}`) }}
             </p>
           </div>
         </div>

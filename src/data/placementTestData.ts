@@ -159,7 +159,7 @@ export function evaluatePlacementScore(score: number): PlacementEvaluation {
       testedBand: 4.0,
       levelTitle: '初学起步水平 (Limited User)',
       summary: '基础词汇与语法薄弱，听力拼写与长难句较为吃力，亟需系统性输入与语法脱敏。',
-      advice: '非常适合当前的 178 天 4.0 ➔ 7.0 定制方案，分 4 阶段扎实爬坡，稳步提升！',
+      advice: '已精准测定起点为 Band 4.0，系统已为您匹配专属 4 阶段稳步爬坡方案！',
       recommendedPhaseIndex: 0
     };
   } else {

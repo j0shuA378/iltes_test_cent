@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { 
   Target, 
   Calendar, 
@@ -19,7 +19,7 @@ import {
 } from 'lucide-vue-next';
 import { 
   type PersonalizedPlanConfig, 
-  STUDY_PHASES, 
+  getStudyPhases, 
   type StudyPlanPhase, 
   getDailyTasksForPhase, 
   type DailyPlanTask, 
@@ -31,19 +31,57 @@ import {
   getCompletedPlanTasks, 
   togglePlanTask 
 } from '../../services/storage';
+import type { UserAccount } from '../../types/auth';
 import AdaptationConfigModal from './AdaptationConfigModal.vue';
+
+const props = defineProps<{
+  activeUser?: UserAccount;
+}>();
 
 const emit = defineEmits<{
   (e: 'navigate', tab: string): void;
   (e: 'openPlacementTest'): void;
 }>();
 
-const config = ref<PersonalizedPlanConfig>(getStudyPlanConfig() || DEFAULT_PLAN_CONFIG);
+const isUntested = computed(() => {
+  if (!props.activeUser) return true;
+  return !props.activeUser.hasCompletedPlacement || props.activeUser.currentBand === 0;
+});
+
+const loadPlanConfig = (): PersonalizedPlanConfig => {
+  const saved = getStudyPlanConfig(props.activeUser?.id);
+  const baseBand = (!isUntested.value && (props.activeUser?.currentBand ?? 0) > 0)
+    ? (props.activeUser?.currentBand ?? 0.0)
+    : 0.0;
+
+  if (saved) {
+    return {
+      ...DEFAULT_PLAN_CONFIG,
+      ...saved,
+      currentBand: isUntested.value ? 0.0 : (saved.currentBand || baseBand),
+      targetBand: saved.targetBand || props.activeUser?.targetBand || 7.0
+    };
+  }
+
+  return {
+    ...DEFAULT_PLAN_CONFIG,
+    currentBand: baseBand,
+    targetBand: props.activeUser?.targetBand || 7.0
+  };
+};
+
+const config = ref<PersonalizedPlanConfig>(loadPlanConfig());
 const activePhaseIndex = ref(0);
 const isConfigModalOpen = ref(false);
-const completedTasks = ref<Record<string, boolean>>(getCompletedPlanTasks());
+const completedTasks = ref<Record<string, boolean>>(getCompletedPlanTasks(props.activeUser?.id));
 
-const currentPhase = computed<StudyPlanPhase>(() => STUDY_PHASES[activePhaseIndex.value] || STUDY_PHASES[0]);
+watch(() => props.activeUser, () => {
+  config.value = loadPlanConfig();
+  completedTasks.value = getCompletedPlanTasks(props.activeUser?.id);
+}, { deep: true });
+
+const phases = computed(() => getStudyPhases(config.value.currentBand, config.value.targetBand));
+const currentPhase = computed<StudyPlanPhase>(() => phases.value[activePhaseIndex.value] || phases.value[0]);
 const dailyTasks = computed<DailyPlanTask[]>(() => getDailyTasksForPhase(currentPhase.value.id));
 
 const completedCount = computed(() => dailyTasks.value.filter(t => completedTasks.value[t.id]).length);
@@ -53,7 +91,7 @@ const progressPercent = computed(() => Math.round((completedCount.value / dailyT
 const timelinePct = computed(() => Math.min(100, Math.max(1, Math.round((config.value.currentDay / config.value.totalDays) * 100))));
 
 const handleToggleTask = (taskId: string) => {
-  const nowDone = togglePlanTask(taskId);
+  const nowDone = togglePlanTask(taskId, props.activeUser?.id);
   completedTasks.value = {
     ...completedTasks.value,
     [taskId]: nowDone
@@ -62,7 +100,7 @@ const handleToggleTask = (taskId: string) => {
 
 const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
   config.value = newConfig;
-  saveStudyPlanConfig(newConfig);
+  saveStudyPlanConfig(newConfig, props.activeUser?.id);
 };
 </script>
 
@@ -80,7 +118,7 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
 
           <div class="flex items-center gap-2">
             <button
-              v-if="config.currentBand === 0"
+              v-if="isUntested"
               @click="emit('openPlacementTest')"
               class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-sm transition-all cursor-pointer active:scale-98"
             >
@@ -102,12 +140,19 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div class="space-y-2">
             <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
-              当前水平 <span class="font-semibold text-[#1d1d1f]">{{ config.currentBand === 0 ? 'Band 0.0 (待定级)' : `Band ${config.currentBand.toFixed(1)}` }}</span>
+              当前水平 <span class="font-semibold text-[#1d1d1f]">{{ isUntested ? '待测定 (无初始成绩)' : `Band ${config.currentBand.toFixed(1)} (实测)` }}</span>
               <span class="mx-2.5 text-[#86868b] font-normal">➔</span>
               目标总分 <span class="font-semibold text-[#1d1d1f]">Band {{ config.targetBand.toFixed(1) }}</span>
             </h1>
-            <p class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
-              针对 4.0 基础（词汇量较小、长难句结构薄弱、精听连读弱）定制。178天 4 阶段平稳爬坡，四科目标分解：
+            <p v-if="isUntested" class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
+              新学员档案尚未测定初始成绩，一切需经测验后定论。完成 3 分钟学术定级测验后，系统将依据实测分数精准重构四科专属方案。目标分解：
+              <span class="font-medium text-[#1d1d1f]"> 听力 {{ config.targetListening.toFixed(1) }}</span>、
+              <span class="font-medium text-[#1d1d1f]"> 阅读 {{ config.targetReading.toFixed(1) }}</span>、
+              <span class="font-medium text-[#1d1d1f]"> 写作 {{ config.targetWriting.toFixed(1) }}</span>、
+              <span class="font-medium text-[#1d1d1f]"> 口语 {{ config.targetSpeaking.toFixed(1) }}</span>。
+            </p>
+            <p v-else class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
+              基于学术测验定级（Band {{ config.currentBand.toFixed(1) }}）量身定制。{{ config.totalDays }}天 4 阶段平稳爬坡，四科目标分解：
               <span class="font-medium text-[#1d1d1f]"> 听力 {{ config.targetListening.toFixed(1) }}</span>、
               <span class="font-medium text-[#1d1d1f]"> 阅读 {{ config.targetReading.toFixed(1) }}</span>、
               <span class="font-medium text-[#1d1d1f]"> 写作 {{ config.targetWriting.toFixed(1) }}</span>、
@@ -124,9 +169,9 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
             <div class="h-8 w-px bg-black/[0.08]" />
             <div class="text-center px-2 sm:px-3">
               <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
-                {{ config.currentBand === 0 ? '待测定' : `+${(config.targetBand - config.currentBand).toFixed(1)}` }}
+                {{ isUntested ? '待测定' : `+${(config.targetBand - config.currentBand).toFixed(1)}` }}
               </div>
-              <div class="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">净提分幅度</div>
+              <div class="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">{{ isUntested ? '初始未定级' : '净提分幅度' }}</div>
             </div>
             <div class="h-8 w-px bg-black/[0.08]" />
             <div class="text-center px-2 sm:px-3">
@@ -134,6 +179,35 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
               <div class="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">每日投入</div>
             </div>
           </div>
+        </div>
+
+        <!-- Diagnostic Placement Test Banner inside Card for Untested Users -->
+        <div 
+          v-if="isUntested" 
+          class="p-4 rounded-2xl bg-[#0071e3]/5 border border-[#0071e3]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#0071e3] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Sparkles class="w-4 h-4" />
+            </div>
+            <div>
+              <div class="text-xs font-semibold text-[#1d1d1f] flex items-center gap-1.5">
+                <span>新学员暂无初始成绩 · 需测试后定论</span>
+                <span class="px-2 py-0.2 rounded-full text-[10px] bg-[#0071e3]/10 text-[#0071e3] font-medium">3分钟摸底</span>
+              </div>
+              <p class="text-[11px] text-[#86868b] mt-0.5">
+                只需 3 分钟完成 6 道微型摸底题，快速定位学术词汇与听力基准，系统将自动生成定制路线。
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            @click="emit('openPlacementTest')"
+            class="px-4 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-medium shrink-0 transition-all cursor-pointer shadow-xs active:scale-98 flex items-center gap-1.5"
+          >
+            <span>参加 3 分钟定级测验</span>
+            <ArrowRight class="w-3.5 h-3.5" />
+          </button>
         </div>
 
         <!-- Timeline Bar -->
@@ -175,7 +249,7 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
       <!-- Phase Pill Buttons -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <button
-          v-for="(phase, idx) in STUDY_PHASES"
+          v-for="(phase, idx) in phases"
           :key="phase.id"
           @click="activePhaseIndex = idx"
           :class="[

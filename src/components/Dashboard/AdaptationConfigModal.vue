@@ -62,7 +62,7 @@ const toggleWeakness = (w: string) => {
 };
 
 const handleQuickReset = () => {
-  currentBand.value = 4.0;
+  currentBand.value = props.config.currentBand || 0.0;
   targetBand.value = 7.0;
   totalDays.value = 178;
   dailyHours.value = 2.5;
@@ -137,8 +137,9 @@ const calculatedOverall = computed(() => {
                 v-model.number="currentBand"
                 class="w-full bg-white border border-black/[0.08] rounded-xl p-2.5 font-semibold text-[#1d1d1f] text-sm focus:outline-none shadow-2xs"
               >
+                <option :value="0">Band 0.0 (待定级 / 无初始成绩)</option>
                 <option :value="3.5">Band 3.5 (初学起步)</option>
-                <option :value="4.0">Band 4.0 (有限水平 · 推荐)</option>
+                <option :value="4.0">Band 4.0 (有限水平)</option>
                 <option :value="4.5">Band 4.5 (基础薄弱)</option>
                 <option :value="5.0">Band 5.0 (基础中等)</option>
                 <option :value="5.5">Band 5.5 (面临瓶颈)</option>
@@ -146,7 +147,7 @@ const calculatedOverall = computed(() => {
               </select>
             </div>
             <p class="text-[11px] text-[#86868b] mt-1.5 font-normal">
-              4.0 分核心难点：词汇量偏小、长难句读不懂、听力抓不住信息。
+              {{ currentBand === 0 ? '新学员无初始成绩，一切需经测验后定论。建议先进行 3 分钟定级测验。' : `当前基础设定为 Band ${currentBand.toFixed(1)}，系统将根据此起点规划提分路线。` }}
             </p>
           </div>
 
@@ -190,7 +191,7 @@ const calculatedOverall = computed(() => {
               <span class="absolute right-3 top-2.5 text-xs text-[#86868b] font-normal">天</span>
             </div>
             <span class="text-[11px] text-[#86868b] block mt-1 font-normal">
-              当前设定：178 天（约 6 个月，适合 4.0 稳步跃升 7.0）
+              当前设定：{{ totalDays }} 天（科学排期，阶梯递进跃升目标分数）
             </span>
           </div>
 
@@ -308,7 +309,7 @@ const calculatedOverall = computed(() => {
             @click="handleQuickReset"
             class="text-xs text-[#86868b] hover:text-[#1d1d1f] transition-colors cursor-pointer"
           >
-            恢复 4.0➔7.0 (178天) 默认方案
+            恢复推荐基准参数 (178天)
           </button>
 
           <div class="flex items-center gap-2">

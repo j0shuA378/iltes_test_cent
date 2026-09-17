@@ -38,10 +38,15 @@ const emit = defineEmits<{
 const bankStats = computed(() => getBankStatistics());
 const nonAllBanks = computed(() => BANK_COLLECTIONS.filter(b => b.id !== 'all'));
 
+const isUntestedUser = computed(() => {
+  if (!props.activeUser) return true;
+  return !props.activeUser.hasCompletedPlacement || props.activeUser.currentBand === 0;
+});
+
 const planConfig = computed(() => {
-  return getStudyPlanConfig() || {
-    currentBand: props.activeUser?.currentBand ?? 0.0,
-    targetBand: 7.0,
+  return getStudyPlanConfig(props.activeUser?.id) || {
+    currentBand: isUntestedUser.value ? 0.0 : (props.activeUser?.currentBand ?? 0.0),
+    targetBand: props.activeUser?.targetBand ?? 7.0,
     targetListening: 7.5,
     targetReading: 7.5,
     targetWriting: 6.5,
@@ -50,55 +55,58 @@ const planConfig = computed(() => {
   };
 });
 
-const skills = computed(() => [
-  { 
-    name: '听力 Listening', 
-    current: props.results.filter(r => r.module === 'listening')[0]?.band ?? planConfig.value.currentBand, 
-    target: planConfig.value.targetListening, 
-    icon: Headphones, 
-    color: 'text-[#1d1d1f]', 
-    bg: 'bg-black/[0.04]', 
-    barColor: 'bg-[#1d1d1f]',
-    note: '核心拉分项 · 目标 32/40 题'
-  },
-  { 
-    name: '阅读 Reading', 
-    current: props.results.filter(r => r.module === 'reading')[0]?.band ?? planConfig.value.currentBand, 
-    target: planConfig.value.targetReading, 
-    icon: BookOpen, 
-    color: 'text-[#1d1d1f]', 
-    bg: 'bg-black/[0.04]', 
-    barColor: 'bg-[#1d1d1f]',
-    note: '核心拉分项 · 目标 33/40 题'
-  },
-  { 
-    name: '写作 Writing', 
-    current: planConfig.value.currentBand, 
-    target: planConfig.value.targetWriting, 
-    icon: PenTool, 
-    color: 'text-[#1d1d1f]', 
-    bg: 'bg-black/[0.04]', 
-    barColor: 'bg-[#1d1d1f]',
-    note: '稳健输出项 · 论证严密不跑题'
-  },
-  { 
-    name: '口语 Speaking', 
-    current: planConfig.value.currentBand, 
-    target: planConfig.value.targetSpeaking, 
-    icon: Mic, 
-    color: 'text-[#1d1d1f]', 
-    bg: 'bg-black/[0.04]', 
-    barColor: 'bg-[#1d1d1f]',
-    note: '流畅沟通项 · 万能故事串题'
-  },
-]);
+const skills = computed(() => {
+  const untested = isUntestedUser.value;
+  return [
+    { 
+      name: '听力 Listening', 
+      current: props.results.filter(r => r.module === 'listening')[0]?.band ?? (untested ? 0 : planConfig.value.currentBand), 
+      target: planConfig.value.targetListening, 
+      icon: Headphones, 
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
+      note: '核心拉分项 · 目标 32/40 题'
+    },
+    { 
+      name: '阅读 Reading', 
+      current: props.results.filter(r => r.module === 'reading')[0]?.band ?? (untested ? 0 : planConfig.value.currentBand), 
+      target: planConfig.value.targetReading, 
+      icon: BookOpen, 
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
+      note: '核心拉分项 · 目标 33/40 题'
+    },
+    { 
+      name: '写作 Writing', 
+      current: untested ? 0 : planConfig.value.currentBand, 
+      target: planConfig.value.targetWriting, 
+      icon: PenTool, 
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
+      note: '稳健输出项 · 论证严密不跑题'
+    },
+    { 
+      name: '口语 Speaking', 
+      current: untested ? 0 : planConfig.value.currentBand, 
+      target: planConfig.value.targetSpeaking, 
+      icon: Mic, 
+      color: 'text-[#1d1d1f]', 
+      bg: 'bg-black/[0.04]', 
+      barColor: 'bg-[#1d1d1f]',
+      note: '流畅沟通项 · 万能故事串题'
+    },
+  ];
+});
 </script>
 
 <template>
   <div class="space-y-6">
-    <!-- 0. Diagnostic Placement Test Hero Banner (Appears when activeUser.currentBand === 0) -->
+    <!-- 0. Diagnostic Placement Test Hero Banner (Appears when activeUser is untested) -->
     <div 
-      v-if="!activeUser || activeUser.currentBand === 0"
+      v-if="isUntestedUser"
       class="bg-white border border-black/[0.06] rounded-3xl p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
     >
       <div class="flex items-center gap-3.5">
@@ -107,13 +115,13 @@ const skills = computed(() => [
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h3 class="font-semibold text-base text-[#1d1d1f]">新学员初始水平待定级 (Band 0.0)</h3>
+            <h3 class="font-semibold text-base text-[#1d1d1f]">新学员无初始成绩 · 一切需经测验后定论</h3>
             <span class="px-2.5 py-0.5 rounded-full bg-black/[0.04] text-[#1d1d1f] text-[11px] font-medium border border-black/[0.04]">
-              推荐完成
+              待学术定级
             </span>
           </div>
           <p class="text-xs sm:text-sm text-[#86868b] mt-0.5">
-            只需 3 分钟（6 道精选核心题），快速摸底学术英语基础，生成专属个人的 178 天提分路线图。
+            新注册学员暂无预设成绩。完成 3 分钟极速摸底（6 道精选核心题），测定真实学术基础并生成专属 178 天提分路线图。
           </p>
         </div>
       </div>
@@ -121,13 +129,14 @@ const skills = computed(() => [
         @click="emit('openPlacementTest')"
         class="px-5 py-2.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs sm:text-sm font-medium shadow-xs hover:shadow transition-all shrink-0 cursor-pointer active:scale-98 flex items-center gap-1.5"
       >
-        <span>开始 3 分钟简易测验</span>
+        <span>开始 3 分钟学术定级</span>
         <ArrowRight class="w-4 h-4" />
       </button>
     </div>
 
     <!-- 1. Personalized Adaptation Study Plan -->
     <PersonalStudyPlanCard 
+      :activeUser="activeUser"
       @navigate="emit('navigate', $event)" 
       @openPlacementTest="emit('openPlacementTest')" 
     />
@@ -154,10 +163,10 @@ const skills = computed(() => [
         
         <div class="flex items-baseline justify-between mb-2.5">
           <span class="text-2xl font-semibold tracking-tight text-[#1d1d1f]">
-            {{ skill.current === 0 ? 'Band 0.0 (待定级)' : `Band ${skill.current.toFixed(1)}` }}
+            {{ skill.current === 0 ? '待测定' : `Band ${skill.current.toFixed(1)}` }}
           </span>
           <span class="text-xs font-normal text-[#86868b]">
-            {{ skill.current === 0 ? '未测定' : `达标度 ${Math.min(100, Math.round((skill.current / skill.target) * 100))}%` }}
+            {{ skill.current === 0 ? '无初始成绩' : `达标度 ${Math.min(100, Math.round((skill.current / skill.target) * 100))}%` }}
           </span>
         </div>
 
@@ -165,7 +174,7 @@ const skills = computed(() => [
         <div class="w-full bg-[#f5f5f7] rounded-full h-1.5 overflow-hidden border border-black/[0.02]">
           <div 
             :class="['h-full rounded-full transition-all duration-500', skill.barColor]" 
-            :style="{ width: `${Math.min(100, Math.round((skill.current / skill.target) * 100))}%` }"
+            :style="{ width: `${skill.current === 0 ? 0 : Math.min(100, Math.round((skill.current / skill.target) * 100))}%` }"
           />
         </div>
       </div>

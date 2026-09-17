@@ -658,7 +658,7 @@ const formatBytes = (bytes: number) => {
                       'px-2 py-0.5 rounded-full text-[11px] font-medium',
                       s.currentBand === 0 ? 'bg-black/[0.04] text-[#86868b]' : 'bg-[#0071e3]/10 text-[#0071e3]'
                     ]">
-                      {{ s.currentBand === 0 ? '待定级 (0.0)' : 'Band ' + s.currentBand.toFixed(1) }}
+                      {{ s.currentBand === 0 ? '待定级 (无初始成绩)' : 'Band ' + s.currentBand.toFixed(1) }}
                     </span>
                   </td>
                   <td class="px-4 py-3.5 font-semibold text-[#1d1d1f]">
