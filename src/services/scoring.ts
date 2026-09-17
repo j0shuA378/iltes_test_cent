@@ -1,38 +1,46 @@
 // Cambridge IELTS Academic Scoring Tables
 
-export function calculateReadingBand(rawScore: number): number {
-  if (rawScore >= 39) return 9.0;
-  if (rawScore >= 37) return 8.5;
-  if (rawScore >= 35) return 8.0;
-  if (rawScore >= 33) return 7.5;
-  if (rawScore >= 30) return 7.0;
-  if (rawScore >= 27) return 6.5;
-  if (rawScore >= 23) return 6.0;
-  if (rawScore >= 19) return 5.5;
-  if (rawScore >= 15) return 5.0;
-  if (rawScore >= 13) return 4.5;
-  if (rawScore >= 10) return 4.0;
-  if (rawScore >= 8) return 3.5;
-  if (rawScore >= 6) return 3.0;
-  if (rawScore >= 4) return 2.5;
+export function calculateReadingBand(rawScore: number, totalQuestions: number = 40): number {
+  const scaledScore = totalQuestions > 0 && totalQuestions !== 40 
+    ? Math.min(40, Math.max(0, Math.round((rawScore / totalQuestions) * 40)))
+    : rawScore;
+
+  if (scaledScore >= 39) return 9.0;
+  if (scaledScore >= 37) return 8.5;
+  if (scaledScore >= 35) return 8.0;
+  if (scaledScore >= 33) return 7.5;
+  if (scaledScore >= 30) return 7.0;
+  if (scaledScore >= 27) return 6.5;
+  if (scaledScore >= 23) return 6.0;
+  if (scaledScore >= 19) return 5.5;
+  if (scaledScore >= 15) return 5.0;
+  if (scaledScore >= 13) return 4.5;
+  if (scaledScore >= 10) return 4.0;
+  if (scaledScore >= 8) return 3.5;
+  if (scaledScore >= 6) return 3.0;
+  if (scaledScore >= 4) return 2.5;
   return 2.0;
 }
 
-export function calculateListeningBand(rawScore: number): number {
-  if (rawScore >= 39) return 9.0;
-  if (rawScore >= 37) return 8.5;
-  if (rawScore >= 35) return 8.0;
-  if (rawScore >= 32) return 7.5;
-  if (rawScore >= 30) return 7.0;
-  if (rawScore >= 26) return 6.5;
-  if (rawScore >= 23) return 6.0;
-  if (rawScore >= 18) return 5.5;
-  if (rawScore >= 16) return 5.0;
-  if (rawScore >= 13) return 4.5;
-  if (rawScore >= 10) return 4.0;
-  if (rawScore >= 8) return 3.5;
-  if (rawScore >= 6) return 3.0;
-  if (rawScore >= 4) return 2.5;
+export function calculateListeningBand(rawScore: number, totalQuestions: number = 40): number {
+  const scaledScore = totalQuestions > 0 && totalQuestions !== 40 
+    ? Math.min(40, Math.max(0, Math.round((rawScore / totalQuestions) * 40)))
+    : rawScore;
+
+  if (scaledScore >= 39) return 9.0;
+  if (scaledScore >= 37) return 8.5;
+  if (scaledScore >= 35) return 8.0;
+  if (scaledScore >= 32) return 7.5;
+  if (scaledScore >= 30) return 7.0;
+  if (scaledScore >= 26) return 6.5;
+  if (scaledScore >= 23) return 6.0;
+  if (scaledScore >= 18) return 5.5;
+  if (scaledScore >= 16) return 5.0;
+  if (scaledScore >= 13) return 4.5;
+  if (scaledScore >= 10) return 4.0;
+  if (scaledScore >= 8) return 3.5;
+  if (scaledScore >= 6) return 3.0;
+  if (scaledScore >= 4) return 2.5;
   return 2.0;
 }
 

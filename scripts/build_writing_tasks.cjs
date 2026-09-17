@@ -149,6 +149,60 @@ const tasks = [
       'myopic (短视的；目光短浅的)'
     ]
   },
+  {
+    id: 'w_cam18_t1_pie_water',
+    type: 'task1',
+    title: 'Global Freshwater Consumption by Economic Sector (North America, Europe, Central Asia)',
+    category: 'Academic - Pie Chart',
+    bankCategory: 'cam18',
+    year: '2023-2024',
+    source: 'Cambridge IELTS 18 Official Test 3',
+    tags: ['Pie Chart', 'Water Resources', 'Agriculture', 'Industry'],
+    minWords: 150,
+    recommendedMinutes: 20,
+    prompt: 'The pie charts illustrate the proportion of freshwater consumed across three key economic sectors—Agricultural, Industrial, and Domestic—in North America, Europe, and Central Asia.\\n\\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.',
+    chartDescription: 'Three pie charts: North America (Agricultural 39%, Industrial 48%, Domestic 13%), Europe (Agricultural 32%, Industrial 53%, Domestic 15%), Central Asia (Agricultural 88%, Industrial 5%, Domestic 7%).',
+    chartSvg: `<svg viewBox="0 0 520 250" class="w-full h-auto bg-slate-50 border border-slate-200 rounded-lg p-3">
+      <!-- North America Pie -->
+      <circle cx="90" cy="110" r="60" fill="#38bdf8" />
+      <path d="M 90 110 L 90 50 A 60 60 0 0 1 149 122 Z" fill="#3b82f6" />
+      <path d="M 90 110 L 149 122 A 60 60 0 0 1 125 158 Z" fill="#93c5fd" />
+      <text x="90" y="195" font-size="12" font-weight="bold" text-anchor="middle" fill="#1e293b">North America</text>
+      <text x="90" y="210" font-size="10" text-anchor="middle" fill="#64748b">Ind 48% | Agr 39% | Dom 13%</text>
+
+      <!-- Europe Pie -->
+      <circle cx="260" cy="110" r="60" fill="#38bdf8" />
+      <path d="M 260 110 L 260 50 A 60 60 0 0 1 319 127 Z" fill="#3b82f6" />
+      <path d="M 260 110 L 319 127 A 60 60 0 0 1 292 161 Z" fill="#93c5fd" />
+      <text x="260" y="195" font-size="12" font-weight="bold" text-anchor="middle" fill="#1e293b">Europe</text>
+      <text x="260" y="210" font-size="10" text-anchor="middle" fill="#64748b">Ind 53% | Agr 32% | Dom 15%</text>
+
+      <!-- Central Asia Pie -->
+      <circle cx="430" cy="110" r="60" fill="#38bdf8" />
+      <path d="M 430 110 L 430 50 A 60 60 0 0 1 435 50 Z" fill="#3b82f6" />
+      <path d="M 430 110 L 435 50 A 60 60 0 0 1 455 54 Z" fill="#93c5fd" />
+      <text x="430" y="195" font-size="12" font-weight="bold" text-anchor="middle" fill="#1e293b">Central Asia</text>
+      <text x="430" y="210" font-size="10" text-anchor="middle" fill="#64748b">Agr 88% | Dom 7% | Ind 5%</text>
+
+      <!-- Legend -->
+      <rect x="130" y="15" width="12" height="12" fill="#3b82f6" rx="2"/>
+      <text x="148" y="25" font-size="10" fill="#334155">Industrial</text>
+      <rect x="230" y="15" width="12" height="12" fill="#38bdf8" rx="2"/>
+      <text x="248" y="25" font-size="10" fill="#334155">Agricultural</text>
+      <rect x="330" y="15" width="12" height="12" fill="#93c5fd" rx="2"/>
+      <text x="348" y="25" font-size="10" fill="#334155">Domestic</text>
+    </svg>`,
+    sampleBand9: `The three pie charts delineate the allocation of freshwater resources across industrial, agricultural, and domestic sectors in three designated continental regions: North America, Europe, and Central Asia.\\n\\nOverall, freshwater consumption patterns exhibit a stark dichotomy between industrialized Western continents and Central Asia. While industry constitutes the primary consumer in Europe and North America, water usage in Central Asia is overwhelmingly dominated by the agricultural sector, with domestic requirements representing the smallest fraction across all three territories.\\n\\nIn North America and Europe, industrial manufacturing accounts for the lion\'s share of freshwater withdrawals, registering 48% and 53% respectively. Agricultural utilization follows as the second most substantial category, comprising 39% in North America and approximately one-third (32%) in Europe. In both regions, household domestic consumption commands only a modest minority of total demand, standing at 13% and 15% respectively.\\n\\nConversely, the consumption profile of Central Asia presents a completely inverted distribution. A commanding 88% of all freshwater is diverted towards agriculture and crop irrigation. By contrast, industrial processes account for a negligible 5% of total water consumption, slightly surpassed by domestic household usage at 7%.`,
+    sampleAnalysis: '【饼图对比满分构架解析】\\n1. 概括段立意高远（Stark dichotomy）：精准提炼出“欧美工业主导 vs 中亚绝对农业主导”的核心对比，并指出“生活用水在三地均占最小份额”。\\n2. 细节段逻辑分组：一段归纳高度相似的欧美两洲（工业48%-53%，农业32%-39%，生活13%-15%）；二段强对比分析中亚的倒挂结构（农业高达88%，工商业与生活均不足8%）。\\n3. 学术词汇丰富：lion\'s share, water withdrawals, completely inverted distribution, commanding 88%, negligible 5%。',
+    keyVocabulary: [
+      'stark dichotomy (鲜明的两极分化/对比)',
+      'lion\'s share (最大份额/绝大部分)',
+      'water withdrawals (取水量/用水量)',
+      'completely inverted distribution (完全颠倒的分布)',
+      'commanding 88% (占据统治地位的88%)',
+      'negligible (微不足道的)'
+    ]
+  },
 
   // CAMBRIDGE 17
   {
@@ -320,6 +374,29 @@ const tasks = [
       'erosion of boundaries (边界的侵蚀/模糊)',
       'demographic equalizer (人口与社会结构的均衡器)',
       'work-life equilibrium (工作生活平衡)'
+    ]
+  },
+  {
+    id: 'w_cdi_t2_cashless',
+    type: 'task2',
+    title: 'The Shift Towards a Cashless Society and Digital Currency',
+    category: 'Economy & Digital Society',
+    bankCategory: 'cdi_recent',
+    year: '2025-2026',
+    source: '2025-2026 CDI Machine Exam Pool',
+    tags: ['Economy', 'Digital Currency', 'Technology', 'Inequality'],
+    minWords: 250,
+    recommendedMinutes: 40,
+    prompt: 'In many contemporary societies, physical banknotes and coins are rapidly being supplanted by digital transaction methods and contactless payment systems.\\n\\nDo the advantages of transitioning towards an entirely cashless society outweigh the disadvantages?',
+    sampleBand9: `The pervasive penetration of contactless payment gateways, mobile wallets, and central bank digital currencies has accelerated the global trajectory towards a cashless society. While transitioning away from physical currency fosters unprecedented transactional efficiency and curtails financial crime, I argue that the risks of financial disenfranchisement among vulnerable populations and systemic cybersecurity vulnerabilities render a completely cashless economy problematic, meaning the disadvantages marginally outweigh the benefits.\\n\\nUndeniably, the digitization of commerce delivers compelling operational dividends. For individuals and merchants alike, electronic settlements eliminate the cumbersome logistics of handling, counting, and transporting physical cash, drastically minimizing cashier queues and eliminating risks of commercial robbery. From a macroeconomic perspective, an electronic ledger leaves an immutable audit trail, making tax evasion, money laundering, and black-market transactions substantially more arduous to execute without regulatory detection. Governments can consequently broaden their tax revenue base and streamline welfare disbursements through direct digital transfers.\\n\\nNotwithstanding these advantages, extinguishing paper legal tender poses grave socio-economic perils. Foremost among these is the immediate risk of financial exclusion. Elderly citizens, individuals in destitute poverty without smartphones or bank accounts, and rural communities with erratic telecommunication infrastructure are at severe risk of being economically marginalized. When cash is rejected at essential grocery stores or transit hubs, these vulnerable cohorts are effectively locked out of fundamental civic participation. Furthermore, absolute reliance on digital banking infrastructure leaves sovereign economies precarious to catastrophic failures: power grid outages, severe cyber-attacks, or cloud server collapses could instantaneously paralyze entire commercial networks, leaving citizens unable to purchase essential sustenance.\\n\\nIn conclusion, while electronic payment systems undoubtedly enhance logistical convenience and fiscal transparency, an entirely cashless model poses intolerable threats of social disenfranchisement and systemic cyber fragility. Consequently, societies should embrace digital transactions while legally preserving cash as an indispensable backup and inclusive safety net.`,
+    sampleAnalysis: '【考官点评与满分范文剖析】\\n- 题目要求：利弊权衡（Do advantages outweigh disadvantages）。范文明确指出：虽然电子交易极大提升效率并打击逃税洗钱，但剥夺弱势群体金融权利（financial disenfranchisement）和系统性网络断电瘫痪风险，导致弊大于利（disadvantages marginally outweigh benefits）。\\n- 论点纵深：好处分析了微观层面（商家零钱找零/防抢劫）与宏观层面（不可篡改审计追踪/打击黑市/税收基础拓展）；坏处深入剖析了老年与贫困弱势群体边缘化与系统性黑客/电网瘫痪风险。\\n- 词汇与语法：financial disenfranchisement, cumbersome logistics, immutable audit trail, sovereign economies precarious to catastrophic failures, inclusive safety net。',
+    keyVocabulary: [
+      'financial disenfranchisement (金融权利剥夺/金融排斥)',
+      'immutable audit trail (不可篡改的审计追踪痕迹)',
+      'cumbersome logistics (繁琐的物流管理)',
+      'destitute poverty (赤贫)',
+      'precarious to catastrophic failures (在灾难性故障面前极易受损)',
+      'inclusive safety net (包容性的兜底保障网)'
     ]
   }
 ];

@@ -173,7 +173,7 @@ const handleSubmitTest = () => {
     }
   });
 
-  const band = calculateListeningBand(score);
+  const band = calculateListeningBand(score, totalQuestions.value);
   resultSummary.value = { rawScore: score, total: totalQuestions.value, band };
   isSubmitted.value = true;
 
