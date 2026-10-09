@@ -20,6 +20,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'save', newConfig: PersonalizedPlanConfig): void;
+  (e: 'openAiWizard'): void;
 }>();
 
 const currentBand = ref(props.config.currentBand);
@@ -125,6 +126,24 @@ const calculatedOverall = computed(() => {
 
       <!-- Content Form -->
       <form @submit.prevent="handleSubmit" class="p-6 overflow-y-auto space-y-5 text-[#1d1d1f] text-sm">
+        <!-- AI Test Center Banner -->
+        <div class="p-3.5 bg-gradient-to-r from-[#0071e3]/10 to-[#5856d6]/10 border border-[#0071e3]/20 rounded-2xl flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <Sparkles class="w-4 h-4 text-[#0071e3] shrink-0" />
+            <div class="text-xs">
+              <span class="font-semibold text-[#1d1d1f]">对接全国真实官方考点排期</span>
+              <p class="text-[11px] text-[#86868b] mt-0.5">选择考场与真实场次，一键通过 AI 精准测算每日学时</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            @click="emit('openAiWizard')"
+            class="px-3 py-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold shrink-0 cursor-pointer transition-all shadow-xs"
+          >
+            开启测算向导 ➔
+          </button>
+        </div>
+
         <!-- Top Presets: Current & Target -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="bg-[#f5f5f7] p-4 rounded-2xl border border-black/[0.03]">

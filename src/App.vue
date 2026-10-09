@@ -24,6 +24,7 @@ const PlacementTestModal = defineAsyncComponent(() => import('./components/Place
 const DictionaryModal = defineAsyncComponent(() => import('./components/Dictionary/DictionaryModal.vue'));
 const QuestionBankSearchModal = defineAsyncComponent(() => import('./components/Search/QuestionBankSearchModal.vue'));
 const SmartRandomModal = defineAsyncComponent(() => import('./components/Common/SmartRandomModal.vue'));
+const GoalSettingModal = defineAsyncComponent(() => import('./components/Onboarding/GoalSettingModal.vue'));
 
 // Services & Composables
 import { getUserProfile, getTestResults, getMistakes } from './services/storage';
@@ -57,6 +58,7 @@ const {
   dictionaryWord,
   isSmartRandomOpen,
   smartRandomModule,
+  isGoalSettingOpen,
   openAuth,
   closeAuth,
   openSearch,
@@ -68,7 +70,9 @@ const {
   openPlacement,
   closePlacement,
   openSmartRandom,
-  closeSmartRandom
+  closeSmartRandom,
+  openGoalSetting,
+  closeGoalSetting
 } = useModals();
 
 // Keyboard Shortcuts Composable (Ctrl+K, Ctrl+D, Ctrl+/, 1-7)
@@ -332,8 +336,16 @@ const remainingDays = computed(() => {
       @userSwitched="refreshUserData"
       @userRegistered="() => {
         refreshUserData();
-        openPlacement();
+        openGoalSetting();
       }"
+    />
+
+    <!-- AI Goal & Real Exam Schedule Onboarding Modal -->
+    <GoalSettingModal
+      :isOpen="isGoalSettingOpen"
+      :activeUser="activeUser"
+      @close="closeGoalSetting"
+      @saved="refreshUserData"
     />
 
     <!-- 3-Minute Academic Placement Diagnostic Test Modal -->

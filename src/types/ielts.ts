@@ -19,6 +19,9 @@ export interface UserProfile {
   targetWriting: number;
   targetSpeaking: number;
   examDate: string; // YYYY-MM-DD
+  targetCenter?: string;
+  targetSession?: string;
+  testType?: 'computer' | 'paper';
   dailyGoalMinutes: number;
   completedMinutesToday: number;
   lastStudyDate: string;

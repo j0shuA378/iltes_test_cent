@@ -27,6 +27,11 @@ export interface PersonalizedPlanConfig {
   targetWriting: number;   // 6.5
   targetSpeaking: number;  // 6.5
   focusWeaknesses: string[];
+  examDate?: string;
+  targetCenter?: string;
+  targetSession?: string;
+  testType?: 'computer' | 'paper';
+  aiAnalysisSummary?: string;
 }
 
 export const DEFAULT_PLAN_CONFIG: PersonalizedPlanConfig = {

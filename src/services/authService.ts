@@ -179,6 +179,10 @@ export function registerUser(params: {
   currentBand?: number;
   targetBand?: number;
   examDate?: string;
+  targetCenter?: string;
+  targetSession?: string;
+  testType?: 'computer' | 'paper';
+  dailyGoalMinutes?: number;
 }): UserAccount {
   let accounts = getAccounts();
   const trimmedName = params.username.trim();
@@ -200,10 +204,14 @@ export function registerUser(params: {
     avatar: params.avatar || '🎓',
     recoveryToken,
     vaultKey: `user_vault_user_${Date.now()}`,
-    currentBand: 0, // All newly registered users strictly start at 0 before diagnostic placement
+    currentBand: params.currentBand ?? 0, // All newly registered users strictly start at 0 before diagnostic placement
     targetBand: params.targetBand ?? 7.0,
     hasCompletedPlacement: false,
     examDate: params.examDate || futureDate.toISOString().split('T')[0],
+    targetCenter: params.targetCenter,
+    targetSession: params.targetSession,
+    testType: params.testType,
+    dailyGoalMinutes: params.dailyGoalMinutes || 150,
     createdAt: new Date().toISOString(),
     lastLoginAt: new Date().toISOString(),
     // Password is now hashed server-side with bcrypt.
@@ -229,7 +237,10 @@ export function registerUser(params: {
       targetWriting: 6.5,
       targetSpeaking: 6.5,
       examDate: newUser.examDate,
-      dailyGoalMinutes: 90,
+      targetCenter: newUser.targetCenter,
+      targetSession: newUser.targetSession,
+      testType: newUser.testType,
+      dailyGoalMinutes: newUser.dailyGoalMinutes || 150,
       completedMinutesToday: 0,
       lastStudyDate: new Date().toISOString().split('T')[0],
       streakDays: 0,
@@ -447,3 +458,101 @@ export function updateUserPlacement(
 
   return updatedUser;
 }
+
+/**
+ * Update user goal, target test center, exam date and AI study plan commitment.
+ * Synchronizes UserAccount, UserProfile, and StudyPlanConfig across local vaults.
+ */
+export function updateUserGoalAndExamSchedule(
+  userId: string,
+  params: {
+    targetBand: number;
+    currentBand?: number;
+    examDate: string;
+    targetCenter?: string;
+    targetSession?: string;
+    testType?: 'computer' | 'paper';
+    dailyHours?: number;
+    dailyGoalMinutes?: number;
+    targetListening?: number;
+    targetReading?: number;
+    targetWriting?: number;
+    targetSpeaking?: number;
+    aiAnalysisSummary?: string;
+  }
+): UserAccount {
+  const accounts = getAccounts();
+  const index = accounts.findIndex(a => a.id === userId);
+  if (index === -1) {
+    throw new Error('用户档案不存在');
+  }
+
+  const existing = accounts[index];
+  const updatedUser: UserAccount = {
+    ...existing,
+    targetBand: params.targetBand,
+    currentBand: params.currentBand !== undefined ? params.currentBand : existing.currentBand,
+    examDate: params.examDate,
+    targetCenter: params.targetCenter || existing.targetCenter,
+    targetSession: params.targetSession || existing.targetSession,
+    testType: params.testType || existing.testType,
+    dailyGoalMinutes: params.dailyGoalMinutes || Math.round((params.dailyHours || 2.5) * 60)
+  };
+
+  accounts[index] = updatedUser;
+  localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+
+  // 1. Sync User Profile
+  try {
+    const profileKey = `user_${userId}_profile`;
+    const rawProf = localStorage.getItem(profileKey);
+    const prof = rawProf ? JSON.parse(rawProf) : {};
+    prof.targetOverall = params.targetBand;
+    prof.examDate = params.examDate;
+    if (params.targetCenter) prof.targetCenter = params.targetCenter;
+    if (params.targetSession) prof.targetSession = params.targetSession;
+    if (params.testType) prof.testType = params.testType;
+    if (params.targetListening) prof.targetListening = params.targetListening;
+    if (params.targetReading) prof.targetReading = params.targetReading;
+    if (params.targetWriting) prof.targetWriting = params.targetWriting;
+    if (params.targetSpeaking) prof.targetSpeaking = params.targetSpeaking;
+    if (params.dailyGoalMinutes) prof.dailyGoalMinutes = params.dailyGoalMinutes;
+    localStorage.setItem(profileKey, JSON.stringify(prof));
+  } catch {}
+
+  // 2. Sync Study Plan Config
+  try {
+    const planKey = `user_${userId}_study_plan_config`;
+    const rawPlan = localStorage.getItem(planKey);
+    const plan = rawPlan ? JSON.parse(rawPlan) : {};
+
+    // Calculate dynamic totalDays from today to examDate
+    const today = new Date();
+    const exam = new Date(params.examDate);
+    const diffDays = Math.max(1, Math.ceil((exam.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+
+    plan.targetBand = params.targetBand;
+    if (params.currentBand !== undefined) plan.currentBand = params.currentBand;
+    plan.totalDays = diffDays;
+    plan.examDate = params.examDate;
+    if (params.targetCenter) plan.targetCenter = params.targetCenter;
+    if (params.targetSession) plan.targetSession = params.targetSession;
+    if (params.testType) plan.testType = params.testType;
+    if (params.dailyHours) plan.dailyHours = params.dailyHours;
+    if (params.targetListening) plan.targetListening = params.targetListening;
+    if (params.targetReading) plan.targetReading = params.targetReading;
+    if (params.targetWriting) plan.targetWriting = params.targetWriting;
+    if (params.targetSpeaking) plan.targetSpeaking = params.targetSpeaking;
+    if (params.aiAnalysisSummary) plan.aiAnalysisSummary = params.aiAnalysisSummary;
+    localStorage.setItem(planKey, JSON.stringify(plan));
+  } catch {}
+
+  // 3. Dispatch global sync events
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('ielts_auth_changed', { detail: updatedUser }));
+    window.dispatchEvent(new CustomEvent('ielts_vault_updated', { detail: { userId } }));
+  }
+
+  return updatedUser;
+}
+

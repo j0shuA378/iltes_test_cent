@@ -15,6 +15,10 @@ export interface UserAccount {
   lastLoginAt: string; // ISO string
   passwordHash?: string; // Optional simple password/PIN
   hasCompletedPlacement?: boolean;
+  targetCenter?: string; // e.g. "英国文化教育协会上海机考中心 (嘉地广场)"
+  targetSession?: string; // e.g. "下午场 14:00"
+  testType?: 'computer' | 'paper';
+  dailyGoalMinutes?: number;
   placementScore?: {
     testedBand: number;
     rawScore: number;

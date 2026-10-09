@@ -33,6 +33,8 @@ import {
 } from '../../services/storage';
 import type { UserAccount } from '../../types/auth';
 import AdaptationConfigModal from './AdaptationConfigModal.vue';
+import { useModals } from '../../composables/useModals';
+import { MapPin, BrainCircuit } from 'lucide-vue-next';
 
 const props = defineProps<{
   activeUser?: UserAccount;
@@ -54,25 +56,42 @@ const loadPlanConfig = (): PersonalizedPlanConfig => {
     ? (props.activeUser?.currentBand ?? 0.0)
     : 0.0;
 
+  // Calculate dynamic days remaining if examDate exists
+  let dynamicDays = 60;
+  if (props.activeUser?.examDate) {
+    const today = new Date();
+    const exam = new Date(props.activeUser.examDate);
+    dynamicDays = Math.max(1, Math.ceil((exam.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+  }
+
   if (saved) {
     return {
       ...DEFAULT_PLAN_CONFIG,
       ...saved,
       currentBand: isUntested.value ? 0.0 : (saved.currentBand || baseBand),
-      targetBand: saved.targetBand || props.activeUser?.targetBand || 7.0
+      targetBand: saved.targetBand || props.activeUser?.targetBand || 7.0,
+      totalDays: saved.totalDays || dynamicDays,
+      targetCenter: saved.targetCenter || props.activeUser?.targetCenter,
+      targetSession: saved.targetSession || props.activeUser?.targetSession,
+      examDate: saved.examDate || props.activeUser?.examDate
     };
   }
 
   return {
     ...DEFAULT_PLAN_CONFIG,
     currentBand: baseBand,
-    targetBand: props.activeUser?.targetBand || 7.0
+    targetBand: props.activeUser?.targetBand || 7.0,
+    totalDays: dynamicDays,
+    targetCenter: props.activeUser?.targetCenter,
+    targetSession: props.activeUser?.targetSession,
+    examDate: props.activeUser?.examDate
   };
 };
 
 const config = ref<PersonalizedPlanConfig>(loadPlanConfig());
 const activePhaseIndex = ref(0);
 const isConfigModalOpen = ref(false);
+const { openGoalSetting } = useModals();
 const completedTasks = ref<Record<string, boolean>>(getCompletedPlanTasks(props.activeUser?.id));
 
 watch(() => props.activeUser, () => {
@@ -87,7 +106,7 @@ const dailyTasks = computed<DailyPlanTask[]>(() => getDailyTasksForPhase(current
 const completedCount = computed(() => dailyTasks.value.filter(t => completedTasks.value[t.id]).length);
 const progressPercent = computed(() => Math.round((completedCount.value / dailyTasks.value.length) * 100));
 
-// Overall timeline progress (Day 1 / 178)
+// Overall timeline progress
 const timelinePct = computed(() => Math.min(100, Math.max(1, Math.round((config.value.currentDay / config.value.totalDays) * 100))));
 
 const handleToggleTask = (taskId: string) => {
@@ -112,22 +131,30 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
         <!-- Top Tag & Settings Button -->
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.04] border border-black/[0.06] text-[#1d1d1f] text-xs font-medium">
-            <Sparkles class="w-3.5 h-3.5 text-[#86868b]" />
-            <span>个人专属适配方案 · 178天进阶跃迁</span>
+            <Sparkles class="w-3.5 h-3.5 text-amber-500" />
+            <span>个人专属适配方案 · {{ config.targetCenter ? `${config.targetCenter} · ` : '' }}{{ config.totalDays }}天进阶跃迁</span>
           </div>
 
           <div class="flex items-center gap-2">
             <button
+              @click="openGoalSetting"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-xs transition-all cursor-pointer active:scale-98"
+            >
+              <BrainCircuit class="w-3.5 h-3.5 text-amber-400" />
+              <span>AI 定制考期与学时</span>
+            </button>
+
+            <button
               v-if="isUntested"
               @click="emit('openPlacementTest')"
-              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-sm transition-all cursor-pointer active:scale-98"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-medium shadow-xs transition-all cursor-pointer active:scale-98"
             >
               <Sparkles class="w-3.5 h-3.5 text-white/80" />
               <span>参加定级测验</span>
             </button>
 
             <button
-              @click="isConfigModalOpen = true"
+              @click="openGoalSetting"
               class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium border border-black/[0.04] transition-all cursor-pointer"
             >
               <Sliders class="w-3.5 h-3.5 text-[#86868b]" />
@@ -139,11 +166,29 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
         <!-- Core Title & Band Progression -->
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div class="space-y-2">
-            <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
-              当前水平 <span class="font-semibold text-[#1d1d1f]">{{ isUntested ? '待测定 (无初始成绩)' : `Band ${config.currentBand.toFixed(1)} (实测)` }}</span>
-              <span class="mx-2.5 text-[#86868b] font-normal">➔</span>
-              目标总分 <span class="font-semibold text-[#1d1d1f]">Band {{ config.targetBand.toFixed(1) }}</span>
-            </h1>
+            <div class="flex flex-wrap items-center gap-2">
+              <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
+                当前水平 <span class="font-semibold text-[#1d1d1f]">{{ isUntested ? '待测定 (无初始成绩)' : `Band ${config.currentBand.toFixed(1)} (实测)` }}</span>
+                <span class="mx-2.5 text-[#86868b] font-normal">➔</span>
+                目标总分 <span class="font-semibold text-[#1d1d1f]">Band {{ config.targetBand.toFixed(1) }}</span>
+              </h1>
+            </div>
+
+            <!-- Target Center & Session Badge -->
+            <div v-if="config.targetCenter || config.examDate" class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-xl bg-black/[0.03] text-xs text-[#1d1d1f] border border-black/[0.04]">
+              <MapPin class="w-3.5 h-3.5 text-rose-500 shrink-0" />
+              <span class="font-medium">{{ config.targetCenter || '已选官方考点' }}</span>
+              <span class="text-black/20">·</span>
+              <Calendar class="w-3.5 h-3.5 text-[#0071e3] shrink-0" />
+              <span>{{ config.examDate }} {{ config.targetSession || '' }}</span>
+              <button 
+                @click="openGoalSetting" 
+                class="text-[#0071e3] hover:underline font-medium text-[11px] ml-1 cursor-pointer"
+              >
+                修改场次
+              </button>
+            </div>
+
             <p v-if="isUntested" class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
               新学员档案尚未测定初始成绩，一切需经测验后定论。完成 3 分钟学术定级测验后，系统将依据实测分数精准重构四科专属方案。目标分解：
               <span class="font-medium text-[#1d1d1f]"> 听力 {{ config.targetListening.toFixed(1) }}</span>、
@@ -160,8 +205,12 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
             </p>
           </div>
 
-          <!-- Key Metrics Counter (Apple Clean Editorial Style) -->
-          <div class="flex items-center gap-3 sm:gap-4 bg-[#f5f5f7] p-3 sm:p-4 rounded-2xl border border-black/[0.02] shrink-0">
+          <!-- Key Metrics Counter (Clickable to trigger AI calculation) -->
+          <div 
+            @click="openGoalSetting"
+            class="flex items-center gap-3 sm:gap-4 bg-[#f5f5f7] hover:bg-[#ececee] p-3 sm:p-4 rounded-2xl border border-black/[0.04] shrink-0 cursor-pointer transition-all active:scale-98 group"
+            title="点击使用 AI 重新测算考期与每日投入"
+          >
             <div class="text-center px-2 sm:px-3">
               <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{{ config.totalDays }}</div>
               <div class="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">备考周期 (天)</div>
@@ -175,8 +224,13 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
             </div>
             <div class="h-8 w-px bg-black/[0.08]" />
             <div class="text-center px-2 sm:px-3">
-              <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{{ config.dailyHours }}h</div>
-              <div class="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">每日投入</div>
+              <div class="text-2xl sm:text-3xl font-bold tracking-tight text-[#0071e3] tabular-nums group-hover:scale-105 transition-transform flex items-center justify-center gap-0.5">
+                <span>{{ config.dailyHours }}h</span>
+              </div>
+              <div class="text-[10px] sm:text-xs text-[#0071e3] mt-0.5 font-medium flex items-center justify-center gap-0.5">
+                <Sparkles class="w-3 h-3 text-amber-500" />
+                <span>AI每日投入</span>
+              </div>
             </div>
           </div>
         </div>
@@ -443,6 +497,10 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
       :config="config"
       @close="isConfigModalOpen = false"
       @save="handleSaveConfig"
+      @openAiWizard="() => {
+        isConfigModalOpen = false;
+        openGoalSetting();
+      }"
     />
   </div>
 </template>

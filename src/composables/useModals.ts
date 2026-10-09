@@ -13,6 +13,7 @@ const isShortcutsOpen = ref(false);
 const dictionaryWord = ref('');
 const isSmartRandomOpen = ref(false);
 const smartRandomModule = ref<ModuleType>('reading');
+const isGoalSettingOpen = ref(false);
 
 export function useModals() {
   const openAuth = () => {
@@ -66,6 +67,14 @@ export function useModals() {
     isSmartRandomOpen.value = false;
   };
 
+  const openGoalSetting = () => {
+    isGoalSettingOpen.value = true;
+  };
+
+  const closeGoalSetting = () => {
+    isGoalSettingOpen.value = false;
+  };
+
   return {
     isAuthModalOpen,
     isPlacementOpen,
@@ -75,6 +84,7 @@ export function useModals() {
     dictionaryWord,
     isSmartRandomOpen,
     smartRandomModule,
+    isGoalSettingOpen,
     openAuth,
     closeAuth,
     openSearch,
@@ -86,6 +96,8 @@ export function useModals() {
     openPlacement,
     closePlacement,
     openSmartRandom,
-    closeSmartRandom
+    closeSmartRandom,
+    openGoalSetting,
+    closeGoalSetting
   };
 }
