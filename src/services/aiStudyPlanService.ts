@@ -62,7 +62,6 @@ export interface AiPlanAnalysisResult {
 function calculateRequiredTotalHours(currentBand: number, targetBand: number): number {
   // If untested (0.0), assume realistic high school/CET-4 baseline of 4.5
   const effectiveCurrent = currentBand > 0 ? Math.max(3.5, currentBand) : 4.5;
-  const delta = Math.max(0.5, targetBand - effectiveCurrent);
 
   // Marginal hours needed per 0.5 band increase across different brackets
   let totalHours = 0;
@@ -192,7 +191,6 @@ export function analyzeStudyCommitment(input: PlanAnalysisInput): AiPlanAnalysis
   // 8. Key Phases Breakdown
   const p1Days = Math.max(7, Math.round(daysRemaining * 0.35));
   const p2Days = Math.max(7, Math.round(daysRemaining * 0.40));
-  const p3Days = Math.max(5, daysRemaining - p1Days - p2Days);
 
   const keyPhases = [
     {

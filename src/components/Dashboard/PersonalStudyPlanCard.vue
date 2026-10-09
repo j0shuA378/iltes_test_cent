@@ -137,6 +137,7 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
 
           <div class="flex items-center gap-2">
             <button
+              v-if="!isUntested"
               @click="openGoalSetting"
               class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-xs transition-all cursor-pointer active:scale-98"
             >
@@ -147,14 +148,14 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
             <button
               v-if="isUntested"
               @click="emit('openPlacementTest')"
-              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-medium shadow-xs transition-all cursor-pointer active:scale-98"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-xs transition-all cursor-pointer active:scale-98"
             >
-              <Sparkles class="w-3.5 h-3.5 text-white/80" />
+              <Sparkles class="w-3.5 h-3.5 text-amber-400" />
               <span>参加定级测验</span>
             </button>
 
             <button
-              @click="openGoalSetting"
+              @click="isConfigModalOpen = true"
               class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium border border-black/[0.04] transition-all cursor-pointer"
             >
               <Sliders class="w-3.5 h-3.5 text-[#86868b]" />
@@ -235,34 +236,7 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
           </div>
         </div>
 
-        <!-- Diagnostic Placement Test Banner inside Card for Untested Users -->
-        <div 
-          v-if="isUntested" 
-          class="p-4 rounded-2xl bg-[#0071e3]/5 border border-[#0071e3]/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
-        >
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-[#0071e3] text-white flex items-center justify-center shrink-0 shadow-xs">
-              <Sparkles class="w-4 h-4" />
-            </div>
-            <div>
-              <div class="text-xs font-semibold text-[#1d1d1f] flex items-center gap-1.5">
-                <span>新学员暂无初始成绩 · 需测试后定论</span>
-                <span class="px-2 py-0.2 rounded-full text-[10px] bg-[#0071e3]/10 text-[#0071e3] font-medium">3分钟摸底</span>
-              </div>
-              <p class="text-[11px] text-[#86868b] mt-0.5">
-                只需 3 分钟完成 6 道微型摸底题，快速定位学术词汇与听力基准，系统将自动生成定制路线。
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            @click="emit('openPlacementTest')"
-            class="px-4 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-medium shrink-0 transition-all cursor-pointer shadow-xs active:scale-98 flex items-center gap-1.5"
-          >
-            <span>参加 3 分钟定级测验</span>
-            <ArrowRight class="w-3.5 h-3.5" />
-          </button>
-        </div>
+
 
         <!-- Timeline Bar -->
         <div class="space-y-1.5 pt-1">
@@ -291,7 +265,7 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
         <div>
           <h2 class="text-base font-semibold text-[#1d1d1f] flex items-center gap-2">
             <TrendingUp class="w-4 h-4 text-[#0071e3]" />
-            178 天 4 阶段进阶路线图
+            {{ config.totalDays }} 天 4 阶段进阶路线图
           </h2>
           <p class="text-xs text-[#86868b] mt-0.5">循序渐进：从词汇语法脱敏，到真题题型技巧，再到同义替换与全真模考</p>
         </div>

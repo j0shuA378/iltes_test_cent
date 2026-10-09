@@ -714,7 +714,7 @@ export async function lookupWord(input: string): Promise<DictionaryEntry | null>
         };
       }
     }
-  } catch (e) {
+  } catch {
     // Proxy timeout or failed, proceed to next fallback
   }
 
@@ -747,7 +747,7 @@ export async function lookupWord(input: string): Promise<DictionaryEntry | null>
         }
       }
     }
-  } catch (e) {
+  } catch {
     // Offline fallback
   }
 

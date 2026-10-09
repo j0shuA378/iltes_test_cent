@@ -171,6 +171,59 @@ export function setActiveUser(userId: string): UserAccount {
   return found;
 }
 
+/**
+ * Simple, fast hash for local offline password verification.
+ */
+export function hashLocalPassword(password: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < password.length; i++) {
+    hash ^= password.charCodeAt(i);
+    hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+  }
+  return 'shash_' + (hash >>> 0).toString(16) + '_' + password.length;
+}
+
+/**
+ * Verify account password supporting modern local hash, legacy base64, and server placeholder migration.
+ */
+export function verifyUserPassword(user: UserAccount, inputPassword: string): boolean {
+  if (!user.passwordHash) return true;
+  if (!inputPassword) return false;
+
+  // Modern local hash
+  if (user.passwordHash.startsWith('shash_')) {
+    return hashLocalPassword(inputPassword) === user.passwordHash;
+  }
+
+  // Legacy placeholder migration from server refactor
+  if (user.passwordHash === '__hashed_server_side__') {
+    user.passwordHash = hashLocalPassword(inputPassword);
+    const accounts = getAccounts();
+    const idx = accounts.findIndex(a => a.id === user.id);
+    if (idx !== -1) {
+      accounts[idx].passwordHash = user.passwordHash;
+      localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+    }
+    return true;
+  }
+
+  // Legacy base64
+  try {
+    if (btoa(inputPassword) === user.passwordHash) {
+      user.passwordHash = hashLocalPassword(inputPassword);
+      const accounts = getAccounts();
+      const idx = accounts.findIndex(a => a.id === user.id);
+      if (idx !== -1) {
+        accounts[idx].passwordHash = user.passwordHash;
+        localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+      }
+      return true;
+    }
+  } catch {}
+
+  return false;
+}
+
 export function registerUser(params: {
   username: string;
   displayName?: string;
@@ -214,9 +267,7 @@ export function registerUser(params: {
     dailyGoalMinutes: params.dailyGoalMinutes || 150,
     createdAt: new Date().toISOString(),
     lastLoginAt: new Date().toISOString(),
-    // Password is now hashed server-side with bcrypt.
-    // Frontend only stores a marker indicating password was set.
-    passwordHash: params.password ? '__hashed_server_side__' : undefined
+    passwordHash: params.password ? hashLocalPassword(params.password) : undefined
   };
 
   // Initialize a fresh, isolated local sandbox vault for this new user
@@ -304,9 +355,15 @@ export function loginUser(username: string, password?: string): { success: boole
     return { success: false, error: '未在此设备找到该学员档案，请先在上方注册新账号' };
   }
 
-  // Note: Password verification is now handled server-side with bcrypt.
-  // In local-only (offline) mode, we skip password checks since we can't verify without the server.
-  // When the backend is available, use the API login flow which does proper bcrypt verification.
+  // Password verification
+  if (user.passwordHash) {
+    if (!password) {
+      return { success: false, error: '此账号受密码保护，请输入密码登录' };
+    }
+    if (!verifyUserPassword(user, password)) {
+      return { success: false, error: '密码不正确，请核对后重试' };
+    }
+  }
 
   // Clean up any unused guest placeholder if present
   if (accounts.length > 1) {

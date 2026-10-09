@@ -27,6 +27,7 @@ import {
   removeAccount,
   logoutActiveUser,
   recoverUserByToken,
+  verifyUserPassword,
   AVATAR_OPTIONS 
 } from '../../services/authService';
 import type { UserAccount } from '../../types/auth';
@@ -130,7 +131,7 @@ const handleVerifyPasswordSwitch = () => {
   verifyPasswordError.value = '';
 
   const target = verifyPasswordAccount.value;
-  if (target.passwordHash && btoa(verifyPasswordInput.value) !== target.passwordHash) {
+  if (target.passwordHash && !verifyUserPassword(target, verifyPasswordInput.value)) {
     verifyPasswordError.value = '密码不正确，请重新输入';
     return;
   }

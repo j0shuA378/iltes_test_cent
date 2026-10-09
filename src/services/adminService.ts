@@ -1,4 +1,4 @@
-import { getAccounts, getActiveUserId, setActiveUser, getDefaultUser } from './authService';
+import { getAccounts, getActiveUserId, setActiveUser, getDefaultUser, hashLocalPassword } from './authService';
 import { READING_TESTS } from '../data/readingTests';
 import { LISTENING_TESTS } from '../data/listeningTests';
 import { WRITING_TASKS } from '../data/writingTasks';
@@ -67,7 +67,7 @@ export async function verifyAdminPin(pin: string): Promise<boolean> {
       sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
       return true;
     }
-  } catch (err) {
+  } catch {
     // Graceful offline fallback in development environment
     if (import.meta.env.DEV && (cleanPin === DEFAULT_ADMIN_PIN || cleanPin === 'admin')) {
       console.warn('[Admin] 后端不可用，使用开发环境离线备用验证');
@@ -315,7 +315,7 @@ export function updateStudentAccount(
   if (updates.currentBand !== undefined) found.currentBand = updates.currentBand;
   if (updates.examDate !== undefined) found.examDate = updates.examDate;
   if (updates.newPassword !== undefined) {
-    found.passwordHash = updates.newPassword ? btoa(updates.newPassword) : undefined;
+    found.passwordHash = updates.newPassword ? hashLocalPassword(updates.newPassword) : undefined;
   }
 
   localStorage.setItem('ielts_user_accounts', JSON.stringify(accounts));

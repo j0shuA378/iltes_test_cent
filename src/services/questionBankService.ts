@@ -1,4 +1,4 @@
-import type { BankCategory, ModuleType, ReadingTest, ListeningTest, WritingTask, SpeakingTopic } from '../types/ielts';
+import type { BankCategory, ReadingTest, ListeningTest, WritingTask, SpeakingTopic } from '../types/ielts';
 import { READING_TESTS } from '../data/readingTests';
 import { LISTENING_TESTS } from '../data/listeningTests';
 import { WRITING_TASKS } from '../data/writingTasks';

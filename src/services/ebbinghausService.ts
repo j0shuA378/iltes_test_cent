@@ -38,6 +38,7 @@ export const STAGE_DESCRIPTIONS: Record<MemoryStage, { label: string; desc: stri
 
 function getRawRecords(): Record<string, EbbinghausItem> {
   try {
+    if (typeof localStorage === 'undefined') return {};
     const key = getUserKey(STORAGE_KEY);
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : {};
@@ -47,11 +48,15 @@ function getRawRecords(): Record<string, EbbinghausItem> {
 }
 
 function saveRawRecords(records: Record<string, EbbinghausItem>): void {
-  const key = getUserKey(STORAGE_KEY);
-  localStorage.setItem(key, JSON.stringify(records));
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('ielts_ebbinghaus_updated'));
-  }
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const key = getUserKey(STORAGE_KEY);
+      localStorage.setItem(key, JSON.stringify(records));
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ielts_ebbinghaus_updated'));
+    }
+  } catch {}
 }
 
 // Calculate current memory retention rate percentage using R = exp(-t/S)

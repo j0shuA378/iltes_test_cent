@@ -1,15 +1,7 @@
 import type { 
   BankCategory, 
   ModuleType, 
-  QuestionType, 
-  ReadingTest, 
-  ReadingPassage,
-  ListeningTest, 
-  ListeningSection,
-  WritingTask, 
-  SpeakingTopic,
-  RandomDrillConfig,
-  RandomDrillType
+  QuestionType 
 } from '../types/ielts';
 import { 
   getReadingTestsByBank, 
@@ -22,7 +14,7 @@ import { getMistakes } from './storage';
 /**
  * Utility to shuffle an array using Fisher-Yates algorithm
  */
-function shuffle<T>(array: T[]): T[] {
+export function shuffle<T>(array: T[]): T[] {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

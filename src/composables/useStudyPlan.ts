@@ -3,9 +3,7 @@ import {
   DEFAULT_PLAN_CONFIG, 
   STUDY_PHASES, 
   getDailyTasksForPhase,
-  type PersonalizedPlanConfig,
-  type StudyPlanPhase,
-  type DailyPlanTask
+  type PersonalizedPlanConfig
 } from '../data/studyPlanData';
 import { 
   getStudyPlanConfig, 
