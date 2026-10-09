@@ -5,7 +5,7 @@ import { WRITING_TASKS } from '../data/writingTasks';
 import { SPEAKING_TOPICS } from '../data/speakingTopics';
 import { CORE_VOCABULARY } from '../data/vocabularyData';
 import type { UserAccount } from '../types/auth';
-import type { TestResult, MistakeRecord, UserProfile } from '../types/ielts';
+import type { TestResult, MistakeRecord } from '../types/ielts';
 
 const ADMIN_SESSION_KEY = 'ielts_admin_authenticated';
 const DEFAULT_ADMIN_PIN = 'admin888';
@@ -43,6 +43,9 @@ export interface AdminDashboardMetrics {
   }>;
 }
 
+import { apiAdminLogin } from '../api/authApi';
+import { clearAuthToken } from '../api/client';
+
 /**
  * Admin Authentication
  */
@@ -54,12 +57,23 @@ export function isAdminAuthenticated(): boolean {
   }
 }
 
-export function verifyAdminPin(pin: string): boolean {
-  if (pin.trim() === DEFAULT_ADMIN_PIN || pin.trim() === 'admin') {
-    try {
+export async function verifyAdminPin(pin: string): Promise<boolean> {
+  const cleanPin = pin.trim();
+  if (!cleanPin) return false;
+
+  try {
+    const res = await apiAdminLogin(cleanPin);
+    if (res && res.token) {
       sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
-    } catch {}
-    return true;
+      return true;
+    }
+  } catch (err) {
+    // Graceful offline fallback in development environment
+    if (import.meta.env.DEV && (cleanPin === DEFAULT_ADMIN_PIN || cleanPin === 'admin')) {
+      console.warn('[Admin] 后端不可用，使用开发环境离线备用验证');
+      sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+      return true;
+    }
   }
   return false;
 }
@@ -67,6 +81,7 @@ export function verifyAdminPin(pin: string): boolean {
 export function logoutAdmin(): void {
   try {
     sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    clearAuthToken();
   } catch {}
 }
 

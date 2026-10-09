@@ -1,6 +1,6 @@
 import { UserProfile, TestResult, MistakeRecord, WritingSubmission, SpeakingRecording } from '../types/ielts';
 import { UserAccount, UserLocalVault, EbbinghausItem } from '../types/auth';
-import { getActiveUserId, getActiveUser, getAccounts, setActiveUser, getDefaultUser } from './authService';
+import { getActiveUserId, getActiveUser, getAccounts, setActiveUser } from './authService';
 
 const BASE_KEYS = {
   PROFILE: 'profile',
@@ -13,7 +13,65 @@ const BASE_KEYS = {
   STUDY_PLAN_TASKS: 'study_plan_tasks',
   EBBINGHAUS_RECORDS: 'ebbinghaus_records',
   VAULT: 'vault'
-};
+} as const;
+
+/**
+ * High-performance In-Memory Cache Layer.
+ * Avoids constant, synchronous JSON.parse/JSON.stringify cycles on localStorage.
+ */
+const memoryCache = new Map<string, any>();
+
+export function clearStorageCache(keyPattern?: string): void {
+  if (!keyPattern) {
+    memoryCache.clear();
+    return;
+  }
+  for (const k of Array.from(memoryCache.keys())) {
+    if (k.includes(keyPattern)) {
+      memoryCache.delete(k);
+    }
+  }
+}
+
+// Invalidate cache on user change or window storage events
+if (typeof window !== 'undefined') {
+  window.addEventListener('ielts_auth_changed', () => clearStorageCache());
+  window.addEventListener('storage', (e) => {
+    if (e.key) {
+      memoryCache.delete(e.key);
+    } else {
+      memoryCache.clear();
+    }
+  });
+}
+
+function getFromCacheOrStorage<T>(key: string, fallback: T): T {
+  if (memoryCache.has(key)) {
+    return memoryCache.get(key);
+  }
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
+      memoryCache.set(key, fallback);
+      return fallback;
+    }
+    const parsed = JSON.parse(raw);
+    memoryCache.set(key, parsed);
+    return parsed;
+  } catch {
+    memoryCache.set(key, fallback);
+    return fallback;
+  }
+}
+
+function setToCacheAndStorage<T>(key: string, value: T): void {
+  memoryCache.set(key, value);
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    console.error(`Error saving to localStorage [${key}]:`, err);
+  }
+}
 
 /**
  * Generate user-scoped localStorage key ensuring strict physical data isolation.
@@ -51,15 +109,20 @@ export function getDefaultProfile(userId?: string): UserProfile {
 }
 
 export function getUserProfile(userId?: string): UserProfile {
+  const key = getUserKey(BASE_KEYS.PROFILE, userId);
+  if (memoryCache.has(key)) {
+    return memoryCache.get(key);
+  }
   try {
-    const key = getUserKey(BASE_KEYS.PROFILE, userId);
     const raw = localStorage.getItem(key);
     if (!raw) {
       const defaultProf = getDefaultProfile(userId);
       saveUserProfile(defaultProf, userId);
       return defaultProf;
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    memoryCache.set(key, parsed);
+    return parsed;
   } catch {
     return getDefaultProfile(userId);
   }
@@ -67,38 +130,28 @@ export function getUserProfile(userId?: string): UserProfile {
 
 export function saveUserProfile(profile: UserProfile, userId?: string): void {
   const key = getUserKey(BASE_KEYS.PROFILE, userId);
-  localStorage.setItem(key, JSON.stringify(profile));
+  setToCacheAndStorage(key, profile);
 }
 
 export function getTestResults(userId?: string): TestResult[] {
-  try {
-    const key = getUserKey(BASE_KEYS.RESULTS, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  const key = getUserKey(BASE_KEYS.RESULTS, userId);
+  return getFromCacheOrStorage<TestResult[]>(key, []);
 }
 
 export function saveTestResult(result: TestResult, userId?: string): void {
-  const results = getTestResults(userId);
+  const results = [...getTestResults(userId)];
   results.unshift(result);
   const key = getUserKey(BASE_KEYS.RESULTS, userId);
-  localStorage.setItem(key, JSON.stringify(results));
+  setToCacheAndStorage(key, results);
 }
 
 export function getMistakes(userId?: string): MistakeRecord[] {
-  try {
-    const key = getUserKey(BASE_KEYS.MISTAKES, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  const key = getUserKey(BASE_KEYS.MISTAKES, userId);
+  return getFromCacheOrStorage<MistakeRecord[]>(key, []);
 }
 
 export function saveMistake(mistake: MistakeRecord, userId?: string): void {
-  const mistakes = getMistakes(userId);
+  const mistakes = [...getMistakes(userId)];
   const index = mistakes.findIndex(m => m.id === mistake.id);
   if (index >= 0) {
     mistakes[index] = mistake;
@@ -106,130 +159,100 @@ export function saveMistake(mistake: MistakeRecord, userId?: string): void {
     mistakes.unshift(mistake);
   }
   const key = getUserKey(BASE_KEYS.MISTAKES, userId);
-  localStorage.setItem(key, JSON.stringify(mistakes));
+  setToCacheAndStorage(key, mistakes);
 }
 
 export function toggleMistakeResolved(id: string, userId?: string): boolean {
-  const mistakes = getMistakes(userId);
+  const mistakes = [...getMistakes(userId)];
   const item = mistakes.find(m => m.id === id);
   if (item) {
     item.isResolved = !item.isResolved;
     item.reviewedCount = (item.reviewedCount || 0) + 1;
     const key = getUserKey(BASE_KEYS.MISTAKES, userId);
-    localStorage.setItem(key, JSON.stringify(mistakes));
+    setToCacheAndStorage(key, mistakes);
     return item.isResolved;
   }
   return false;
 }
 
 export function getWritingSubmissions(userId?: string): WritingSubmission[] {
-  try {
-    const key = getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  const key = getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, userId);
+  return getFromCacheOrStorage<WritingSubmission[]>(key, []);
 }
 
 export function saveWritingSubmission(submission: WritingSubmission, userId?: string): void {
-  const list = getWritingSubmissions(userId);
+  const list = [...getWritingSubmissions(userId)];
   list.unshift(submission);
   const key = getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, userId);
-  localStorage.setItem(key, JSON.stringify(list));
+  setToCacheAndStorage(key, list);
 }
 
 export function getSpeakingRecordings(userId?: string): SpeakingRecording[] {
-  try {
-    const key = getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  const key = getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, userId);
+  return getFromCacheOrStorage<SpeakingRecording[]>(key, []);
 }
 
 export function saveSpeakingRecording(rec: SpeakingRecording, userId?: string): void {
-  const list = getSpeakingRecordings(userId);
+  const list = [...getSpeakingRecordings(userId)];
   list.unshift(rec);
   const key = getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, userId);
-  localStorage.setItem(key, JSON.stringify(list));
+  setToCacheAndStorage(key, list);
 }
 
 export function getVocabProgress(userId?: string): Record<string, { status: 'unfamiliar' | 'learning' | 'mastered'; isStarred?: boolean }> {
-  try {
-    const key = getUserKey(BASE_KEYS.VOCAB_PROGRESS, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
+  const key = getUserKey(BASE_KEYS.VOCAB_PROGRESS, userId);
+  return getFromCacheOrStorage(key, {});
 }
 
 export function updateWordStatus(wordId: string, status: 'unfamiliar' | 'learning' | 'mastered', userId?: string): void {
-  const prog = getVocabProgress(userId);
+  const prog = { ...getVocabProgress(userId) };
   prog[wordId] = { ...(prog[wordId] || {}), status };
   const key = getUserKey(BASE_KEYS.VOCAB_PROGRESS, userId);
-  localStorage.setItem(key, JSON.stringify(prog));
+  setToCacheAndStorage(key, prog);
 }
 
 export function toggleWordStar(wordId: string, userId?: string): boolean {
-  const prog = getVocabProgress(userId);
+  const prog = { ...getVocabProgress(userId) };
   const current = prog[wordId]?.isStarred || false;
   const next = !current;
   prog[wordId] = { ...(prog[wordId] || { status: 'unfamiliar' }), isStarred: next };
   const key = getUserKey(BASE_KEYS.VOCAB_PROGRESS, userId);
-  localStorage.setItem(key, JSON.stringify(prog));
+  setToCacheAndStorage(key, prog);
   return next;
 }
 
 export function getStudyPlanConfig(userId?: string): any {
-  try {
-    const key = getUserKey(BASE_KEYS.STUDY_PLAN_CONFIG, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
+  const key = getUserKey(BASE_KEYS.STUDY_PLAN_CONFIG, userId);
+  return getFromCacheOrStorage(key, null);
 }
 
 export function saveStudyPlanConfig(config: any, userId?: string): void {
   const key = getUserKey(BASE_KEYS.STUDY_PLAN_CONFIG, userId);
-  localStorage.setItem(key, JSON.stringify(config));
+  setToCacheAndStorage(key, config);
 }
 
 export function getCompletedPlanTasks(userId?: string): Record<string, boolean> {
-  try {
-    const key = getUserKey(BASE_KEYS.STUDY_PLAN_TASKS, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
+  const key = getUserKey(BASE_KEYS.STUDY_PLAN_TASKS, userId);
+  return getFromCacheOrStorage(key, {});
 }
 
 export function togglePlanTask(taskId: string, userId?: string): boolean {
-  const tasks = getCompletedPlanTasks(userId);
+  const tasks = { ...getCompletedPlanTasks(userId) };
   const next = !tasks[taskId];
   tasks[taskId] = next;
   const key = getUserKey(BASE_KEYS.STUDY_PLAN_TASKS, userId);
-  localStorage.setItem(key, JSON.stringify(tasks));
+  setToCacheAndStorage(key, tasks);
   return next;
 }
 
 export function getEbbinghausRecords(userId?: string): Record<string, EbbinghausItem> {
-  try {
-    const key = getUserKey(BASE_KEYS.EBBINGHAUS_RECORDS, userId);
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
+  const key = getUserKey(BASE_KEYS.EBBINGHAUS_RECORDS, userId);
+  return getFromCacheOrStorage(key, {});
 }
 
 export function saveEbbinghausRecords(records: Record<string, EbbinghausItem>, userId?: string): void {
   const key = getUserKey(BASE_KEYS.EBBINGHAUS_RECORDS, userId);
-  localStorage.setItem(key, JSON.stringify(records));
+  setToCacheAndStorage(key, records);
 }
 
 /**
@@ -264,15 +287,15 @@ export function getUserVault(userId?: string): UserLocalVault {
 export function saveUserVault(vault: UserLocalVault): void {
   const uid = vault.userId;
   saveUserProfile(vault.profile, uid);
-  localStorage.setItem(getUserKey(BASE_KEYS.RESULTS, uid), JSON.stringify(vault.testResults || []));
-  localStorage.setItem(getUserKey(BASE_KEYS.MISTAKES, uid), JSON.stringify(vault.mistakes || []));
-  localStorage.setItem(getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, uid), JSON.stringify(vault.writingSubmissions || []));
-  localStorage.setItem(getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, uid), JSON.stringify(vault.speakingRecordings || []));
-  localStorage.setItem(getUserKey(BASE_KEYS.VOCAB_PROGRESS, uid), JSON.stringify(vault.vocabProgress || {}));
+  setToCacheAndStorage(getUserKey(BASE_KEYS.RESULTS, uid), vault.testResults || []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.MISTAKES, uid), vault.mistakes || []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, uid), vault.writingSubmissions || []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, uid), vault.speakingRecordings || []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.VOCAB_PROGRESS, uid), vault.vocabProgress || {});
   if (vault.studyPlanConfig) saveStudyPlanConfig(vault.studyPlanConfig, uid);
-  localStorage.setItem(getUserKey(BASE_KEYS.STUDY_PLAN_TASKS, uid), JSON.stringify(vault.studyPlanTasks || {}));
+  setToCacheAndStorage(getUserKey(BASE_KEYS.STUDY_PLAN_TASKS, uid), vault.studyPlanTasks || {});
   saveEbbinghausRecords(vault.ebbinghausRecords || {}, uid);
-  localStorage.setItem(`user_vault_${uid}`, JSON.stringify(vault));
+  setToCacheAndStorage(`user_vault_${uid}`, vault);
 }
 
 export interface UserVaultStats {
@@ -289,6 +312,7 @@ export interface UserVaultStats {
 
 /**
  * Get isolated storage usage statistics for the user's local vault.
+ * Optimized to inspect known keys directly, falling back to prefix scan only if needed.
  */
 export function getUserStorageStats(userId?: string): UserVaultStats {
   const accounts = getAccounts();
@@ -326,6 +350,8 @@ export function getUserStorageStats(userId?: string): UserVaultStats {
  */
 export function clearUserLocalData(userId?: string): void {
   const uid = userId || getActiveUserId();
+  clearStorageCache(uid);
+
   const prefix = `user_${uid}_`;
   const keysToDelete: string[] = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -341,13 +367,13 @@ export function clearUserLocalData(userId?: string): void {
   defaultProf.completedMinutesToday = 0;
   defaultProf.streakDays = 0;
   saveUserProfile(defaultProf, uid);
-  localStorage.setItem(getUserKey(BASE_KEYS.RESULTS, uid), '[]');
-  localStorage.setItem(getUserKey(BASE_KEYS.MISTAKES, uid), '[]');
-  localStorage.setItem(getUserKey(BASE_KEYS.VOCAB_PROGRESS, uid), '{}');
-  localStorage.setItem(getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, uid), '[]');
-  localStorage.setItem(getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, uid), '[]');
-  localStorage.setItem(getUserKey(BASE_KEYS.STUDY_PLAN_TASKS, uid), '{}');
-  localStorage.setItem(getUserKey(BASE_KEYS.EBBINGHAUS_RECORDS, uid), '{}');
+  setToCacheAndStorage(getUserKey(BASE_KEYS.RESULTS, uid), []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.MISTAKES, uid), []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.VOCAB_PROGRESS, uid), {});
+  setToCacheAndStorage(getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, uid), []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, uid), []);
+  setToCacheAndStorage(getUserKey(BASE_KEYS.STUDY_PLAN_TASKS, uid), {});
+  setToCacheAndStorage(getUserKey(BASE_KEYS.EBBINGHAUS_RECORDS, uid), {});
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('ielts_auth_changed'));
@@ -393,12 +419,13 @@ export function importBackupData(jsonString: string): { success: boolean; user?:
     // Support legacy backups
     if (!data.vault && data.profile) {
       const activeUid = getActiveUserId();
+      clearStorageCache(activeUid);
       saveUserProfile(data.profile, activeUid);
-      if (data.results) localStorage.setItem(getUserKey(BASE_KEYS.RESULTS, activeUid), JSON.stringify(data.results));
-      if (data.mistakes) localStorage.setItem(getUserKey(BASE_KEYS.MISTAKES, activeUid), JSON.stringify(data.mistakes));
-      if (data.writingSubmissions) localStorage.setItem(getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, activeUid), JSON.stringify(data.writingSubmissions));
-      if (data.speakingRecordings) localStorage.setItem(getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, activeUid), JSON.stringify(data.speakingRecordings));
-      if (data.vocabProgress) localStorage.setItem(getUserKey(BASE_KEYS.VOCAB_PROGRESS, activeUid), JSON.stringify(data.vocabProgress));
+      if (data.results) setToCacheAndStorage(getUserKey(BASE_KEYS.RESULTS, activeUid), data.results);
+      if (data.mistakes) setToCacheAndStorage(getUserKey(BASE_KEYS.MISTAKES, activeUid), data.mistakes);
+      if (data.writingSubmissions) setToCacheAndStorage(getUserKey(BASE_KEYS.WRITING_SUBMISSIONS, activeUid), data.writingSubmissions);
+      if (data.speakingRecordings) setToCacheAndStorage(getUserKey(BASE_KEYS.SPEAKING_RECORDINGS, activeUid), data.speakingRecordings);
+      if (data.vocabProgress) setToCacheAndStorage(getUserKey(BASE_KEYS.VOCAB_PROGRESS, activeUid), data.vocabProgress);
       return { success: true, user: getActiveUser() };
     }
 
@@ -429,6 +456,8 @@ export function importBackupData(jsonString: string): { success: boolean; user?:
       accounts.push(targetAccount);
       localStorage.setItem('ielts_user_accounts', JSON.stringify(accounts));
     }
+
+    clearStorageCache(targetAccount.id);
 
     // Save imported vault into this user's local space
     saveUserVault({

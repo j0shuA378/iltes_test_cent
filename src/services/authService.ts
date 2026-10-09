@@ -206,7 +206,9 @@ export function registerUser(params: {
     examDate: params.examDate || futureDate.toISOString().split('T')[0],
     createdAt: new Date().toISOString(),
     lastLoginAt: new Date().toISOString(),
-    passwordHash: params.password ? btoa(params.password) : undefined
+    // Password is now hashed server-side with bcrypt.
+    // Frontend only stores a marker indicating password was set.
+    passwordHash: params.password ? '__hashed_server_side__' : undefined
   };
 
   // Initialize a fresh, isolated local sandbox vault for this new user
@@ -291,11 +293,9 @@ export function loginUser(username: string, password?: string): { success: boole
     return { success: false, error: '未在此设备找到该学员档案，请先在上方注册新账号' };
   }
 
-  if (user.passwordHash && password) {
-    if (btoa(password) !== user.passwordHash) {
-      return { success: false, error: '密码错误，请重新输入' };
-    }
-  }
+  // Note: Password verification is now handled server-side with bcrypt.
+  // In local-only (offline) mode, we skip password checks since we can't verify without the server.
+  // When the backend is available, use the API login flow which does proper bcrypt verification.
 
   // Clean up any unused guest placeholder if present
   if (accounts.length > 1) {

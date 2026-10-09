@@ -132,21 +132,39 @@ onMounted(() => {
   }
 });
 
-const handleLogin = () => {
+const isAuthenticating = ref(false);
+
+const handleLogin = async () => {
   loginError.value = '';
-  if (verifyAdminPin(pinInput.value)) {
-    isAuthenticated.value = true;
-    pinInput.value = '';
-    refreshData();
-  } else {
-    loginError.value = '口令错误，请重新输入（默认口令：admin888）';
+  isAuthenticating.value = true;
+  try {
+    const success = await verifyAdminPin(pinInput.value);
+    if (success) {
+      isAuthenticated.value = true;
+      pinInput.value = '';
+      refreshData();
+    } else {
+      loginError.value = '口令错误，请重新输入（默认口令：admin888）';
+    }
+  } catch {
+    loginError.value = '登录请求失败，请检查网络或后端服务';
+  } finally {
+    isAuthenticating.value = false;
   }
 };
 
-const handleQuickLogin = () => {
-  verifyAdminPin('admin888');
-  isAuthenticated.value = true;
-  refreshData();
+const handleQuickLogin = async () => {
+  loginError.value = '';
+  isAuthenticating.value = true;
+  try {
+    const success = await verifyAdminPin('admin888');
+    if (success) {
+      isAuthenticated.value = true;
+      refreshData();
+    }
+  } finally {
+    isAuthenticating.value = false;
+  }
 };
 
 const handleLogout = () => {
