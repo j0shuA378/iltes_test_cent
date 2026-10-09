@@ -4,22 +4,22 @@
 
 @layer base {
   :root {
-    --apple-bg: #f5f5f7;
+    --apple-bg: #f8fafc;
     --apple-surface: #ffffff;
-    --apple-text-primary: #1d1d1f;
-    --apple-text-secondary: #86868b;
-    --apple-blue: #0071e3;
-    --apple-blue-hover: #0077ed;
-    --apple-green: #34c759;
-    --apple-orange: #ff9500;
-    --apple-red: #ff3b30;
-    --apple-border: rgba(0, 0, 0, 0.08);
+    --apple-text-primary: #0f172a;
+    --apple-text-secondary: #64748b;
+    --apple-blue: #0284c7;
+    --apple-blue-hover: #0369a1;
+    --apple-green: #10b981;
+    --apple-orange: #f59e0b;
+    --apple-red: #ef4444;
+    --apple-border: rgba(15, 23, 42, 0.08);
   }
 
   body {
     background-color: var(--apple-bg);
     color: var(--apple-text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.015em;
@@ -29,70 +29,75 @@
   }
 }
 
-/* Apple-style minimalist scrollbars */
+/* Modern Minimalist Tabular Numbers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Minimalist sleek scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: rgba(100, 116, 139, 0.2);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(100, 116, 139, 0.4);
 }
 
 /* Exam Highlight classes */
 .ielts-highlight-yellow {
-  background-color: rgba(255, 214, 10, 0.35);
-  border-bottom: 2px solid #ffd60a;
+  background-color: rgba(254, 240, 138, 0.6);
+  border-bottom: 2px solid #eab308;
   border-radius: 2px;
   padding: 1px 2px;
 }
 
 .ielts-highlight-green {
-  background-color: rgba(52, 199, 89, 0.25);
-  border-bottom: 2px solid #34c759;
+  background-color: rgba(187, 247, 208, 0.6);
+  border-bottom: 2px solid #22c55e;
   border-radius: 2px;
   padding: 1px 2px;
 }
 
 .ielts-highlight-pink {
-  background-color: rgba(255, 45, 85, 0.2);
-  border-bottom: 2px solid #ff2d55;
+  background-color: rgba(254, 205, 211, 0.6);
+  border-bottom: 2px solid #f43f5e;
   border-radius: 2px;
   padding: 1px 2px;
 }
 
-/* Apple Design Utilities */
+/* Modern SaaS & Apple Design Utilities */
 .apple-glass {
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .apple-glass-dark {
-  background: rgba(29, 29, 31, 0.82);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .apple-card {
   background: #ffffff;
-  border-radius: 1.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .apple-card:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-  transform: translateY(-1px);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+  transform: translateY(-1.5px);
 }
 
 .apple-pill-button {
@@ -102,7 +107,7 @@
 }
 
 .apple-pill-button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 /* Animations */
@@ -118,7 +123,7 @@
 @keyframes scaleUp {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(4px);
+    transform: scale(0.97) translateY(4px);
   }
   to {
     opacity: 1;
@@ -138,13 +143,13 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-scaleUp {
-  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-slideDown {
-  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

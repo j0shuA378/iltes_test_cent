@@ -1,5 +1,5 @@
 import { EbbinghausItem, MemoryStage, EbbinghausStats } from '../types/auth';
-import { getUserKey } from './storage';
+import { getUserKey, clearStorageCache } from './storage';
 import { getActiveUserId } from './authService';
 
 const STORAGE_KEY = 'ebbinghaus_records';
@@ -49,10 +49,11 @@ function getRawRecords(): Record<string, EbbinghausItem> {
 
 function saveRawRecords(records: Record<string, EbbinghausItem>): void {
   try {
+    const key = getUserKey(STORAGE_KEY);
     if (typeof localStorage !== 'undefined') {
-      const key = getUserKey(STORAGE_KEY);
       localStorage.setItem(key, JSON.stringify(records));
     }
+    clearStorageCache(key);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('ielts_ebbinghaus_updated'));
     }

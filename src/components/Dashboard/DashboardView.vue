@@ -149,23 +149,23 @@ const skills = computed(() => {
       <div 
         v-for="skill in skills" 
         :key="skill.name" 
-        class="bg-white rounded-3xl p-5 sm:p-6 border border-black/[0.04] shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.04)] transition-all"
+        class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_25px_-5px_rgba(15,23,42,0.06)] hover:-translate-y-0.5 transition-all duration-200"
       >
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2.5">
             <div :class="['p-2 rounded-xl', skill.bg, skill.color]">
               <component :is="skill.icon" class="w-4 h-4" />
             </div>
-            <span class="font-semibold text-[#1d1d1f] text-sm">{{ skill.name }}</span>
+            <span class="font-semibold text-slate-900 text-sm">{{ skill.name }}</span>
           </div>
-          <span class="text-xs font-medium text-[#86868b]">目标 {{ skill.target.toFixed(1) }}</span>
+          <span class="text-xs font-medium text-slate-500 tabular-nums">目标 {{ skill.target.toFixed(1) }}</span>
         </div>
         
         <div class="flex items-baseline justify-between mb-2.5">
-          <span class="text-2xl font-semibold tracking-tight text-[#1d1d1f]">
+          <span class="text-2xl font-semibold tracking-tight text-slate-900 tabular-nums">
             {{ skill.current === 0 ? '待测定' : `Band ${skill.current.toFixed(1)}` }}
           </span>
-          <span class="text-xs font-normal text-[#86868b]">
+          <span class="text-xs font-normal text-slate-500 tabular-nums">
             {{ skill.current === 0 ? '无初始成绩' : `达标度 ${Math.min(100, Math.round((skill.current / skill.target) * 100))}%` }}
           </span>
         </div>

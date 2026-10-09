@@ -14,14 +14,14 @@ describe('Ebbinghaus Forgetting Curve Service', () => {
   it('should return 96% retention for mastered Stage 6 items', () => {
     const item: EbbinghausItem = {
       id: 'vocab_1',
+      userId: 'test_user',
       type: 'vocab',
       title: 'mitigate',
       stage: 6,
-      easeFactor: 2.5,
-      intervalMs: 30 * 24 * 60 * 60 * 1000,
       nextReviewAt: new Date(Date.now() + 100000).toISOString(),
       lastReviewedAt: new Date().toISOString(),
       reviewCount: 6,
+      retentionRate: 96,
       history: []
     };
 
@@ -31,14 +31,14 @@ describe('Ebbinghaus Forgetting Curve Service', () => {
   it('should calculate high retention right after a review in early stage', () => {
     const item: EbbinghausItem = {
       id: 'vocab_2',
+      userId: 'test_user',
       type: 'vocab',
       title: 'ubiquitous',
       stage: 1,
-      easeFactor: 2.5,
-      intervalMs: 24 * 60 * 60 * 1000,
       nextReviewAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       lastReviewedAt: new Date().toISOString(),
       reviewCount: 1,
+      retentionRate: 100,
       history: []
     };
 
@@ -49,14 +49,14 @@ describe('Ebbinghaus Forgetting Curve Service', () => {
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
     const item: EbbinghausItem = {
       id: 'vocab_3',
+      userId: 'test_user',
       type: 'vocab',
       title: 'paradigm',
       stage: 0, // Stability is only 0.25 days
-      easeFactor: 2.5,
-      intervalMs: 20 * 60 * 1000,
       nextReviewAt: new Date().toISOString(),
       lastReviewedAt: threeDaysAgo,
       reviewCount: 0,
+      retentionRate: 100,
       history: []
     };
 

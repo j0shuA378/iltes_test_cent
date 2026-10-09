@@ -18,8 +18,20 @@ const BASE_KEYS = {
 /**
  * High-performance In-Memory Cache Layer.
  * Avoids constant, synchronous JSON.parse/JSON.stringify cycles on localStorage.
+ * Implements bounded LRU eviction to prevent unbounded memory growth.
  */
+const MAX_CACHE_SIZE = 250;
 const memoryCache = new Map<string, any>();
+
+function setCacheItem(key: string, value: any): void {
+  if (memoryCache.has(key)) {
+    memoryCache.delete(key);
+  } else if (memoryCache.size >= MAX_CACHE_SIZE) {
+    const oldestKey = memoryCache.keys().next().value;
+    if (oldestKey) memoryCache.delete(oldestKey);
+  }
+  memoryCache.set(key, value);
+}
 
 export function clearStorageCache(keyPattern?: string): void {
   if (!keyPattern) {
@@ -45,27 +57,31 @@ if (typeof window !== 'undefined') {
   });
 }
 
-function getFromCacheOrStorage<T>(key: string, fallback: T): T {
+export function getFromCacheOrStorage<T>(key: string, fallback: T): T {
   if (memoryCache.has(key)) {
-    return memoryCache.get(key);
+    const val = memoryCache.get(key);
+    // Refresh LRU order
+    memoryCache.delete(key);
+    memoryCache.set(key, val);
+    return val;
   }
   try {
     const raw = localStorage.getItem(key);
     if (!raw) {
-      memoryCache.set(key, fallback);
+      setCacheItem(key, fallback);
       return fallback;
     }
     const parsed = JSON.parse(raw);
-    memoryCache.set(key, parsed);
+    setCacheItem(key, parsed);
     return parsed;
   } catch {
-    memoryCache.set(key, fallback);
+    setCacheItem(key, fallback);
     return fallback;
   }
 }
 
-function setToCacheAndStorage<T>(key: string, value: T): void {
-  memoryCache.set(key, value);
+export function setToCacheAndStorage<T>(key: string, value: T): void {
+  setCacheItem(key, value);
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (err) {

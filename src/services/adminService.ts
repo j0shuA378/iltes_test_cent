@@ -68,9 +68,9 @@ export async function verifyAdminPin(pin: string): Promise<boolean> {
       return true;
     }
   } catch {
-    // Graceful offline fallback in development environment
-    if (import.meta.env.DEV && (cleanPin === DEFAULT_ADMIN_PIN || cleanPin === 'admin')) {
-      console.warn('[Admin] 后端不可用，使用开发环境离线备用验证');
+    // Strict offline fallback: only in Vite dev mode, only with the full default PIN
+    if (import.meta.env.DEV && cleanPin === DEFAULT_ADMIN_PIN) {
+      console.warn('[Admin] ⚠️ 后端不可用，使用开发环境离线备用验证（仅限 DEV 模式）');
       sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
       return true;
     }
@@ -252,13 +252,16 @@ export function getAllStudents(): StudentDetail[] {
 export function deleteStudentAccount(userId: string): { success: boolean; error?: string } {
   const accounts = getAccounts();
   if (accounts.length <= 1) {
+    // Collect all keys first, then delete (avoids iterator invalidation)
     const prefix = 'user_' + userId + '_';
+    const keysToDelete: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
       if (k && k.startsWith(prefix)) {
-        localStorage.removeItem(k);
+        keysToDelete.push(k);
       }
     }
+    keysToDelete.forEach(k => localStorage.removeItem(k));
     const guest = getDefaultUser();
     localStorage.setItem('ielts_user_accounts', JSON.stringify([guest]));
     setActiveUser(guest.id);

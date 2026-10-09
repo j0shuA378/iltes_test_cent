@@ -116,18 +116,21 @@ const refreshUserData = () => {
   dueVocabCount.value = getDueEbbinghausItems('vocab').length;
 };
 
+const handleEbbinghausUpdate = () => {
+  dueVocabCount.value = getDueEbbinghausItems('vocab').length;
+};
+
 onMounted(() => {
   refreshUserData();
   setupNavigationListeners();
   window.addEventListener('ielts_auth_changed', refreshUserData);
-  window.addEventListener('ielts_ebbinghaus_updated', () => {
-    dueVocabCount.value = getDueEbbinghausItems('vocab').length;
-  });
+  window.addEventListener('ielts_ebbinghaus_updated', handleEbbinghausUpdate);
 });
 
 onUnmounted(() => {
   cleanupNavigationListeners();
   window.removeEventListener('ielts_auth_changed', refreshUserData);
+  window.removeEventListener('ielts_ebbinghaus_updated', handleEbbinghausUpdate);
 });
 
 const remainingDays = computed(() => {

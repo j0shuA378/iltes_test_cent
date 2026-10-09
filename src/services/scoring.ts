@@ -169,7 +169,8 @@ export function evaluateWritingOffline(
   }
 
   // Check for common basic mistakes
-  if (/\bi\b/.test(text)) {
+  // Match standalone lowercase personal pronoun "i" (e.g. "i think", "as i see"), but exclude Roman numerals/list bullets like (i), i., or i)
+  if (/(?:^|[^\w(\[])\bi\b(?![.)\]])/.test(text)) {
     grammarSuggestions.push('检测到小写单字母 "i"，在学术英文写作中必须大写 "I"。');
   }
   if (/\b(don't|can't|won't|isn't|aren't|didn't)\b/i.test(text)) {

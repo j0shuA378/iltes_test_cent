@@ -32,6 +32,18 @@ const JWT_EXPIRES_IN = '7d';
 const BCRYPT_ROUNDS = 12;
 const ADMIN_PIN = process.env.ADMIN_PIN || 'admin888'; // Move to env var in production
 
+// SECURITY: Refuse to start with default secrets in production
+if (process.env.NODE_ENV === 'production') {
+  if (JWT_SECRET === 'ielts_master_dev_secret_change_in_production') {
+    console.error('❌ FATAL: JWT_SECRET must be set via environment variable in production.');
+    process.exit(1);
+  }
+  if (ADMIN_PIN === 'admin888') {
+    console.error('❌ FATAL: ADMIN_PIN must be set via environment variable in production.');
+    process.exit(1);
+  }
+}
+
 const CORS_WHITELIST = [
   'http://localhost:5173',
   'http://localhost:3000',
@@ -358,7 +370,10 @@ app.post('/api/auth/login', async (req, res) => {
   }
 
   // Verify password with bcrypt if user has one
-  if (user.passwordHash && password) {
+  if (user.passwordHash) {
+    if (!password) {
+      return res.status(401).json({ success: false, error: '此账号受密码保护，请输入密码登录' });
+    }
     try {
       // Handle legacy base64 passwords: migrate to bcrypt on first successful login
       if (user.passwordHash.length < 60 && !user.passwordHash.startsWith('$2')) {
@@ -530,7 +545,18 @@ app.delete('/api/vault/:userId', authMiddleware, (req, res) => {
 // ==========================================
 // 4. DICTIONARY & AI PROXY API (Public - these are proxies)
 // ==========================================
+const DICT_CACHE_MAX = 500;
 const dictCache = new Map();
+
+function setDictCache(key, value) {
+  if (dictCache.has(key)) {
+    dictCache.delete(key);
+  } else if (dictCache.size >= DICT_CACHE_MAX) {
+    const oldestKey = dictCache.keys().next().value;
+    if (oldestKey) dictCache.delete(oldestKey);
+  }
+  dictCache.set(key, value);
+}
 
 app.get('/api/dict/search', async (req, res) => {
   const query = (req.query.q || '').toString().trim();
@@ -540,7 +566,10 @@ app.get('/api/dict/search', async (req, res) => {
 
   // Check in-memory cache
   if (dictCache.has(query.toLowerCase())) {
-    return res.json(dictCache.get(query.toLowerCase()));
+    const cached = dictCache.get(query.toLowerCase());
+    dictCache.delete(query.toLowerCase());
+    dictCache.set(query.toLowerCase(), cached);
+    return res.json(cached);
   }
 
   try {
@@ -550,7 +579,7 @@ app.get('/api/dict/search', async (req, res) => {
       throw new Error(`Youdao API status ${response.status}`);
     }
     const data = await response.json();
-    dictCache.set(query.toLowerCase(), data);
+    setDictCache(query.toLowerCase(), data);
     res.json(data);
   } catch (err) {
     res.status(502).json({ error: 'Failed to fetch from dictionary provider', detail: String(err) });
