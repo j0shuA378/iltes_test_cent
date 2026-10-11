@@ -11,7 +11,10 @@ import {
   ChevronRight, 
   TrendingUp, 
   Brain, 
-  Award
+  Award,
+  XCircle,
+  AlertTriangle,
+  Zap
 } from 'lucide-vue-next';
 import { CORE_VOCABULARY, SYNONYM_PAIRS } from '../../data/vocabularyData';
 import { getVocabProgress, updateWordStatus, toggleWordStar } from '../../services/storage';
@@ -218,53 +221,53 @@ const filteredSynonyms = computed(() => {
 
     <!-- TAB 1: FLASHCARDS -->
     <div v-if="activeTab === 'flashcards'" class="space-y-6">
-      <!-- Ebbinghaus Quick Stats Bar (Apple Inset Cards) -->
+      <!-- Ebbinghaus Quick Stats Bar -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
         <button
           @click="selectedCategory = 'DueReview'; currentIndex = 0; isFlipped = false;"
           :class="[
-            'p-4 rounded-2xl border transition-all text-left cursor-pointer',
+            'p-4 rounded-2xl border transition-all duration-150 text-left cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500 shadow-card-subtle',
             selectedCategory === 'DueReview'
-              ? 'bg-white border-[#1d1d1f] shadow-sm'
-              : 'bg-white border-black/[0.04] hover:bg-[#f5f5f7]'
+              ? 'bg-white border-slate-900 shadow-sm'
+              : 'bg-slate-50/70 border-slate-200/80 hover:bg-white hover:border-slate-300'
           ]"
         >
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1 font-medium">
             <span>今日待强化</span>
-            <Clock class="w-3.5 h-3.5 text-[#86868b]" />
+            <Clock class="w-3.5 h-3.5 text-amber-600" />
           </div>
-          <div class="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
-            {{ ebStats.dueTodayCount }} <span class="text-xs font-normal text-[#86868b]">词到期</span>
+          <div class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+            {{ ebStats.dueTodayCount }} <span class="text-xs font-normal text-slate-500">词到期</span>
           </div>
         </button>
 
-        <div class="bg-white p-4 rounded-2xl border border-black/[0.04] text-left">
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
+        <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 text-left shadow-card-subtle">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1 font-medium">
             <span>当前记忆留存率</span>
-            <TrendingUp class="w-3.5 h-3.5 text-[#86868b]" />
+            <TrendingUp class="w-3.5 h-3.5 text-emerald-600" />
           </div>
-          <div class="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
+          <div class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
             {{ ebStats.averageRetention }}%
           </div>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-black/[0.04] text-left">
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
+        <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 text-left shadow-card-subtle">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1 font-medium">
             <span>已达到永久掌握</span>
-            <Award class="w-3.5 h-3.5 text-[#86868b]" />
+            <Award class="w-3.5 h-3.5 text-sky-600" />
           </div>
-          <div class="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
-            {{ ebStats.masteredCount }} <span class="text-xs font-normal text-[#86868b]">词牢固</span>
+          <div class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+            {{ ebStats.masteredCount }} <span class="text-xs font-normal text-slate-500">词牢固</span>
           </div>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-black/[0.04] text-left">
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1 font-normal">
+        <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200/80 text-left shadow-card-subtle">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1 font-medium">
             <span>总词汇量收录</span>
-            <BookMarked class="w-3.5 h-3.5 text-[#86868b]" />
+            <BookMarked class="w-3.5 h-3.5 text-indigo-600" />
           </div>
-          <div class="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
-            {{ CORE_VOCABULARY.length }} <span class="text-xs font-normal text-[#86868b]">核心词</span>
+          <div class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+            {{ CORE_VOCABULARY.length }} <span class="text-xs font-normal text-slate-500">核心词</span>
           </div>
         </div>
       </div>
@@ -442,34 +445,46 @@ const filteredSynonyms = computed(() => {
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button
               @click="handleEbbinghausFeedback('forgot')"
-              class="py-3 px-3 rounded-2xl border border-[#ff3b30]/20 bg-[#ff3b30]/5 hover:bg-[#ff3b30]/10 text-[#ff3b30] transition-all shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer active:scale-98"
+              class="py-3 px-3 rounded-2xl border border-rose-200 bg-rose-50/80 hover:bg-rose-100 text-rose-700 transition-all duration-150 shadow-card-subtle flex flex-col items-center justify-center text-center cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-rose-500"
             >
-              <span class="text-xs font-semibold">❌ 完全遗忘</span>
-              <span class="text-[10px] opacity-80 mt-0.5 font-normal">归零 Stage 0 · 20分内重测</span>
+              <span class="text-xs font-bold flex items-center gap-1.5 font-sans">
+                <XCircle class="w-4 h-4 text-rose-600 shrink-0" />
+                <span>完全遗忘</span>
+              </span>
+              <span class="text-[10px] text-rose-600/80 mt-1 font-normal">归零 Stage 0 · 20分内重测</span>
             </button>
 
             <button
               @click="handleEbbinghausFeedback('hard')"
-              class="py-3 px-3 rounded-2xl border border-[#ff9500]/20 bg-[#ff9500]/5 hover:bg-[#ff9500]/10 text-[#ff9500] transition-all shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer active:scale-98"
+              class="py-3 px-3 rounded-2xl border border-amber-200 bg-amber-50/80 hover:bg-amber-100 text-amber-800 transition-all duration-150 shadow-card-subtle flex flex-col items-center justify-center text-center cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-amber-500"
             >
-              <span class="text-xs font-semibold">⚠️ 模糊吃力</span>
-              <span class="text-[10px] opacity-80 mt-0.5 font-normal">降 1 级 · 缩短下次间隔</span>
+              <span class="text-xs font-bold flex items-center gap-1.5 font-sans">
+                <AlertTriangle class="w-4 h-4 text-amber-600 shrink-0" />
+                <span>模糊吃力</span>
+              </span>
+              <span class="text-[10px] text-amber-700/80 mt-1 font-normal">降 1 级 · 缩短下次间隔</span>
             </button>
 
             <button
               @click="handleEbbinghausFeedback('good')"
-              class="py-3 px-3 rounded-2xl border border-[#34c759]/20 bg-[#34c759]/5 hover:bg-[#34c759]/10 text-[#34c759] transition-all shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer active:scale-98"
+              class="py-3 px-3 rounded-2xl border border-emerald-200 bg-emerald-50/80 hover:bg-emerald-100 text-emerald-800 transition-all duration-150 shadow-card-subtle flex flex-col items-center justify-center text-center cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
-              <span class="text-xs font-semibold">✅ 顺利想起</span>
-              <span class="text-[10px] opacity-80 mt-0.5 font-normal">进 1 级 · 推进下一周期</span>
+              <span class="text-xs font-bold flex items-center gap-1.5 font-sans">
+                <CheckCircle2 class="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>顺利想起</span>
+              </span>
+              <span class="text-[10px] text-emerald-700/80 mt-1 font-normal">进 1 级 · 推进下一周期</span>
             </button>
 
             <button
               @click="handleEbbinghausFeedback('easy')"
-              class="py-3 px-3 rounded-2xl border border-[#0071e3]/20 bg-[#0071e3]/5 hover:bg-[#0071e3]/10 text-[#0071e3] transition-all shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer active:scale-98"
+              class="py-3 px-3 rounded-2xl border border-sky-200 bg-sky-50/80 hover:bg-sky-100 text-sky-800 transition-all duration-150 shadow-card-subtle flex flex-col items-center justify-center text-center cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500"
             >
-              <span class="text-xs font-semibold">⚡ 极度熟练</span>
-              <span class="text-[10px] opacity-80 mt-0.5 font-normal">跳进 2 级 · 锁定永久记忆</span>
+              <span class="text-xs font-bold flex items-center gap-1.5 font-sans">
+                <Zap class="w-4 h-4 text-sky-600 shrink-0" />
+                <span>极度熟练</span>
+              </span>
+              <span class="text-[10px] text-sky-700/80 mt-1 font-normal">跳进 2 级 · 锁定永久记忆</span>
             </button>
           </div>
         </div>

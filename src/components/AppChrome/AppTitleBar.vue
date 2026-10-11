@@ -74,38 +74,41 @@ const getTabTitle = (tab: string) => {
 </script>
 
 <template>
-  <header class="h-11 bg-white/90 backdrop-blur-xl border-b border-black/[0.06] px-3 sm:px-4 flex items-center justify-between z-30 shrink-0 select-none transition-all">
+  <header class="h-11 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 px-3 sm:px-4 flex items-center justify-between z-30 shrink-0 select-none transition-all">
     <!-- Left: macOS Native Window Traffic Light Dots & Breadcrumb -->
     <div class="flex items-center gap-3">
       <!-- Traffic Light Window Buttons -->
       <div class="flex items-center gap-1.5 shrink-0 pr-1">
         <button
           @click="emit('navigate', 'dashboard')"
-          class="w-3 h-3 rounded-full bg-[#ff5f56] hover:brightness-90 transition-all cursor-pointer shadow-xs active:scale-95"
+          class="w-3 h-3 rounded-full bg-[#ff5f56] hover:brightness-90 transition-all cursor-pointer shadow-xs active:scale-90"
           title="返回主页看板 (Home)"
+          aria-label="返回主页看板"
         />
         <button
           @click="emit('toggleSidebar')"
-          class="w-3 h-3 rounded-full bg-[#ffbd2e] hover:brightness-90 transition-all cursor-pointer shadow-xs active:scale-95"
+          class="w-3 h-3 rounded-full bg-[#ffbd2e] hover:brightness-90 transition-all cursor-pointer shadow-xs active:scale-90"
           title="收起 / 展开侧边导航栏"
+          aria-label="切换侧边栏"
         />
         <button
           @click="toggleFullscreen"
-          class="w-3 h-3 rounded-full bg-[#27c93f] hover:brightness-90 transition-all cursor-pointer shadow-xs active:scale-95"
+          class="w-3 h-3 rounded-full bg-[#27c93f] hover:brightness-90 transition-all cursor-pointer shadow-xs active:scale-90"
           title="进入 / 退出全真机考全屏沉浸模式 (F11)"
+          aria-label="切换全屏模式"
         />
       </div>
 
-      <div class="h-3.5 w-px bg-black/[0.08]" />
+      <div class="h-3.5 w-px bg-slate-200" />
 
       <!-- Breadcrumb App Title -->
       <div class="flex items-center gap-1.5 text-xs">
-        <span class="font-bold text-[#1d1d1f] tracking-tight flex items-center gap-1">
-          <span class="px-1.5 py-0.2 rounded bg-black/[0.05] font-mono text-[10px] text-[#1d1d1f]">IELTS Master</span>
+        <span class="font-bold text-slate-900 tracking-tight flex items-center gap-1 font-sans">
+          <span class="px-1.5 py-0.5 rounded bg-slate-100 font-mono text-[10px] text-slate-800 border border-slate-200/60">IELTS Master</span>
         </span>
-        <span class="text-[#86868b]">/</span>
-        <span class="font-semibold text-[#1d1d1f]">{{ getTabTitle(currentTab) }}</span>
-        <span v-if="selectedTestLabel" class="hidden md:inline-flex items-center gap-1 text-[#86868b]">
+        <span class="text-slate-400">/</span>
+        <span class="font-semibold text-slate-900 font-sans">{{ getTabTitle(currentTab) }}</span>
+        <span v-if="selectedTestLabel" class="hidden md:inline-flex items-center gap-1 text-slate-500">
           <span>·</span>
           <span class="truncate max-w-[200px] text-[11px] font-normal">{{ selectedTestLabel }}</span>
         </span>
@@ -116,12 +119,12 @@ const getTabTitle = (tab: string) => {
     <div class="hidden md:flex items-center">
       <button
         @click="emit('openSearch')"
-        class="flex items-center gap-2 px-3 py-1 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#86868b] hover:text-[#1d1d1f] transition-all text-xs font-normal border border-black/[0.04] cursor-pointer"
+        class="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100/80 hover:bg-slate-200/70 text-slate-500 hover:text-slate-900 transition-all duration-150 text-xs font-normal border border-slate-200/70 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500"
         title="快速搜寻剑雅真题 (Ctrl+K)"
       >
-        <Search class="w-3 h-3 text-[#86868b]" />
+        <Search class="w-3 h-3 text-slate-400" />
         <span class="text-[11px]">搜寻题库、试卷与精听...</span>
-        <kbd class="px-1.5 py-0.2 text-[9px] font-mono bg-white border border-black/[0.06] rounded text-[#86868b]">
+        <kbd class="px-1.5 py-0.2 text-[9px] font-mono bg-white border border-slate-200 rounded text-slate-500 shadow-2xs select-none">
           Ctrl+K
         </kbd>
       </button>
@@ -132,12 +135,12 @@ const getTabTitle = (tab: string) => {
       <!-- Dictionary Quick Pill -->
       <button
         @click="emit('openDictionary')"
-        class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium border border-black/[0.04] transition-all cursor-pointer"
+        class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100/80 hover:bg-slate-200/70 text-slate-800 text-xs font-medium border border-slate-200/70 transition-all duration-150 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500"
         title="即时学术英汉词典 (Ctrl+D)"
       >
-        <BookOpen class="w-3 h-3 text-[#0071e3]" />
-        <span class="text-[11px]">词典</span>
-        <kbd class="hidden sm:inline text-[9px] text-[#86868b] font-mono">Ctrl+D</kbd>
+        <BookOpen class="w-3 h-3 text-sky-600" />
+        <span class="text-[11px] font-semibold">词典</span>
+        <kbd class="hidden sm:inline text-[9px] text-slate-400 font-mono">Ctrl+D</kbd>
       </button>
 
       <!-- Cloud Sync Capsule -->

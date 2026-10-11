@@ -120,27 +120,27 @@ const getItemBadge = (badgeType: string | null) => {
 
   <aside 
     :class="[
-      'bg-[#fbfbfd]/95 sm:bg-[#fbfbfd]/90 backdrop-blur-xl border-r border-black/[0.06] text-[#1d1d1f] flex flex-col transition-all duration-300 select-none z-40 sm:z-30 shrink-0',
+      'bg-slate-50/95 sm:bg-slate-50/90 backdrop-blur-xl border-r border-slate-200/80 text-slate-900 flex flex-col transition-all duration-300 select-none z-40 sm:z-30 shrink-0',
       'fixed sm:static inset-y-0 left-0',
       isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full sm:translate-x-0',
       isCollapsed ? 'w-[72px]' : 'w-60'
     ]"
   >
     <!-- App Branding Header -->
-    <div class="h-14 flex items-center justify-between px-4 border-b border-black/[0.04] shrink-0">
+    <div class="h-14 flex items-center justify-between px-4 border-b border-slate-200/80 shrink-0">
       <div 
         @click="emit('selectTab', 'dashboard'); emit('closeMobile');"
         class="flex items-center gap-3 cursor-pointer overflow-hidden group"
       >
         <!-- Apple Squircle Icon -->
-        <div class="w-8 h-8 rounded-[10px] bg-[#1d1d1f] flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-white font-bold text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
           雅
         </div>
         <div v-if="!isCollapsed" class="leading-tight">
-          <div class="font-semibold text-[#1d1d1f] text-sm tracking-tight">
+          <div class="font-bold text-slate-900 text-sm tracking-tight font-sans">
             IELTS Master
           </div>
-          <div class="text-[10px] text-[#86868b] tracking-normal font-normal">
+          <div class="text-[10px] text-slate-500 tracking-normal font-normal">
             学术机考门户
           </div>
         </div>
@@ -149,44 +149,45 @@ const getItemBadge = (badgeType: string | null) => {
       <!-- Mobile Close Button -->
       <button 
         @click="emit('closeMobile')"
-        class="p-1.5 rounded-lg hover:bg-black/[0.05] text-[#86868b] hover:text-[#1d1d1f] sm:hidden cursor-pointer"
+        class="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-900 sm:hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-500"
         title="关闭菜单"
+        aria-label="关闭菜单"
       >
         <X class="w-4 h-4" />
       </button>
     </div>
 
     <!-- User Profile Capsule (macOS style) -->
-    <div class="p-3 border-b border-black/[0.04] shrink-0">
+    <div class="p-3 border-b border-slate-200/80 shrink-0">
       <button
         @click="emit('openAuthModal')"
         :class="[
-          'w-full rounded-2xl bg-black/[0.03] hover:bg-black/[0.06] border border-black/[0.04] p-2 flex items-center transition-all group cursor-pointer',
+          'w-full rounded-2xl bg-white hover:bg-slate-100/90 border border-slate-200/90 shadow-card-subtle p-2 flex items-center transition-all duration-150 group cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500',
           isCollapsed ? 'justify-center' : 'justify-between'
         ]"
         title="点击切换账号或注册新学员"
       >
         <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-7 h-7 rounded-xl bg-white border border-black/[0.06] shadow-2xs flex items-center justify-center text-sm shrink-0 group-hover:scale-105 transition-transform">
+          <div class="w-7 h-7 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-sm shrink-0 group-hover:scale-105 transition-transform">
             {{ activeUser.avatar }}
           </div>
           <div v-if="!isCollapsed" class="text-left truncate leading-tight">
-            <div class="font-medium text-xs text-[#1d1d1f] truncate group-hover:text-[#0071e3] transition-colors">
+            <div class="font-semibold text-xs text-slate-900 truncate group-hover:text-sky-600 transition-colors">
               {{ activeUser.displayName }}
             </div>
-            <div class="text-[10px] text-[#86868b] flex items-center gap-1.5 mt-0.5 font-normal">
-              <span v-if="activeUser.id === 'user_guest'" class="text-[#0071e3] font-medium">
+            <div class="text-[10px] text-slate-500 flex items-center gap-1.5 mt-0.5 font-normal">
+              <span v-if="activeUser.id === 'user_guest'" class="text-sky-600 font-medium">
                 点击登录/注册
               </span>
               <template v-else>
-                <span v-if="activeUser.currentBand === 0" class="text-[#86868b] font-medium bg-black/[0.04] px-1.5 py-0.5 rounded text-[10px]">
+                <span v-if="activeUser.currentBand === 0" class="text-slate-600 font-medium bg-slate-100 px-1.5 py-0.5 rounded text-[10px]">
                   待定级
                 </span>
-                <span v-else class="text-[#1d1d1f] font-medium">
+                <span v-else class="text-slate-900 font-medium tabular-nums">
                   B{{ activeUser.currentBand.toFixed(1) }}
                 </span>
-                <span class="text-black/30">➔</span>
-                <span class="text-[#1d1d1f] font-medium">
+                <span class="text-slate-400">➔</span>
+                <span class="text-slate-900 font-medium tabular-nums">
                   B{{ activeUser.targetBand.toFixed(1) }}
                 </span>
               </template>
@@ -194,7 +195,7 @@ const getItemBadge = (badgeType: string | null) => {
           </div>
         </div>
 
-        <div v-if="!isCollapsed" class="text-[10px] font-medium text-[#86868b] group-hover:text-[#1d1d1f] px-2 py-0.5 rounded-full bg-black/[0.04] shrink-0">
+        <div v-if="!isCollapsed" class="text-[10px] font-medium text-slate-600 group-hover:text-slate-900 px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 shrink-0">
           {{ activeUser.id === 'user_guest' ? '登录' : '切换' }}
         </div>
       </button>
@@ -203,7 +204,7 @@ const getItemBadge = (badgeType: string | null) => {
     <!-- Navigation List -->
     <div class="flex-1 overflow-y-auto py-3 px-2.5 space-y-4">
       <div v-for="(group, gIdx) in navGroups" :key="gIdx" class="space-y-0.5">
-        <div v-if="!isCollapsed" class="px-3 text-[11px] font-semibold text-[#86868b] tracking-wider mb-1">
+        <div v-if="!isCollapsed" class="px-3 text-[11px] font-semibold text-slate-400 tracking-wider mb-1 uppercase">
           {{ group.group }}
         </div>
 
@@ -212,10 +213,10 @@ const getItemBadge = (badgeType: string | null) => {
           :key="item.id"
           @click="emit('selectTab', item.id); emit('closeMobile');"
           :class="[
-            'w-full flex items-center rounded-xl p-2 text-xs transition-all relative group cursor-pointer',
+            'w-full flex items-center rounded-xl p-2 text-xs transition-all duration-150 relative group cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500',
             currentTab === item.id
-              ? 'bg-[#0071e3] text-white font-medium shadow-[0_2px_8px_rgba(0,113,227,0.25)]'
-              : 'text-[#424245] hover:text-[#1d1d1f] hover:bg-black/[0.04] font-normal',
+              ? 'bg-sky-600 text-white font-medium shadow-sm shadow-sky-600/30'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 font-normal',
             isCollapsed ? 'justify-center' : 'justify-between'
           ]"
           :title="isCollapsed ? item.label : undefined"
@@ -224,18 +225,18 @@ const getItemBadge = (badgeType: string | null) => {
             <component 
               :is="item.icon" 
               :class="[
-                'w-4 h-4 shrink-0 transition-transform',
-                currentTab === item.id ? 'text-white' : 'text-[#86868b] group-hover:text-[#1d1d1f]'
+                'w-4 h-4 shrink-0 transition-transform group-hover:scale-105',
+                currentTab === item.id ? 'text-white' : 'text-slate-500 group-hover:text-slate-800'
               ]" 
             />
-            <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
+            <span v-if="!isCollapsed" class="truncate font-medium">{{ item.label }}</span>
           </div>
 
           <span 
             v-if="!isCollapsed && getItemBadge(item.badge)" 
             :class="[
-              'px-2 py-0.5 rounded-full text-[10px] shrink-0',
-              currentTab === item.id ? 'bg-white/20 text-white font-bold' : item.badgeColor
+              'px-2 py-0.5 rounded-full text-[10px] shrink-0 whitespace-nowrap select-none font-semibold tabular-nums',
+              currentTab === item.id ? 'bg-white/25 text-white' : item.badgeColor
             ]"
           >
             {{ getItemBadge(item.badge) }}
@@ -244,7 +245,7 @@ const getItemBadge = (badgeType: string | null) => {
           <!-- Dot badge on collapsed mode -->
           <span 
             v-if="isCollapsed && getItemBadge(item.badge)" 
-            class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#ff9500] ring-2 ring-white" 
+            class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white" 
           />
         </button>
       </div>
@@ -255,35 +256,36 @@ const getItemBadge = (badgeType: string | null) => {
       <button
         @click="emit('openAdmin'); emit('closeMobile');"
         :class="[
-          'w-full py-2 px-3 rounded-2xl bg-black/[0.03] hover:bg-[#1d1d1f] text-[#86868b] hover:text-white transition-all flex items-center gap-2 cursor-pointer group',
+          'w-full py-2 px-3 rounded-2xl bg-slate-200/50 hover:bg-slate-900 text-slate-600 hover:text-white transition-all duration-150 flex items-center gap-2 cursor-pointer group active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500',
           isCollapsed ? 'justify-center px-0' : 'justify-between'
         ]"
         title="访问管理控制台 (/admin)"
       >
         <div class="flex items-center gap-2.5 min-w-0">
-          <ShieldCheck class="w-4 h-4 shrink-0 text-[#86868b] group-hover:text-white transition-colors" />
-          <span v-if="!isCollapsed" class="text-xs font-medium truncate">管理控制台</span>
+          <ShieldCheck class="w-4 h-4 shrink-0 text-slate-500 group-hover:text-white transition-colors" />
+          <span v-if="!isCollapsed" class="text-xs font-semibold truncate">管理控制台</span>
         </div>
-        <span v-if="!isCollapsed" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-black/[0.04] group-hover:bg-white/20 text-[#86868b] group-hover:text-white">
+        <span v-if="!isCollapsed" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-200/80 group-hover:bg-white/20 text-slate-600 group-hover:text-white select-none">
           /admin
         </span>
       </button>
     </div>
 
     <!-- Collapse Toggle Footer -->
-    <div class="p-3 border-t border-black/[0.04] flex items-center justify-between shrink-0">
-      <div v-if="!isCollapsed" class="flex items-center gap-1.5 text-[11px] text-[#86868b]">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#34c759]" />
+    <div class="p-3 border-t border-slate-200/80 flex items-center justify-between shrink-0">
+      <div v-if="!isCollapsed" class="flex items-center gap-1.5 text-[11px] text-slate-500 select-none">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" />
         <span>本地独立存储</span>
       </div>
 
       <button
         @click="toggleCollapse"
         :class="[
-          'p-1.5 rounded-lg hover:bg-black/[0.05] text-[#86868b] hover:text-[#1d1d1f] transition-colors cursor-pointer',
+          'p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-500',
           isCollapsed ? 'w-full flex justify-center' : ''
         ]"
         :title="isCollapsed ? '展开侧边栏' : '收起侧边栏'"
+        :aria-label="isCollapsed ? '展开侧边栏' : '收起侧边栏'"
       >
         <ChevronRight v-if="isCollapsed" class="w-4 h-4" />
         <ChevronLeft v-else class="w-4 h-4" />

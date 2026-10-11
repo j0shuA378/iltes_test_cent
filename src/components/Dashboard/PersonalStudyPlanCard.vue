@@ -126,11 +126,11 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
 <template>
   <div class="space-y-6">
     <!-- Hero Adaptation Banner (Apple Clean Card Style) -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.02)] relative overflow-hidden transition-all">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-card-subtle relative overflow-hidden transition-all">
       <div class="space-y-6">
         <!-- Top Tag & Settings Button -->
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/[0.04] border border-black/[0.06] text-[#1d1d1f] text-xs font-medium">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-800 text-xs font-semibold select-none">
             <Sparkles class="w-3.5 h-3.5 text-amber-500" />
             <span>个人专属适配方案 · {{ config.targetCenter ? `${config.targetCenter} · ` : '' }}{{ config.totalDays }}天进阶跃迁</span>
           </div>
@@ -139,7 +139,7 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
             <button
               v-if="!isUntested"
               @click="openGoalSetting"
-              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-xs transition-all cursor-pointer active:scale-98"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition-all duration-150 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500"
             >
               <BrainCircuit class="w-3.5 h-3.5 text-amber-400" />
               <span>AI 定制考期与学时</span>
@@ -148,7 +148,7 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
             <button
               v-if="isUntested"
               @click="emit('openPlacementTest')"
-              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs font-medium shadow-xs transition-all cursor-pointer active:scale-98"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-sm transition-all duration-150 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500"
             >
               <Sparkles class="w-3.5 h-3.5 text-amber-400" />
               <span>参加定级测验</span>
@@ -156,9 +156,9 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
 
             <button
               @click="isConfigModalOpen = true"
-              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium border border-black/[0.04] transition-all cursor-pointer"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-700 text-xs font-medium border border-slate-200 transition-all duration-150 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500"
             >
-              <Sliders class="w-3.5 h-3.5 text-[#86868b]" />
+              <Sliders class="w-3.5 h-3.5 text-slate-500" />
               <span>个性化参数调优</span>
             </button>
           </div>
@@ -168,67 +168,67 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="flex flex-wrap items-center gap-2">
-              <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
-                当前水平 <span class="font-semibold text-[#1d1d1f]">{{ isUntested ? '待测定 (无初始成绩)' : `Band ${config.currentBand.toFixed(1)} (实测)` }}</span>
-                <span class="mx-2.5 text-[#86868b] font-normal">➔</span>
-                目标总分 <span class="font-semibold text-[#1d1d1f]">Band {{ config.targetBand.toFixed(1) }}</span>
+              <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 font-sans">
+                当前水平 <span class="text-slate-900">{{ isUntested ? '待测定 (无初始成绩)' : `Band ${config.currentBand.toFixed(1)} (实测)` }}</span>
+                <span class="mx-2.5 text-slate-400 font-normal">➔</span>
+                目标总分 <span class="text-sky-600">Band {{ config.targetBand.toFixed(1) }}</span>
               </h1>
             </div>
 
             <!-- Target Center & Session Badge -->
-            <div v-if="config.targetCenter || config.examDate" class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-xl bg-black/[0.03] text-xs text-[#1d1d1f] border border-black/[0.04]">
+            <div v-if="config.targetCenter || config.examDate" class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-xl bg-slate-50 text-xs text-slate-800 border border-slate-200/80">
               <MapPin class="w-3.5 h-3.5 text-rose-500 shrink-0" />
-              <span class="font-medium">{{ config.targetCenter || '已选官方考点' }}</span>
-              <span class="text-black/20">·</span>
-              <Calendar class="w-3.5 h-3.5 text-[#0071e3] shrink-0" />
-              <span>{{ config.examDate }} {{ config.targetSession || '' }}</span>
+              <span class="font-semibold">{{ config.targetCenter || '已选官方考点' }}</span>
+              <span class="text-slate-300">·</span>
+              <Calendar class="w-3.5 h-3.5 text-sky-600 shrink-0" />
+              <span class="tabular-nums">{{ config.examDate }} {{ config.targetSession || '' }}</span>
               <button 
                 @click="openGoalSetting" 
-                class="text-[#0071e3] hover:underline font-medium text-[11px] ml-1 cursor-pointer"
+                class="text-sky-600 hover:text-sky-800 hover:underline font-semibold text-[11px] ml-1 cursor-pointer"
               >
                 修改场次
               </button>
             </div>
 
-            <p v-if="isUntested" class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
+            <p v-if="isUntested" class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
               新学员档案尚未测定初始成绩，一切需经测验后定论。完成 3 分钟学术定级测验后，系统将依据实测分数精准重构四科专属方案。目标分解：
-              <span class="font-medium text-[#1d1d1f]"> 听力 {{ config.targetListening.toFixed(1) }}</span>、
-              <span class="font-medium text-[#1d1d1f]"> 阅读 {{ config.targetReading.toFixed(1) }}</span>、
-              <span class="font-medium text-[#1d1d1f]"> 写作 {{ config.targetWriting.toFixed(1) }}</span>、
-              <span class="font-medium text-[#1d1d1f]"> 口语 {{ config.targetSpeaking.toFixed(1) }}</span>。
+              <span class="font-semibold text-slate-900"> 听力 {{ config.targetListening.toFixed(1) }}</span>、
+              <span class="font-semibold text-slate-900"> 阅读 {{ config.targetReading.toFixed(1) }}</span>、
+              <span class="font-semibold text-slate-900"> 写作 {{ config.targetWriting.toFixed(1) }}</span>、
+              <span class="font-semibold text-slate-900"> 口语 {{ config.targetSpeaking.toFixed(1) }}</span>。
             </p>
-            <p v-else class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
+            <p v-else class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
               基于学术测验定级（Band {{ config.currentBand.toFixed(1) }}）量身定制。{{ config.totalDays }}天 4 阶段平稳爬坡，四科目标分解：
-              <span class="font-medium text-[#1d1d1f]"> 听力 {{ config.targetListening.toFixed(1) }}</span>、
-              <span class="font-medium text-[#1d1d1f]"> 阅读 {{ config.targetReading.toFixed(1) }}</span>、
-              <span class="font-medium text-[#1d1d1f]"> 写作 {{ config.targetWriting.toFixed(1) }}</span>、
-              <span class="font-medium text-[#1d1d1f]"> 口语 {{ config.targetSpeaking.toFixed(1) }}</span>。
+              <span class="font-semibold text-slate-900"> 听力 {{ config.targetListening.toFixed(1) }}</span>、
+              <span class="font-semibold text-slate-900"> 阅读 {{ config.targetReading.toFixed(1) }}</span>、
+              <span class="font-semibold text-slate-900"> 写作 {{ config.targetWriting.toFixed(1) }}</span>、
+              <span class="font-semibold text-slate-900"> 口语 {{ config.targetSpeaking.toFixed(1) }}</span>。
             </p>
           </div>
 
           <!-- Key Metrics Counter (Clickable to trigger AI calculation) -->
           <div 
-            @click="openGoalSetting"
-            class="flex items-center gap-3 sm:gap-4 bg-[#f5f5f7] hover:bg-[#ececee] p-3 sm:p-4 rounded-2xl border border-black/[0.04] shrink-0 cursor-pointer transition-all active:scale-98 group"
+            @click="openGoalSetting" 
+            class="flex items-center gap-3 sm:gap-4 bg-slate-50 hover:bg-slate-100 p-3 sm:p-4 rounded-2xl border border-slate-200/80 shrink-0 cursor-pointer transition-all duration-150 active:scale-[0.98] group shadow-card-subtle"
             title="点击使用 AI 重新测算考期与每日投入"
           >
             <div class="text-center px-2 sm:px-3">
-              <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">{{ config.totalDays }}</div>
-              <div class="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">备考周期 (天)</div>
+              <div class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums">{{ config.totalDays }}</div>
+              <div class="text-[10px] sm:text-xs text-slate-500 mt-0.5 font-normal">备考周期 (天)</div>
             </div>
-            <div class="h-8 w-px bg-black/[0.08]" />
+            <div class="h-8 w-px bg-slate-200" />
             <div class="text-center px-2 sm:px-3">
-              <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums">
+              <div class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums">
                 {{ isUntested ? '待测定' : `+${(config.targetBand - config.currentBand).toFixed(1)}` }}
               </div>
-              <div class="text-[10px] sm:text-xs text-[#86868b] mt-0.5 font-normal">{{ isUntested ? '初始未定级' : '净提分幅度' }}</div>
+              <div class="text-[10px] sm:text-xs text-slate-500 mt-0.5 font-normal">{{ isUntested ? '初始未定级' : '净提分幅度' }}</div>
             </div>
-            <div class="h-8 w-px bg-black/[0.08]" />
+            <div class="h-8 w-px bg-slate-200" />
             <div class="text-center px-2 sm:px-3">
-              <div class="text-2xl sm:text-3xl font-bold tracking-tight text-[#0071e3] tabular-nums group-hover:scale-105 transition-transform flex items-center justify-center gap-0.5">
+              <div class="text-2xl sm:text-3xl font-extrabold tracking-tight text-sky-600 tabular-nums group-hover:scale-105 transition-transform flex items-center justify-center gap-0.5">
                 <span>{{ config.dailyHours }}h</span>
               </div>
-              <div class="text-[10px] sm:text-xs text-[#0071e3] mt-0.5 font-medium flex items-center justify-center gap-0.5">
+              <div class="text-[10px] sm:text-xs text-sky-600 mt-0.5 font-semibold flex items-center justify-center gap-0.5 select-none">
                 <Sparkles class="w-3 h-3 text-amber-500" />
                 <span>AI每日投入</span>
               </div>
@@ -236,22 +236,20 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
           </div>
         </div>
 
-
-
         <!-- Timeline Bar -->
         <div class="space-y-1.5 pt-1">
-          <div class="flex items-center justify-between text-xs text-[#86868b]">
-            <span class="font-normal flex items-center gap-1.5">
-              <Calendar class="w-3.5 h-3.5 text-[#86868b]" />
-              备考进程：第 <strong class="text-[#1d1d1f] font-semibold">{{ config.currentDay }}</strong> 天 / 剩余 {{ config.totalDays - config.currentDay }} 天
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span class="font-normal flex items-center gap-1.5 select-none">
+              <Calendar class="w-3.5 h-3.5 text-slate-400" />
+              备考进程：第 <strong class="text-slate-900 font-semibold tabular-nums">{{ config.currentDay }}</strong> 天 / 剩余 <span class="tabular-nums">{{ config.totalDays - config.currentDay }}</span> 天
             </span>
-            <span class="text-xs font-medium text-[#0071e3]">
+            <span class="text-xs font-semibold text-sky-600 select-none">
               当前阶段：Phase {{ currentPhase.phaseNumber }} ({{ currentPhase.dayRange }})
             </span>
           </div>
-          <div class="w-full bg-[#f5f5f7] rounded-full h-2 overflow-hidden border border-black/[0.04]">
+          <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200/50">
             <div 
-              class="h-full bg-gradient-to-r from-[#0071e3] to-[#34c759] rounded-full transition-all duration-500"
+              class="h-full bg-gradient-to-r from-sky-500 to-emerald-500 rounded-full transition-all duration-500"
               :style="{ width: `${timelinePct}%` }"
             />
           </div>
@@ -260,16 +258,16 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
     </div>
 
     <!-- 4 Progressive Phases Interactive Tabs -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.02)] space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-black/[0.04]">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-card-subtle space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
         <div>
-          <h2 class="text-base font-semibold text-[#1d1d1f] flex items-center gap-2">
-            <TrendingUp class="w-4 h-4 text-[#0071e3]" />
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 font-sans">
+            <TrendingUp class="w-4 h-4 text-sky-600" />
             {{ config.totalDays }} 天 4 阶段进阶路线图
           </h2>
-          <p class="text-xs text-[#86868b] mt-0.5">循序渐进：从词汇语法脱敏，到真题题型技巧，再到同义替换与全真模考</p>
+          <p class="text-xs text-slate-500 mt-0.5">循序渐进：从词汇语法脱敏，到真题题型技巧，再到同义替换与全真模考</p>
         </div>
-        <span class="text-xs font-medium px-3 py-1 bg-[#0071e3]/10 text-[#0071e3] rounded-full border border-[#0071e3]/15 shrink-0 self-start sm:self-auto">
+        <span class="text-xs font-semibold px-3 py-1 bg-sky-50 text-sky-700 rounded-full border border-sky-200/70 shrink-0 self-start sm:self-auto tabular-nums select-none">
           阶段 {{ activePhaseIndex + 1 }} / 4
         </span>
       </div>
@@ -281,30 +279,30 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
           :key="phase.id"
           @click="activePhaseIndex = idx"
           :class="[
-            'p-4 rounded-2xl text-left border transition-all relative overflow-hidden cursor-pointer',
+            'p-4 rounded-2xl text-left border transition-all duration-150 relative overflow-hidden cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500',
             activePhaseIndex === idx 
-              ? 'bg-[#1d1d1f] text-white border-transparent shadow-md' 
-              : 'bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] border-transparent'
+              ? 'bg-slate-900 text-white border-transparent shadow-md' 
+              : 'bg-slate-50 hover:bg-slate-100 text-slate-900 border-slate-200/80 hover:border-slate-300'
           ]"
         >
           <span 
             v-if="idx === 0"
             :class="[
-              'absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-medium',
-              activePhaseIndex === idx ? 'bg-white/20 text-white' : 'bg-black/[0.05] text-[#1d1d1f]'
+              'absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-semibold select-none',
+              activePhaseIndex === idx ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-800'
             ]"
           >
             进行中
           </span>
-          <div :class="['text-[11px] font-medium uppercase tracking-wider', activePhaseIndex === idx ? 'text-slate-300' : 'text-[#86868b]']">
+          <div :class="['text-[11px] font-semibold uppercase tracking-wider', activePhaseIndex === idx ? 'text-slate-300' : 'text-slate-500']">
             Phase {{ phase.phaseNumber }} · {{ phase.dayRange }}
           </div>
-          <div class="font-semibold text-sm mt-1 line-clamp-1">
+          <div class="font-bold text-sm mt-1 line-clamp-1 font-sans">
             {{ phase.name.split('·')[0] }}
           </div>
           <div :class="[
-            'text-xs font-medium mt-2 inline-block px-2.5 py-0.5 rounded-full',
-            activePhaseIndex === idx ? 'bg-white/20 text-white' : 'bg-white text-[#1d1d1f] border border-black/[0.06]'
+            'text-xs font-semibold mt-2 inline-block px-2.5 py-0.5 rounded-full tabular-nums',
+            activePhaseIndex === idx ? 'bg-white/20 text-white' : 'bg-white text-slate-900 border border-slate-200 shadow-2xs'
           ]">
             {{ phase.targetBand }}
           </div>
@@ -312,85 +310,86 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
       </div>
 
       <!-- Active Phase Deep Dive Card -->
-      <div class="bg-[#fbfbfd] rounded-2xl p-5 sm:p-6 border border-black/[0.04] space-y-4">
+      <div class="bg-slate-50/70 rounded-2xl p-5 sm:p-6 border border-slate-200/80 space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <span class="text-xs font-medium text-[#86868b] uppercase tracking-wide">
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">
               Phase {{ currentPhase.phaseNumber }} 规划细节
             </span>
-            <h3 class="text-lg font-semibold text-[#1d1d1f] mt-0.5">
+            <h3 class="text-lg font-bold text-slate-900 mt-0.5 font-sans">
               {{ currentPhase.name }}
             </h3>
-            <p class="text-xs text-[#86868b] mt-0.5">
+            <p class="text-xs text-slate-600 mt-0.5">
               {{ currentPhase.subtitle }}
             </p>
           </div>
-          <div class="px-3 py-1 rounded-full bg-black/[0.04] text-[#1d1d1f] font-medium text-xs shrink-0 self-start sm:self-auto border border-black/[0.06]">
-            🎯 目标：{{ currentPhase.targetBand }}
+          <div class="px-3 py-1 rounded-full bg-white text-slate-800 font-semibold text-xs shrink-0 self-start sm:self-auto border border-slate-200 shadow-2xs flex items-center gap-1.5 select-none">
+            <Target class="w-3.5 h-3.5 text-sky-600" />
+            <span>目标：{{ currentPhase.targetBand }}</span>
           </div>
         </div>
 
         <!-- 4 Skills Strategy Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-          <div class="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-            <div class="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
-              <Headphones class="w-4 h-4 text-[#86868b]" />
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-1 shadow-card-subtle">
+            <div class="flex items-center gap-2 font-semibold text-xs text-slate-900 font-sans">
+              <Headphones class="w-4 h-4 text-blue-600" />
               <span>听力精听攻坚</span>
             </div>
-            <p class="text-xs text-[#6e6e73] leading-relaxed">
+            <p class="text-xs text-slate-600 leading-relaxed">
               {{ currentPhase.listeningStrategy }}
             </p>
           </div>
 
-          <div class="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-            <div class="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
-              <BookOpen class="w-4 h-4 text-[#86868b]" />
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-1 shadow-card-subtle">
+            <div class="flex items-center gap-2 font-semibold text-xs text-slate-900 font-sans">
+              <BookOpen class="w-4 h-4 text-teal-600" />
               <span>阅读结构化定位</span>
             </div>
-            <p class="text-xs text-[#6e6e73] leading-relaxed">
+            <p class="text-xs text-slate-600 leading-relaxed">
               {{ currentPhase.readingStrategy }}
             </p>
           </div>
 
-          <div class="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-            <div class="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
-              <PenTool class="w-4 h-4 text-[#86868b]" />
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-1 shadow-card-subtle">
+            <div class="flex items-center gap-2 font-semibold text-xs text-slate-900 font-sans">
+              <PenTool class="w-4 h-4 text-purple-600" />
               <span>写作结构规范</span>
             </div>
-            <p class="text-xs text-[#6e6e73] leading-relaxed">
+            <p class="text-xs text-slate-600 leading-relaxed">
               {{ currentPhase.writingStrategy }}
             </p>
           </div>
 
-          <div class="bg-white p-4 rounded-2xl border border-black/[0.04] space-y-1 shadow-2xs">
-            <div class="flex items-center gap-2 font-medium text-xs text-[#1d1d1f]">
-              <Mic class="w-4 h-4 text-[#86868b]" />
+          <div class="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-1 shadow-card-subtle">
+            <div class="flex items-center gap-2 font-semibold text-xs text-slate-900 font-sans">
+              <Mic class="w-4 h-4 text-amber-600" />
               <span>口语流利串题</span>
             </div>
-            <p class="text-xs text-[#6e6e73] leading-relaxed">
+            <p class="text-xs text-slate-600 leading-relaxed">
               {{ currentPhase.speakingStrategy }}
             </p>
           </div>
         </div>
 
         <!-- Core Objectives Checklist -->
-        <div class="bg-white p-4 rounded-2xl border border-black/[0.04] shadow-2xs">
-          <h4 class="text-xs font-semibold text-[#1d1d1f] mb-2.5 flex items-center gap-1.5">
-            <ShieldCheck class="w-4 h-4 text-[#34c759]" />
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card-subtle">
+          <h4 class="text-xs font-bold text-slate-900 mb-2.5 flex items-center gap-1.5 font-sans">
+            <ShieldCheck class="w-4 h-4 text-emerald-600" />
             阶段攻坚验收目标 (Core Objectives)
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div v-for="(obj, i) in currentPhase.coreObjectives" :key="i" class="flex items-start gap-2 text-xs text-[#6e6e73]">
-              <div class="w-1.5 h-1.5 rounded-full bg-[#0071e3] mt-1.5 shrink-0" />
+            <div v-for="(obj, i) in currentPhase.coreObjectives" :key="i" class="flex items-start gap-2 text-xs text-slate-600">
+              <div class="w-1.5 h-1.5 rounded-full bg-sky-600 mt-1.5 shrink-0" />
               <span>{{ obj }}</span>
             </div>
           </div>
         </div>
 
         <!-- Key Milestone -->
-        <div class="bg-[#0071e3]/5 p-3.5 rounded-xl border border-[#0071e3]/10 flex items-center justify-between text-xs">
-          <span class="font-medium text-[#1d1d1f] flex items-center gap-2">
-            <Award class="w-4 h-4 text-[#0071e3] shrink-0" />
+        <div class="bg-sky-50 p-3.5 rounded-xl border border-sky-200/70 flex items-center justify-between text-xs">
+          <span class="font-semibold text-slate-900 flex items-center gap-2">
+            <Award class="w-4 h-4 text-sky-600 shrink-0" />
             <span>阶段考核验收：{{ currentPhase.keyMilestone }}</span>
           </span>
         </div>
@@ -398,18 +397,18 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
     </div>
 
     <!-- Today's Action Checklist -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.02)] space-y-4">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-black/[0.04]">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-card-subtle space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-200/80">
         <div>
-          <h2 class="text-base font-semibold text-[#1d1d1f] flex items-center gap-2">
-            <CheckCircle2 class="w-4 h-4 text-[#34c759]" />
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2 font-sans">
+            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
             今日阶段定制任务打卡 (Phase {{ currentPhase.phaseNumber }} · Day {{ config.currentDay }})
           </h2>
-          <p class="text-xs text-[#86868b] mt-0.5">保质完成每日量化目标，点击「去练习」直达实战训练模块</p>
+          <p class="text-xs text-slate-500 mt-0.5">保质完成每日量化目标，点击「去练习」直达实战训练模块</p>
         </div>
         
         <div class="flex items-center gap-2 self-start sm:self-auto">
-          <span class="text-xs font-medium px-3 py-1 bg-[#34c759]/10 text-[#34c759] rounded-full border border-[#34c759]/20">
+          <span class="text-xs font-semibold px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200/80 select-none tabular-nums">
             达成度 {{ progressPercent }}% ({{ completedCount }}/{{ dailyTasks.length }} 项)
           </span>
         </div>
@@ -421,10 +420,10 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
           v-for="task in dailyTasks"
           :key="task.id"
           :class="[
-            'p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3',
+            'p-4 rounded-2xl border transition-all duration-150 flex flex-col sm:flex-row sm:items-center justify-between gap-3',
             completedTasks[task.id] 
-              ? 'bg-[#34c759]/5 border-[#34c759]/20' 
-              : 'bg-[#f5f5f7] hover:bg-[#e8e8ed]/70 border-transparent'
+              ? 'bg-emerald-50/40 border-emerald-200/80' 
+              : 'bg-slate-50/70 hover:bg-white border-slate-200/80 hover:border-slate-300 hover:shadow-card-subtle'
           ]"
         >
           <!-- Left checkbox & text -->
@@ -433,28 +432,28 @@ const handleSaveConfig = (newConfig: PersonalizedPlanConfig) => {
             class="flex items-start gap-3 cursor-pointer select-none flex-1 min-w-0"
           >
             <div class="mt-0.5 shrink-0">
-              <CheckCircle2 v-if="completedTasks[task.id]" class="w-5 h-5 text-[#34c759]" />
-              <Circle v-else class="w-5 h-5 text-[#86868b] hover:text-[#0071e3] transition-colors" />
+              <CheckCircle2 v-if="completedTasks[task.id]" class="w-5 h-5 text-emerald-600" />
+              <Circle v-else class="w-5 h-5 text-slate-400 hover:text-sky-600 transition-colors" />
             </div>
             <div>
-              <div :class="['text-sm font-medium', completedTasks[task.id] ? 'line-through text-[#86868b]' : 'text-[#1d1d1f]']">
+              <div :class="['text-sm font-semibold font-sans', completedTasks[task.id] ? 'line-through text-slate-400' : 'text-slate-900']">
                 {{ task.title }}
               </div>
-              <div class="text-xs text-[#86868b] mt-0.5">
-                {{ task.description }} · <span class="text-[#0071e3] font-medium">{{ task.durationMinutes }} 分钟</span>
+              <div class="text-xs text-slate-500 mt-0.5">
+                {{ task.description }} · <span class="text-sky-600 font-medium tabular-nums">{{ task.durationMinutes }} 分钟</span>
               </div>
             </div>
           </div>
 
-          <!-- Right Direct Action Link (Apple Pill) -->
+          <!-- Right Direct Action Link -->
           <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
             <button
               @click="emit('navigate', task.targetModule)"
               :class="[
-                'px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer',
+                'px-4 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500',
                 completedTasks[task.id] 
-                  ? 'bg-[#e8e8ed] text-[#6e6e73] hover:bg-[#dcdce0]' 
-                  : 'bg-[#0071e3] hover:bg-[#0077ed] text-white shadow-sm active:scale-98'
+                  ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' 
+                  : 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm'
               ]"
             >
               <span>{{ completedTasks[task.id] ? '重温' : '去练习' }}</span>

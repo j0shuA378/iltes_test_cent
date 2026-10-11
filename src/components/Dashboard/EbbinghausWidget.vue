@@ -70,22 +70,22 @@ const stagesList: MemoryStage[] = [0, 1, 2, 3, 4, 5, 6];
 </script>
 
 <template>
-  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-black/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.02)] relative overflow-hidden transition-all">
+  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-card-subtle relative overflow-hidden transition-all">
     <div class="relative z-10 space-y-6">
-      <!-- Header section (Apple style) -->
+      <!-- Header section -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="space-y-1.5">
-          <div class="flex items-center gap-2 text-xs font-semibold tracking-wide text-[#86868b]">
-            <Brain class="w-4 h-4 text-[#0071e3]" />
-            <span class="uppercase tracking-wider">Ebbinghaus Memory Engine</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-[#0071e3]/10 text-[#0071e3] text-[11px] font-medium">
+          <div class="flex items-center gap-2 text-xs font-semibold tracking-wide text-slate-500">
+            <Brain class="w-4 h-4 text-sky-600" />
+            <span class="uppercase tracking-wider font-sans">Ebbinghaus Memory Engine</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 text-[11px] font-semibold border border-sky-200/60 select-none">
               智能抗遗忘算法
             </span>
           </div>
-          <h2 class="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f]">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-sans">
             动态遗忘监测与多级复盘
           </h2>
-          <p class="text-xs sm:text-sm text-[#86868b] max-w-2xl leading-relaxed">
+          <p class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
             基于人类大脑衰减曲线公式 R = e^(-t/S)，系统在词汇与错题遗忘临界点精准提醒复核，以极简复习耗时建立考场本能永久突触。
           </p>
         </div>
@@ -93,96 +93,96 @@ const stagesList: MemoryStage[] = [0, 1, 2, 3, 4, 5, 6];
         <div class="flex items-center gap-2.5 self-start sm:self-auto shrink-0">
           <button
             @click="showStageBreakdown = !showStageBreakdown"
-            class="px-4 py-2 rounded-full bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] text-xs font-medium border border-black/[0.04] transition-all flex items-center gap-1.5 cursor-pointer"
+            class="px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-800 text-xs font-semibold border border-slate-200 transition-all duration-150 flex items-center gap-1.5 cursor-pointer active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-sky-500"
           >
-            <Layers class="w-3.5 h-3.5 text-[#86868b]" />
+            <Layers class="w-3.5 h-3.5 text-slate-500" />
             <span>{{ showStageBreakdown ? '收起矩阵' : '7级突触分布' }}</span>
           </button>
 
           <button
             @click="emit('navigate', 'vocabulary')"
-            class="px-5 py-2 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white text-xs font-semibold transition-all shadow-sm flex items-center gap-1.5 active:scale-98 cursor-pointer"
+            class="px-5 py-2 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-all duration-150 shadow-sm flex items-center gap-1.5 active:scale-[0.98] cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-500"
           >
-            <Flame class="w-3.5 h-3.5 text-white" />
+            <Flame class="w-3.5 h-3.5 text-amber-400" />
             <span>开启今日复盘</span>
             <ArrowRight class="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      <!-- 4 Core Metrics Grid (Apple Inset Cards) -->
+      <!-- 4 Core Metrics Grid -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div class="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1">
+        <div class="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/80 shadow-card-subtle">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span>今日临界待复习</span>
-            <Clock class="w-3.5 h-3.5 text-[#86868b]" />
+            <Clock class="w-3.5 h-3.5 text-amber-600" />
           </div>
-          <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
+          <div class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums flex items-baseline gap-1">
             <span>{{ stats.dueTodayCount }}</span>
-            <span class="text-xs font-normal text-[#86868b]">项到期</span>
+            <span class="text-xs font-normal text-slate-500">项到期</span>
           </div>
-          <div class="text-[11px] text-[#86868b] mt-1 font-normal">
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">
             {{ stats.dueTodayCount > 0 ? '建议今日优先消灭' : '今日复习目标已达成 ✓' }}
           </div>
         </div>
 
-        <div class="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1">
+        <div class="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/80 shadow-card-subtle">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span>综合留存率</span>
-            <TrendingUp class="w-3.5 h-3.5 text-[#86868b]" />
+            <TrendingUp class="w-3.5 h-3.5 text-emerald-600" />
           </div>
-          <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
+          <div class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums flex items-baseline gap-1">
             <span>{{ stats.averageRetention }}%</span>
-            <span class="text-xs font-normal text-[#86868b]">稳定度</span>
+            <span class="text-xs font-normal text-slate-500">稳定度</span>
           </div>
-          <div class="text-[11px] text-[#86868b] mt-1 font-normal">
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">
             远高于无复习基线 (21%)
           </div>
         </div>
 
-        <div class="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1">
+        <div class="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/80 shadow-card-subtle">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span>Stage 6 永久记忆</span>
-            <ShieldCheck class="w-3.5 h-3.5 text-[#86868b]" />
+            <ShieldCheck class="w-3.5 h-3.5 text-sky-600" />
           </div>
-          <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
+          <div class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums flex items-baseline gap-1">
             <span>{{ stats.masteredCount }}</span>
-            <span class="text-xs font-normal text-[#86868b]">项牢固</span>
+            <span class="text-xs font-normal text-slate-500">项牢固</span>
           </div>
-          <div class="text-[11px] text-[#86868b] mt-1 font-normal">
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">
             已进入考场秒级提取区
           </div>
         </div>
 
-        <div class="bg-[#f5f5f7] rounded-2xl p-4 border border-black/[0.02]">
-          <div class="flex items-center justify-between text-xs text-[#86868b] mb-1">
+        <div class="bg-slate-50/70 rounded-2xl p-4 border border-slate-200/80 shadow-card-subtle">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
             <span>记忆网络收录</span>
-            <Sparkles class="w-3.5 h-3.5 text-[#86868b]" />
+            <Sparkles class="w-3.5 h-3.5 text-amber-500" />
           </div>
-          <div class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f] tabular-nums flex items-baseline gap-1">
+          <div class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums flex items-baseline gap-1">
             <span>{{ stats.totalItems }}</span>
-            <span class="text-xs font-normal text-[#86868b]">总跟踪</span>
+            <span class="text-xs font-normal text-slate-500">总跟踪</span>
           </div>
-          <div class="text-[11px] text-[#86868b] mt-1 font-normal">
+          <div class="text-[11px] text-slate-500 mt-1 font-medium">
             涵盖核心高频词与重难错题
           </div>
         </div>
       </div>
 
-      <!-- Ebbinghaus Curve SVG Visualizer (Clean Apple Graph) -->
-      <div class="bg-[#fbfbfd] border border-black/[0.04] rounded-2xl p-4 sm:p-5">
+      <!-- Ebbinghaus Curve SVG Visualizer -->
+      <div class="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-card-subtle">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs mb-3 gap-2">
-          <div class="flex items-center gap-2 font-medium text-[#1d1d1f]">
+          <div class="flex items-center gap-2 font-bold text-slate-900 font-sans">
             <span>记忆衰减与对抗轨迹模拟</span>
-            <span class="text-[#86868b] font-normal">· 7个黄金突触强化节点</span>
+            <span class="text-slate-500 font-normal">· 7个黄金突触强化节点</span>
           </div>
           <div class="flex items-center gap-4 text-[11px]">
-            <span class="flex items-center gap-1.5 text-[#34c759] font-medium">
-              <span class="w-2 h-2 rounded-full bg-[#34c759] inline-block" />
+            <span class="flex items-center gap-1.5 text-emerald-600 font-semibold select-none">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
               艾宾浩斯多级复习 (95%+)
             </span>
-            <span class="flex items-center gap-1.5 text-[#ff3b30] font-normal">
-              <span class="w-2 h-0.5 bg-[#ff3b30] inline-block border-b border-dashed" />
+            <span class="flex items-center gap-1.5 text-rose-600 font-medium select-none">
+              <span class="w-2 h-0.5 bg-rose-500 inline-block border-b border-dashed" />
               自然衰减遗忘 (跌至21%)
             </span>
           </div>

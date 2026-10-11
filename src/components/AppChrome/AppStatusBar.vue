@@ -43,43 +43,43 @@ const toggleFullscreen = () => {
 </script>
 
 <template>
-  <footer class="h-6 bg-[#f5f5f7] border-t border-black/[0.06] px-3 flex items-center justify-between text-[11px] text-[#86868b] select-none z-20 shrink-0">
+  <footer class="h-6 bg-slate-50 border-t border-slate-200/80 px-3 flex items-center justify-between text-[11px] text-slate-500 select-none z-20 shrink-0 font-sans">
     <!-- Left: App Identity & System Status -->
     <div class="flex items-center gap-3">
-      <div class="flex items-center gap-1.5 font-mono text-[10px] text-[#1d1d1f]">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#34c759]" />
+      <div class="flex items-center gap-1.5 font-mono text-[10px] text-slate-900">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" />
         <span>Ready</span>
       </div>
 
-      <div class="h-3 w-px bg-black/[0.08]" />
+      <div class="h-3 w-px bg-slate-200" />
 
       <button
         @click="emit('openAdmin')"
-        class="hover:text-[#1d1d1f] hover:underline cursor-pointer flex items-center gap-1 font-mono text-[10px]"
+        class="hover:text-slate-900 hover:underline cursor-pointer flex items-center gap-1 font-mono text-[10px]"
         title="打开管理与运维后台"
       >
-        <Terminal class="w-3 h-3 text-[#86868b]" />
+        <Terminal class="w-3 h-3 text-slate-400" />
         <span>v2.4.0 (Core)</span>
       </button>
 
-      <div class="hidden sm:block h-3 w-px bg-black/[0.08]" />
+      <div class="hidden sm:block h-3 w-px bg-slate-200" />
 
-      <span class="hidden sm:inline">雅思全真机考冲刺桌面端</span>
+      <span class="hidden sm:inline text-slate-500">雅思全真机考冲刺桌面端</span>
     </div>
 
     <!-- Center: Active Student Marker -->
     <div class="flex items-center gap-2 font-mono text-[10px]">
       <button 
         @click="emit('openAuthModal')"
-        class="hover:text-[#1d1d1f] transition-colors cursor-pointer flex items-center gap-1"
+        class="hover:text-slate-900 transition-colors cursor-pointer flex items-center gap-1"
         title="点击管理学员档案与恢复标记"
       >
-        <span class="text-[#1d1d1f] font-semibold">{{ activeUser.displayName }}</span>
-        <span class="px-1 py-0.2 rounded bg-black/[0.04] text-[#0071e3] border border-black/[0.04]">
+        <span class="text-slate-900 font-semibold">{{ activeUser.displayName }}</span>
+        <span class="px-1 py-0.2 rounded bg-slate-200/80 text-sky-700 border border-slate-200 font-medium">
           {{ activeUser.recoveryToken || 'MK-GUEST-0000' }}
         </span>
       </button>
-      <span v-if="lastSyncTime" class="hidden md:inline text-[#86868b]">
+      <span v-if="lastSyncTime" class="hidden md:inline text-slate-400">
         (同步于 {{ lastSyncTime }})
       </span>
     </div>
@@ -87,29 +87,30 @@ const toggleFullscreen = () => {
     <!-- Right: Metrics & Controls -->
     <div class="flex items-center gap-3">
       <!-- Storage Consumption -->
-      <div class="hidden sm:flex items-center gap-1 text-[10px]">
-        <HardDrive class="w-3 h-3 text-[#86868b]" />
+      <div class="hidden sm:flex items-center gap-1 text-[10px] tabular-nums">
+        <HardDrive class="w-3 h-3 text-slate-400" />
         <span>{{ vaultStats.totalKB }} KB</span>
       </div>
 
-      <div class="hidden sm:block h-3 w-px bg-black/[0.08]" />
+      <div class="hidden sm:block h-3 w-px bg-slate-200" />
 
       <!-- Network / Backend Ping Status -->
-      <div class="flex items-center gap-1 text-[10px]">
+      <div class="flex items-center gap-1 text-[10px] tabular-nums">
         <Wifi v-if="syncStatus !== 'offline'" class="w-3 h-3 text-emerald-600" />
         <WifiOff v-else class="w-3 h-3 text-amber-600" />
-        <span :class="syncStatus !== 'offline' ? 'text-emerald-700' : 'text-amber-700'">
+        <span :class="syncStatus !== 'offline' ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'">
           {{ syncStatus !== 'offline' ? `${serverLatency || 12}ms` : '本地沙箱' }}
         </span>
       </div>
 
-      <div class="h-3 w-px bg-black/[0.08]" />
+      <div class="h-3 w-px bg-slate-200" />
 
       <!-- Shortcuts Trigger Button -->
       <button 
         @click="emit('openShortcuts')" 
-        class="hover:text-[#1d1d1f] transition-colors cursor-pointer p-0.5 rounded"
+        class="hover:text-slate-900 transition-colors cursor-pointer p-0.5 rounded focus-visible:ring-2 focus-visible:ring-sky-500"
         title="查看快捷键"
+        aria-label="查看快捷键"
       >
         <HelpCircle class="w-3 h-3" />
       </button>
@@ -117,8 +118,9 @@ const toggleFullscreen = () => {
       <!-- Fullscreen Button -->
       <button 
         @click="toggleFullscreen" 
-        class="hover:text-[#1d1d1f] transition-colors cursor-pointer p-0.5 rounded"
+        class="hover:text-slate-900 transition-colors cursor-pointer p-0.5 rounded focus-visible:ring-2 focus-visible:ring-sky-500"
         title="沉浸全屏"
+        aria-label="切换全屏模式"
       >
         <Maximize class="w-3 h-3" />
       </button>
